@@ -11,8 +11,8 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/motionsim/IPCSMFXMLGame.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 1000, 1000);
-
+        Scene scene = new Scene(fxmlLoader.load());
+        stage.setMaximized(true);
         stage.setScene(scene);
         stage.show();
     }
