@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.shape.Polyline?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.motionsim.Controller.IPCSMFXMLGameController">
+   <children>
+      <AnchorPane id="AnchorPane" prefHeight="1100.0" prefWidth="1800.0">
+         <children>
+            <MenuBar fx:id="MenuBar" layoutY="1.0" prefHeight="25.0" prefWidth="1800.0">
+              <menus>
+                <Menu mnemonicParsing="false" text="File">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Close" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Delete" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="About" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+            <Pane fx:id="AnimationPane" layoutX="500.0" layoutY="26.0" prefHeight="1075.0" prefWidth="1301.0" />
+            <Rectangle fx:id="GameReadingsRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="50.0" layoutY="26.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="501.0" />
+            <Label fx:id="GameReadingsLabel" alignment="CENTER" contentDisplay="CENTER" layoutY="26.0" prefHeight="50.0" prefWidth="501.0" text="Game Readings" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+            <Line fx:id="OrthogonalToLeftLine" endX="288.3333435058594" endY="-24.99999237060547" layoutX="213.0" layoutY="101.0" startX="-212.99998474121094" startY="-25.00000762939453" />
+            <Rectangle fx:id="AmplitudeRec" arcHeight="5.0" arcWidth="5.0" fill="#1c8cec" height="50.0" layoutX="16.0" layoutY="378.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="150.0" />
+            <Label fx:id="AmplitudeLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="16.0" layoutY="378.0" prefHeight="50.0" prefWidth="150.0" text="Amplitude(m): " textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+            <Rectangle fx:id="AmplitudeFieldRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="50.0" layoutX="166.0" layoutY="378.0" stroke="BLACK" strokeType="INSIDE" width="75.0" />
+            <Label fx:id="AmplitudeFieldLabel" alignment="CENTER" layoutX="166.0" layoutY="378.0" prefHeight="50.0" prefWidth="75.0" text="0.00" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
+            <Slider fx:id="AmplitudeSlider" layoutX="16.0" layoutY="428.0" prefHeight="14.0" prefWidth="150.0" />
+            <Rectangle fx:id="VelocityRec" arcHeight="5.0" arcWidth="5.0" fill="#1c8cec" height="50.0" layoutX="265.0" layoutY="378.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="150.0" />
+            <Label fx:id="VelocityLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="265.0" layoutY="378.0" prefHeight="50.0" prefWidth="150.0" text="Velocity(m/s):" textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+            <Rectangle fx:id="VelocityFieldRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="50.0" layoutX="415.0" layoutY="378.0" stroke="BLACK" strokeType="INSIDE" width="75.0" />
+            <Label fx:id="VelocityFieldLabel" alignment="CENTER" layoutX="415.0" layoutY="378.0" prefHeight="50.0" prefWidth="75.0" text="0.00" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
+            <Slider fx:id="VelocitySlider" layoutX="265.0" layoutY="428.0" prefHeight="14.0" prefWidth="150.0" />
+            <Rectangle fx:id="AngleRec" arcHeight="5.0" arcWidth="5.0" fill="#1c8cec" height="50.0" layoutX="140.0" layoutY="456.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="150.0" />
+            <Label fx:id="AngleLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="140.0" layoutY="456.0" prefHeight="50.0" prefWidth="150.0" text="Angle(°):" textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+            <Rectangle fx:id="AngleFieldRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="50.0" layoutX="290.0" layoutY="456.0" stroke="BLACK" strokeType="INSIDE" width="75.0" />
+            <Label fx:id="AngleFieldLabel" alignment="CENTER" layoutX="290.0" layoutY="456.0" prefHeight="50.0" prefWidth="75.0" text="0.00" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
+            <Slider fx:id="AngleSlider" layoutX="140.0" layoutY="506.0" prefHeight="14.0" prefWidth="150.0" />
+            <Line fx:id="OrthogonalToLeftLine3" endX="288.3333435058594" endY="-24.99999237060547" layoutX="212.0" layoutY="563.0" startX="-212.99998474121094" startY="-25.00000762939453" />
+            <Rectangle fx:id="ControlsRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="50.0" layoutX="-1.0" layoutY="539.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="500.0" />
+            <Label fx:id="ControlsLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="-1.0" layoutY="539.0" prefHeight="50.0" prefWidth="501.0" text="Controls" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+            <Line fx:id="OrthogonalToLeftLine4" endX="287.0" endY="-24.999969482421875" layoutX="211.0" layoutY="613.0" startX="-212.99998474121094" startY="-25.00000762939453" />
+            <Polyline fx:id="StartShape" fill="BLACK" layoutX="252.0" layoutY="606.0" points="-50.0, 9.333343505859375, -7.7071075439453125, 37.99993896484375, -50.0, 62.666656494140625, -50.0, 9.333343505859375" strokeType="INSIDE" />
+            <Button fx:id="StartBtn" layoutX="112.0" layoutY="617.0" mnemonicParsing="false" onAction="#handleStartBtn" prefHeight="50.0" prefWidth="84.0" text="Start" />
+            <Button fx:id="ResetBtn" layoutX="253.0" layoutY="619.0" mnemonicParsing="false" onAction="#handleResetBtn" prefHeight="50.0" prefWidth="84.0" text="Reset" />
+            <Polyline fx:id="StartShape1" fill="BLACK" layoutX="427.0" layoutY="608.0" points="-50.0, 9.333343505859375, -88.70712280273438, 36.99993896484375, -50.0, 62.666656494140625, -50.0, 9.333343505859375" strokeType="INSIDE" />
+            <Polyline fx:id="StartShape11" fill="BLACK" layoutX="464.0" layoutY="608.0" points="-50.0, 9.333343505859375, -88.70712280273438, 36.99993896484375, -50.0, 62.666656494140625, -50.0, 9.333343505859375" strokeType="INSIDE" />
+            <Rectangle fx:id="VVelocityRec" arcHeight="5.0" arcWidth="5.0" fill="#949494" height="50.0" layoutX="75.0" layoutY="775.0" smooth="false" stroke="#1c8cec" strokeType="INSIDE" strokeWidth="0.0" width="250.0" />
+            <Label fx:id="VVelocityLabel" alignment="CENTER" layoutX="75.0" layoutY="775.0" prefHeight="50.0" prefWidth="250.0" text="Vertical Velocity" textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Label>
+            <ComboBox fx:id="VVelocityComboBox" layoutX="120.0" layoutY="825.0" onAction="#handleHVelocityComboBox" prefHeight="35.0" prefWidth="175.0" promptText="- Default Unit (m/s) -" />
+            <Rectangle fx:id="VVelocityFieldRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="50.0" layoutX="322.0" layoutY="775.0" stroke="BLACK" strokeType="INSIDE" width="100.0" />
+            <Label fx:id="VVelocityFieldLabel" alignment="CENTER" layoutX="322.0" layoutY="775.0" prefHeight="50.0" prefWidth="100.0" text="0.00" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
+            <Rectangle fx:id="TimeRemainingRec" arcHeight="5.0" arcWidth="5.0" fill="#949494" height="40.0" layoutX="66.0" layoutY="84.0" smooth="false" stroke="#1c8cec" strokeType="INSIDE" strokeWidth="0.0" width="250.0" />
+            <Label fx:id="TimeRemainingLabel" alignment="CENTER" layoutX="66.0" layoutY="84.0" prefHeight="40.0" prefWidth="250.0" text="Time Remaining" textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Label>
+            <Rectangle fx:id="TimeRemainingFieldRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="40.0" layoutX="316.0" layoutY="84.0" stroke="BLACK" strokeType="INSIDE" width="100.0" />
+            <Label fx:id="TimeRemainingFieldLabel" alignment="CENTER" layoutX="316.0" layoutY="84.0" prefHeight="40.0" prefWidth="100.0" text="0.00" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
+            <Rectangle fx:id="PointsRec" arcHeight="5.0" arcWidth="5.0" fill="#949494" height="40.0" layoutX="66.0" layoutY="142.0" smooth="false" stroke="#1c8cec" strokeType="INSIDE" strokeWidth="0.0" width="250.0" />
+            <Label fx:id="PointsLabel" alignment="CENTER" layoutX="66.0" layoutY="142.0" prefHeight="40.0" prefWidth="250.0" text="Points" textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Label>
+            <Rectangle fx:id="PointsFieldRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="40.0" layoutX="316.0" layoutY="142.0" stroke="BLACK" strokeType="INSIDE" width="100.0" />
+            <Label fx:id="PointsFieldLabel" alignment="CENTER" layoutX="316.0" layoutY="142.0" prefHeight="40.0" prefWidth="100.0" text="0" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
+            <Rectangle fx:id="ParamAdjustRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="50.0" layoutY="307.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="501.0" />
+            <Label fx:id="ParamAdjustLabel" alignment="CENTER" contentDisplay="CENTER" layoutY="307.0" prefHeight="50.0" prefWidth="501.0" text="Parameter Adjustments" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+            <Line fx:id="OrthogonalToLeftLine2" endX="288.3333435058594" endY="-24.99999237060547" layoutX="213.0" layoutY="382.0" startX="-212.99998474121094" startY="-25.00000762939453" />
+            <Line fx:id="OrthogonalToLeftLine1" endX="288.3333435058594" endY="-24.99999237060547" layoutX="212.0" layoutY="332.0" startX="-212.99998474121094" startY="-25.00000762939453" />
+            <Line fx:id="OrthogonalToLeftLine5" endX="288.3333435058594" endY="-24.99999237060547" layoutX="213.0" layoutY="718.0" startX="-212.99998474121094" startY="-25.00000762939453" />
+            <Rectangle fx:id="DynamicLabelsRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="50.0" layoutY="694.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="500.0" />
+            <Label fx:id="DynamicLabelsLabel" alignment="CENTER" contentDisplay="CENTER" layoutY="694.0" prefHeight="50.0" prefWidth="501.0" text="Dynamic Labels" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+            <Line fx:id="OrthogonalToLeftLine6" endX="287.0" endY="-24.999969482421875" layoutX="212.0" layoutY="768.0" startX="-212.99998474121094" startY="-25.00000762939453" />
+            <Rectangle fx:id="HVelocityRec" arcHeight="5.0" arcWidth="5.0" fill="#949494" height="50.0" layoutX="71.0" layoutY="879.0" smooth="false" stroke="#1c8cec" strokeType="INSIDE" strokeWidth="0.0" width="250.0" />
+            <Label fx:id="HVelocityLabel" alignment="CENTER" layoutX="71.0" layoutY="879.0" prefHeight="50.0" prefWidth="250.0" text="Horizontal Velocity" textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Label>
+            <ComboBox fx:id="HVelocityComboBox" layoutX="116.0" layoutY="929.0" onAction="#handleHVelocityComboBox" prefHeight="35.0" prefWidth="175.0" promptText="- Default Unit (m/s) -" />
+            <Rectangle fx:id="HVelocityFieldRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="50.0" layoutX="318.0" layoutY="879.0" stroke="BLACK" strokeType="INSIDE" width="100.0" />
+            <Label fx:id="HVelocityFieldLabel" alignment="CENTER" layoutX="318.0" layoutY="879.0" prefHeight="50.0" prefWidth="100.0" text="0.00" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
+            <Rectangle fx:id="AOORec" arcHeight="5.0" arcWidth="5.0" fill="#949494" height="50.0" layoutX="71.0" layoutY="981.0" smooth="false" stroke="#1c8cec" strokeType="INSIDE" strokeWidth="0.0" width="250.0" />
+            <Label fx:id="AOOLabel" alignment="CENTER" layoutX="71.0" layoutY="981.0" prefHeight="50.0" prefWidth="250.0" text="Amplitude of Oscillations" textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+            <ComboBox fx:id="AOOComboBox" layoutX="116.0" layoutY="1031.0" onAction="#handleHVelocityComboBox" prefHeight="35.0" prefWidth="175.0" promptText="- Default Unit (m) -" />
+            <Rectangle fx:id="AOOFieldRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="50.0" layoutX="318.0" layoutY="981.0" stroke="BLACK" strokeType="INSIDE" width="100.0" />
+            <Label fx:id="AOOFieldLabel" alignment="CENTER" layoutX="318.0" layoutY="981.0" prefHeight="50.0" prefWidth="100.0" text="0.00" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
+            <Line fx:id="LeftLine" endX="-51.000030517578125" endY="965.0" layoutX="551.0" layoutY="136.0" startX="-51.000030517578125" startY="-108.66666412353516" />
+            <Rectangle fx:id="GravityRec" arcHeight="5.0" arcWidth="5.0" fill="#949494" height="40.0" layoutX="66.0" layoutY="199.0" smooth="false" stroke="#1c8cec" strokeType="INSIDE" strokeWidth="0.0" width="250.0" />
+            <Label fx:id="GravityLabel" alignment="CENTER" layoutX="66.0" layoutY="199.0" prefHeight="40.0" prefWidth="250.0" text="Gravity (m/s²)" textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Label>
+            <Rectangle fx:id="GravityFieldRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="40.0" layoutX="316.0" layoutY="199.0" stroke="BLACK" strokeType="INSIDE" width="100.0" />
+            <Label fx:id="GravityFieldLabel" alignment="CENTER" layoutX="316.0" layoutY="199.0" prefHeight="40.0" prefWidth="100.0" text="0.00" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
+            <Rectangle fx:id="SpringConstantRec" arcHeight="5.0" arcWidth="5.0" fill="#949494" height="40.0" layoutX="66.0" layoutY="253.0" smooth="false" stroke="#1c8cec" strokeType="INSIDE" strokeWidth="0.0" width="250.0" />
+            <Label fx:id="SpringConstantLabel" alignment="CENTER" layoutX="66.0" layoutY="253.0" prefHeight="40.0" prefWidth="250.0" text="Spring Constant (N/m)" textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="22.0" />
+               </font>
+            </Label>
+            <Rectangle fx:id="SpringConstantFieldRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="40.0" layoutX="316.0" layoutY="253.0" stroke="BLACK" strokeType="INSIDE" width="100.0" />
+            <Label fx:id="SpringConstantFieldLabel" alignment="CENTER" layoutX="316.0" layoutY="253.0" prefHeight="40.0" prefWidth="100.0" text="0.00" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>
