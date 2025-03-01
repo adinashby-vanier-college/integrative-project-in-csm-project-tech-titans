@@ -10,6 +10,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -36,8 +38,6 @@ public class IPCSMFXMLSimulatorController implements Initializable {
     private Rectangle ParamAdjustRec;
     @FXML
     private Label ParamAdjustLabel;
-    @FXML
-    private Line LeftLine;
     @FXML
     private Line OrthogonalToLeftLine;
     @FXML
@@ -81,7 +81,7 @@ public class IPCSMFXMLSimulatorController implements Initializable {
     @FXML
     private Label SpringConstantLabel;
     @FXML
-    private Rectangle SpringCoonstantFieldRec;
+    private Rectangle SpringConstantFieldRec;
     @FXML
     private Label SpringConstantFieldLabel;
     @FXML
@@ -105,6 +105,10 @@ public class IPCSMFXMLSimulatorController implements Initializable {
     @FXML
     private BarChart<?, ?> BarGraph;
     @FXML
+    private NumberAxis BarChartYAxis;
+    @FXML
+    private CategoryAxis BarChartXAxis;
+    @FXML
     private Line OrthogonalToLeftLine2;
     @FXML
     private Line OrthogonalToLeftLine3;
@@ -114,6 +118,8 @@ public class IPCSMFXMLSimulatorController implements Initializable {
     private Label ControlsLabel;
     @FXML
     private Line OrthogonalToLeftLine4;
+    @FXML
+    private Line LeftLine;
     @FXML
     private Rectangle EnterTimeRec;
     @FXML
@@ -163,6 +169,10 @@ public class IPCSMFXMLSimulatorController implements Initializable {
     @FXML
     private ComboBox<?> AOOComboBox;
     @FXML
+    private Rectangle AOOFieldRec;
+    @FXML
+    private Label AOOFieldLabel;
+    @FXML
     private Rectangle SimulationTimeRec;
     @FXML
     private Label SimulationTimeLabel;
@@ -173,7 +183,9 @@ public class IPCSMFXMLSimulatorController implements Initializable {
     @FXML
     private Label SimulationTimeFieldLabel;
 
-    
+    /**
+     * Initializes the controller class.
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
