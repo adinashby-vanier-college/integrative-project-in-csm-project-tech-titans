@@ -18,7 +18,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="1100.0" prefWidth="1800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="IPCSM.IPCSMFXMLMainController">
+<AnchorPane id="AnchorPane" prefHeight="1100.0" prefWidth="1800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.motionsim.Controller.IPCSMFXMLSimulatorController">
    <children>
       <MenuBar fx:id="MenuBar" layoutY="1.0" prefHeight="25.0" prefWidth="1800.0">
         <menus>
