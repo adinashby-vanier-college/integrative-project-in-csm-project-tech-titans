@@ -9,14 +9,16 @@
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Arc?>
+<?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.shape.Polyline?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.motionsim.Controller.IPCSMFXMLGameController">
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.motionsim.Controller.IPCSMFXMLGameController">
    <children>
-      <AnchorPane id="AnchorPane" prefHeight="1100.0" prefWidth="1800.0">
+      <AnchorPane id="AnchorPane" layoutY="1.0" prefHeight="1100.0" prefWidth="1800.0">
          <children>
             <MenuBar fx:id="MenuBar" layoutY="1.0" prefHeight="25.0" prefWidth="1800.0">
               <menus>
@@ -37,7 +39,24 @@
                 </Menu>
               </menus>
             </MenuBar>
-            <Pane fx:id="AnimationPane" layoutX="500.0" layoutY="26.0" prefHeight="1075.0" prefWidth="1301.0" />
+            <Pane fx:id="AnimationPane" layoutX="550.0" layoutY="27.0" prefHeight="1075.0" prefWidth="1301.0">
+               <children>
+                  <AnchorPane fx:id="SpringPane" layoutX="-49.0" layoutY="875.0" prefHeight="200.0" prefWidth="277.0">
+                     <children>
+                        <Arc fx:id="SpringAdjusterPath" fill="DODGERBLUE" layoutX="11.0" layoutY="212.0" length="90.0" radiusX="100.0" radiusY="100.0" startAngle="6.3" stroke="BLACK" strokeType="INSIDE" strokeWidth="5.0" style="-fx-fill: TRANSPARENT;" />
+                        <Circle fx:id="springAdjuster" fill="DODGERBLUE" layoutX="110.0" layoutY="196.0" radius="10.0" stroke="BLACK" strokeType="INSIDE" />
+                        <Pane fx:id="spring" layoutX="104.0" layoutY="157.0" prefHeight="53.0" prefWidth="162.0" style="-fx-view-order: 1;">
+                           <children>
+                              <Arc fill="DODGERBLUE" layoutX="28.0" layoutY="30.0" length="235.0" radiusX="25.0" radiusY="20.0" startAngle="315.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: TRANSPARENT;" />
+                              <Arc fill="DODGERBLUE" layoutX="61.0" layoutY="30.0" length="270.0" radiusX="25.0" radiusY="20.0" startAngle="315.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: TRANSPARENT;" />
+                              <Arc fill="DODGERBLUE" layoutX="98.0" layoutY="30.0" length="270.0" radiusX="25.0" radiusY="20.0" startAngle="315.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: TRANSPARENT;" />
+                              <Arc fill="DODGERBLUE" layoutX="131.0" layoutY="30.0" length="270.0" radiusX="25.0" radiusY="20.0" startAngle="315.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: TRANSPARENT;" />
+                              <Circle fill="DODGERBLUE" layoutX="150.0" layoutY="24.0" radius="25.0" stroke="BLACK" strokeType="INSIDE" />
+                           </children>
+                        </Pane>
+                     </children>
+                  </AnchorPane>
+               </children></Pane>
             <Rectangle fx:id="GameReadingsRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="50.0" layoutY="26.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="501.0" />
             <Label fx:id="GameReadingsLabel" alignment="CENTER" contentDisplay="CENTER" layoutY="26.0" prefHeight="50.0" prefWidth="501.0" text="Game Readings" textAlignment="CENTER">
                <font>
