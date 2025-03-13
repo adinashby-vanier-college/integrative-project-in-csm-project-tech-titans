@@ -1,10 +1,13 @@
 package org.example.motionsim.Logic;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import  javafx.scene.Node;
+import java.io.IOException;
 
 public class SettingsScreenController {
     @FXML private ChoiceBox<String> languageBox;
@@ -36,23 +39,26 @@ public class SettingsScreenController {
         }
             saveButton.setOnAction(e -> saveSettings());
         exitButton.setOnAction(e -> System.exit(0));
-        helpButton.setOnAction(e -> openHelp());
+        helpButton.setOnAction(this::openUserManual);
     } private void saveSettings() {
         System.out.println("Settings saved!");
     }
     public void openHelp() {
         System.out.println("Help Button! Open User Manual right here!");
     }
-    public void openUserManual() {
+    @FXML
+    public void openUserManual(ActionEvent actionEvent) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/User Manual.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/motionsim/UserManual.fxml"));
             Parent root = loader.load();
-            Stage userManualStage = new Stage();
+            Stage userManualStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
             userManualStage.setTitle("User Guide");
-            userManualStage.setScene(new Scene(root,500,400));
+           // userManualStage.setScene(new Scene(root,500,400));
+            userManualStage.setScene(scene);
             userManualStage.show();
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
-}
+    }

@@ -24,7 +24,7 @@
                 -U = 1/2kx2
             </text>
             </TextArea>
-                <Button fx:id="closeButton" text="Close" maxWidth="100"/>
+                <Button fx:id="closeButton" text="Close" onAction="#closeUserManual"/>
             </VBox>
     </children>
 </AnchorPane>
