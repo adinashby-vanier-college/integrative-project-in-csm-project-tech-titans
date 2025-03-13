@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx" xmlns:fx="https://javafx.com/fxml/1" fx:controller="org.example.motionsim.Logic.UserManualController">
+    <children>
+            <VBox spacing="10" alignment="TOP_CENTER" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="10" AnchorPane.rightAnchor="10">
+                    <Label text="User Guide" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+            <Label text = "Game Explanation:" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+            <TextArea fx:id="gameExplanation" editable="false" wrapText="true" prefHeight="150">
+                <text>
+        -The game uses the study of physics,waves and mechanics to fire a ball with a spring.
+        -You, my favourite player, are able to change the angle of the spring, the spring constant(k), the gravity(g), and you will be finally able to change the spring
+        by dragging the spring back and letting go!
+        -The velocity(v) that the ball is thrown with depends on how far back the spring has been pulled.
+                </text>
+            </TextArea>
+                <Label text="The Science Behind the Game " style="-fx-font-size: 16px;-fx-font-weight: bold;"/>
+            <Label text="Science Explanation:" style="-fx-font-size: 14px;-fx-font-weight:bold;"/>
+                <TextArea fx:id="scienceExplanation" editable="false" wrapText="true" prefHeight="100">
+            <text>
+                -The force exerted by the spring follows the Hooke's Law: F = -kx
+                -The launch velocity(v) depends on the energy stored in the compressed spring:
+                -U = 1/2kx2
+            </text>
+            </TextArea>
+                <Button fx:id="closeButton" text="Close" maxWidth="100"/>
+            </VBox>
+    </children>
+</AnchorPane>
