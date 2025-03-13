@@ -48,8 +48,7 @@ public class MultiLanguageApp {
             currentLocale = Locale.ENGLISH;
         }
         bundle = ResourceBundle.getBundle("messages",currentLocale);
-    }
-    public static String getString(String key ) {
+    } public static String getString(String key ) {
         return bundle.getString(key);
     }
 }
