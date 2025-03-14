@@ -83,7 +83,7 @@ public class MainApp extends Application {
             PhysicsEngine physicsEngine = new PhysicsEngine();
             SettingsScreenController controller = loader.getController();
             controller.setPhysicsEngine(physicsEngine);
-            Scene scene = new Scene(root, 1450,800);
+            Scene scene = new Scene(root, 400,300);
             primaryStage.setTitle("Physics Simulation");
             primaryStage.setScene(scene);
             primaryStage.setMinWidth(800);
