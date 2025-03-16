@@ -7,8 +7,8 @@
       <sourceFolder url="file://$MODULE_DIR$/Deliverable 3/Deliverable 3.1/MotionSim/src/main/resources" type="java-resource" />
     </content>
     <orderEntry type="inheritedJdk" />
-    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" exported="" name="javafx-swt" level="project" />
     <orderEntry type="library" exported="" name="lib" level="application" />
-    <orderEntry type="library" name="javafx-swt" level="project" />
+    <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
