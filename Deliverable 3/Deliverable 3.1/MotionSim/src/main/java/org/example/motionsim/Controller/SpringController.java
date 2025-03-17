@@ -1,9 +1,9 @@
-package org.example.motionsim.Logic;
+package org.example.motionsim.Controller;
 /*
-public class SpringMassSystem {
+public class SpringController {
     private double mass, springConstant,displacement, velocity;
     private double timeStep = 0.01;
-    public SpringMassSystem(double mass, double k, double x ) {
+    public SpringController(double mass, double k, double x ) {
         this.mass = mass;
         this.springConstant = k;
         this.displacement = x ;
@@ -31,7 +31,7 @@ public class SpringMassSystem {
     }
 }
 */
-public class SpringMassSystem {
+public class SpringController {
     private double mass  = 1.0;
     private double springConstant = 50.0;
     private double displacement = 0.0;

@@ -7,7 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import  javafx.scene.Node;
-import org.example.motionsim.Logic.PhysicsEngine;
+
 
 import java.io.IOException;
 
@@ -25,10 +25,7 @@ public class SettingsScreenController {
     @FXML private Button exitButton;
     @FXML private Button helpButton;
     @FXML ChoiceBox<String> backgroundPicker; //
-    private PhysicsEngine physicsEngine;
-    public void setPhysicsEngine(PhysicsEngine physicsEngine) {
-        this.physicsEngine = physicsEngine;
-    }
+
     public void initialize() {
         // Add options to choice boxes
         languageBox.getItems().addAll("English", "Français");

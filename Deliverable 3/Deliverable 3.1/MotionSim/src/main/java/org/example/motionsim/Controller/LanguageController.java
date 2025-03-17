@@ -1,4 +1,4 @@
-package org.example.motionsim.Logic;
+package org.example.motionsim.Controller;
 
 /*import javafx.application.Application;
 import javafx.scene.Scene;
@@ -7,7 +7,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import java.util.Locale;
 import java.util.ResourceBundle;
-public class MultiLanguageApp extends Application{
+public class LanguageController extends Application{
     @Override
     public void start(Stage primaryStage) {
         try {
@@ -37,7 +37,7 @@ public class MultiLanguageApp extends Application{
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-public class MultiLanguageApp {
+public class LanguageController {
     private static Locale currentLocale = Locale.ENGLISH;
     private static ResourceBundle bundle = ResourceBundle.getBundle("message",currentLocale);
     public static void setLanguage(String language) {
