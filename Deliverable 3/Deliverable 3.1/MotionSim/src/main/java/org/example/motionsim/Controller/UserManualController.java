@@ -1,4 +1,4 @@
-package org.example.motionsim.Logic;
+package org.example.motionsim.Controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

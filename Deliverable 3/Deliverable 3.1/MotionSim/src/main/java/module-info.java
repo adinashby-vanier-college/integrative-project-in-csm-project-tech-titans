@@ -8,4 +8,5 @@ module org.example.motionsim {
     opens org.example.motionsim.Logic to javafx.fxml;
     exports org.example.motionsim;
     exports org.example.motionsim.Logic;
+    exports org.example.motionsim.Controller;
 }
