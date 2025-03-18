@@ -53,4 +53,8 @@ public class SpringController {
     public double getDisplacement() {
         return displacement;
     }
+
+    public void dragSpring() {
+
+    }
 }

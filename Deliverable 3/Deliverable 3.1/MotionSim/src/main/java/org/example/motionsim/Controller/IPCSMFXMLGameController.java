@@ -9,12 +9,14 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Point2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polyline;
 import javafx.scene.shape.Rectangle;
@@ -162,14 +164,37 @@ public class IPCSMFXMLGameController implements Initializable {
     private Rectangle SpringConstantFieldRec;
     @FXML
     private Label SpringConstantFieldLabel;
+    @FXML
+    private Circle ball;
+    @FXML
+    private Line springPath;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
+        attachBallToLineEnd();
+    }
+
+    /**
+     * Call this after the FXML is loaded (e.g., in initialize()).
+     * Forces the ball's center to match the end of springPath.
+     */
+    private void attachBallToLineEnd() {
+        // 1) The line's parent is the same Pane that also contains the ball.
+        //    Therefore, we can do a simple addition:
+        double lineEndXInPane = springPath.getLayoutX() + springPath.getEndX();
+        double lineEndYInPane = springPath.getLayoutY() + springPath.getEndY();
+
+        // 2) For a Circle in FXML, layoutX/layoutY represent its center
+        //    in the parent's coordinate system. So we set them directly:
+        ball.setLayoutX(lineEndXInPane);
+        ball.setLayoutY(lineEndYInPane);
+
+        System.out.println("Line end in Pane: (" + lineEndXInPane + ", " + lineEndYInPane + ")");
+        System.out.println("Ball center set to: (" + ball.getLayoutX() + ", " + ball.getLayoutY() + ")");
+    }
 
     @FXML
     private void handleStartBtn(ActionEvent event) {
@@ -182,5 +207,9 @@ public class IPCSMFXMLGameController implements Initializable {
     @FXML
     private void handleHVelocityComboBox(ActionEvent event) {
     }
-    
+
+    @FXML
+    public void compressSpring() {
+
+    }
 }

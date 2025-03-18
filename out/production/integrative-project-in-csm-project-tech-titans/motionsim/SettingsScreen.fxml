@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="778.0" prefWidth="539.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.motionsim.Controller.SettingsScreenController">
+<BorderPane prefHeight="778.0" prefWidth="512.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.motionsim.Controller.SettingsScreenController">
     <top>
         <HBox alignment="CENTER_RIGHT" spacing="10" BorderPane.alignment="TOP_RIGHT">
             <Button fx:id="helpButton" onAction="#openUserManual" style="-fx-font-size: 20px;" text="Help?" />
