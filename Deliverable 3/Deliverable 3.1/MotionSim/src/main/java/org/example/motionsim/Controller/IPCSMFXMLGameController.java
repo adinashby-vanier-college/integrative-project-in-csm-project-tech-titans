@@ -15,6 +15,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.Slider;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
@@ -169,31 +170,75 @@ public class IPCSMFXMLGameController implements Initializable {
     @FXML
     private Line springPath;
 
-    /**
-     * Initializes the controller class.
-     */
+    private Point2D initialBallPosition;
+    private Point2D lineStart;
+    private Point2D lineEnd;
+    private double springAngle;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         attachBallToLineEnd();
     }
 
     /**
-     * Call this after the FXML is loaded (e.g., in initialize()).
-     * Forces the ball's center to match the end of springPath.
+     * This forces the ball's center to match the end of springPath.
      */
     private void attachBallToLineEnd() {
-        // 1) The line's parent is the same Pane that also contains the ball.
-        //    Therefore, we can do a simple addition:
         double lineEndXInPane = springPath.getLayoutX() + springPath.getEndX();
         double lineEndYInPane = springPath.getLayoutY() + springPath.getEndY();
 
-        // 2) For a Circle in FXML, layoutX/layoutY represent its center
-        //    in the parent's coordinate system. So we set them directly:
         ball.setLayoutX(lineEndXInPane);
         ball.setLayoutY(lineEndYInPane);
 
-        System.out.println("Line end in Pane: (" + lineEndXInPane + ", " + lineEndYInPane + ")");
-        System.out.println("Ball center set to: (" + ball.getLayoutX() + ", " + ball.getLayoutY() + ")");
+        // These lines find the initial ball position and calculate the line direction
+        initialBallPosition = new Point2D(lineEndXInPane, lineEndYInPane);
+        lineStart = new Point2D(springPath.getLayoutX() + springPath.getStartX(),
+                springPath.getLayoutY() + springPath.getStartY());
+        lineEnd = initialBallPosition;
+
+        // This calculates the angle of the spring line
+        double dx = lineEnd.getX() - lineStart.getX();
+        double dy = lineEnd.getY() - lineStart.getY();
+        springAngle = Math.atan2(dy, dx);
+    }
+
+    /**
+     * This handles dragging the ball backward along the spring path.
+     */
+    @FXML
+    private void handleBallDrag(MouseEvent event) {
+        // This converts the mouse position from scene coords to the pane's local coords
+        Point2D mousePosInLocal = ball.getParent().sceneToLocal(event.getSceneX(), event.getSceneY());
+
+        // This part projects onto the line in that same local coordinate system.
+        Point2D projectedPoint = projectPointOntoLine(mousePosInLocal, lineStart, lineEnd);
+        System.out.println("Projected Point: " + projectedPoint);
+
+        // This will prevent the ball from being moved forward
+        if (projectedPoint.distance(lineStart) > lineStart.distance(lineEnd)) {
+            return;
+        }
+
+        // Makes sure the ball moves strictly along the line.
+        ball.setLayoutX(projectedPoint.getX());
+        ball.setLayoutY(projectedPoint.getY());
+    }
+
+    /**
+     * This projects a given point onto the line defined by two points.
+     * @param projectPoint The point to project
+     * @param lineStart The start of the line
+     * @param lineEnd The end of the line
+     * @return The projected point on the line
+     */
+    private Point2D projectPointOntoLine(Point2D projectPoint, Point2D lineStart, Point2D lineEnd) {
+        Point2D lineVector = lineEnd.subtract(lineStart);
+        Point2D pointVector = projectPoint.subtract(lineStart);
+
+        double projectionScale = pointVector.dotProduct(lineVector) / lineVector.dotProduct(lineVector);
+        projectionScale = Math.max(0, Math.min(1, projectionScale)); // Clamping to the line segment
+
+        return lineStart.add(lineVector.multiply(projectionScale));
     }
 
     @FXML
