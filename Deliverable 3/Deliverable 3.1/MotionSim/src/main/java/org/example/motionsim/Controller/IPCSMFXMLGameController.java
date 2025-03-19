@@ -255,7 +255,7 @@ public class IPCSMFXMLGameController implements Initializable {
         // arcs are half their original radius at ratio=1
         double minRadiusFactor = 0.5;
         // Same logic for spacing
-        double minSpacingFactor = 0.5;
+        double minSpacingFactor = 0.2;
         // Arc #0 is leftmost arc which we'll compress distances relative to it.
         double anchorX = originalArcPositions.get(0);
 
