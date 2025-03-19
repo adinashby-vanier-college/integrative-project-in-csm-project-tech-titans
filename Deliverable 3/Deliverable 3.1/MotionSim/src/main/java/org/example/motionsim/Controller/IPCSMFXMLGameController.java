@@ -5,11 +5,14 @@
 package org.example.motionsim.Controller;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -17,10 +20,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Polyline;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.*;
 
 /**
  * FXML Controller class
@@ -169,6 +169,12 @@ public class IPCSMFXMLGameController implements Initializable {
     private Circle ball;
     @FXML
     private Line springPath;
+    @FXML
+    private Pane spring;
+    @FXML
+    private List<Arc> springArcs;
+    private List<Double> originalArcRadius = new ArrayList<>();
+    private List<Double> originalArcPositions = new ArrayList<>();
 
     private Point2D initialBallPosition;
     private Point2D lineStart;
@@ -178,6 +184,16 @@ public class IPCSMFXMLGameController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         attachBallToLineEnd();
+
+        springArcs = new ArrayList<>();
+        for (Node node : spring.getChildren()) {
+            if (node instanceof Arc) {
+                Arc arc = (Arc) node;
+                springArcs.add(arc);
+                originalArcRadius.add(arc.getRadiusX());
+                originalArcPositions.add(arc.getLayoutX());
+            }
+        }
     }
 
     /**
@@ -212,7 +228,6 @@ public class IPCSMFXMLGameController implements Initializable {
 
         // This part projects onto the line in that same local coordinate system.
         Point2D projectedPoint = projectPointOntoLine(mousePosInLocal, lineStart, lineEnd);
-        System.out.println("Projected Point: " + projectedPoint);
 
         // This will prevent the ball from being moved forward
         if (projectedPoint.distance(lineStart) > lineStart.distance(lineEnd)) {
@@ -222,6 +237,46 @@ public class IPCSMFXMLGameController implements Initializable {
         // Makes sure the ball moves strictly along the line.
         ball.setLayoutX(projectedPoint.getX());
         ball.setLayoutY(projectedPoint.getY());
+
+        double currentDistance = lineEnd.distance(projectedPoint);
+
+        double maxDistance = lineStart.distance(lineEnd);
+
+        double compressionRatio = currentDistance/maxDistance;
+
+        compressArcs(compressionRatio);
+    }
+
+    /**
+     * Compresses arcs based on a ratio.
+     */
+    private void compressArcs(double compressionRatio) {
+        // Decide how small arcs get at maximum compression
+        // arcs are half their original radius at ratio=1
+        double minRadiusFactor = 0.5;
+        // Same logic for spacing
+        double minSpacingFactor = 0.5;
+        // Arc #0 is leftmost arc which we'll compress distances relative to it.
+        double anchorX = originalArcPositions.get(0);
+
+        for (int i = 0; i < springArcs.size(); i++) {
+            Arc arc = springArcs.get(i);
+
+            // 1) Interpolate radius
+            double origRadius = originalArcRadius.get(i);
+            double currentFactorRadius = 1.0 - compressionRatio * (1.0 - minRadiusFactor);
+            double newRadiusX = origRadius * currentFactorRadius;
+            arc.setRadiusX(newRadiusX);
+
+            // 2) Interpolate horizontal spacing
+            double origArcX = originalArcPositions.get(i);
+            // How far is this arc from the first arc?
+            double offset = origArcX - anchorX;
+            // Compress that offset by a factor [1..minSpacingFactor]
+            double currentFactorSpace = 1.0 - compressionRatio * (1.0 - minSpacingFactor);
+            double newArcX = anchorX + offset * currentFactorSpace;
+            arc.setLayoutX(newArcX);
+        }
     }
 
     /**
