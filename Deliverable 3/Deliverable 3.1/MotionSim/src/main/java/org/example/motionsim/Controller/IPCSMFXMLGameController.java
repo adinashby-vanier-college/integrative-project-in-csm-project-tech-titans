@@ -1,13 +1,12 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package org.example.motionsim.Controller;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -180,10 +179,22 @@ public class IPCSMFXMLGameController implements Initializable {
     private Point2D lineStart;
     private Point2D lineEnd;
     private double springAngle;
+    private DoubleProperty amplitude = new SimpleDoubleProperty(0.0);
+    private double maxSpringDistance;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         attachBallToLineEnd();
+
+        AmplitudeSlider.setMin(0);
+        AmplitudeSlider.setMax(maxSpringDistance);
+
+        amplitude.bindBidirectional(AmplitudeSlider.valueProperty());
+
+        amplitude.addListener((obs, oldVal, newVal) -> {
+            AmplitudeFieldLabel.setText(String.format("%.2f", newVal.doubleValue()));
+            updateBallPosition(newVal.doubleValue());
+        });
 
         springArcs = new ArrayList<>();
         for (Node node : spring.getChildren()) {
@@ -194,6 +205,19 @@ public class IPCSMFXMLGameController implements Initializable {
                 originalArcPositions.add(arc.getLayoutX());
             }
         }
+    }
+
+    /**
+     * Places the ball based on the amplitude and also compresses the arcs.
+     */
+    private void updateBallPosition(double newAmplitude) {
+        double ratio = newAmplitude/maxSpringDistance;
+
+        Point2D newPos = lineEnd.add(lineStart.subtract(lineEnd).multiply(ratio));
+        ball.setLayoutX(newPos.getX());
+        ball.setLayoutY(newPos.getY());
+
+        compressArcs(ratio);
     }
 
     /**
@@ -212,6 +236,8 @@ public class IPCSMFXMLGameController implements Initializable {
                 springPath.getLayoutY() + springPath.getStartY());
         lineEnd = initialBallPosition;
 
+        maxSpringDistance = lineStart.distance(lineEnd);
+
         // This calculates the angle of the spring line
         double dx = lineEnd.getX() - lineStart.getX();
         double dy = lineEnd.getY() - lineStart.getY();
@@ -225,11 +251,10 @@ public class IPCSMFXMLGameController implements Initializable {
     private void handleBallDrag(MouseEvent event) {
         // This converts the mouse position from scene coords to the pane's local coords
         Point2D mousePosInLocal = ball.getParent().sceneToLocal(event.getSceneX(), event.getSceneY());
-
         // This part projects onto the line in that same local coordinate system.
         Point2D projectedPoint = projectPointOntoLine(mousePosInLocal, lineStart, lineEnd);
 
-        // This will prevent the ball from being moved forward
+        // Prevents the ball from being moved forward
         if (projectedPoint.distance(lineStart) > lineStart.distance(lineEnd)) {
             return;
         }
@@ -239,6 +264,8 @@ public class IPCSMFXMLGameController implements Initializable {
         ball.setLayoutY(projectedPoint.getY());
 
         double currentDistance = lineEnd.distance(projectedPoint);
+
+        amplitude.set(currentDistance);
 
         double maxDistance = lineStart.distance(lineEnd);
 
@@ -262,17 +289,15 @@ public class IPCSMFXMLGameController implements Initializable {
         for (int i = 0; i < springArcs.size(); i++) {
             Arc arc = springArcs.get(i);
 
-            // 1) Interpolate radius
             double origRadius = originalArcRadius.get(i);
             double currentFactorRadius = 1.0 - compressionRatio * (1.0 - minRadiusFactor);
             double newRadiusX = origRadius * currentFactorRadius;
             arc.setRadiusX(newRadiusX);
 
-            // 2) Interpolate horizontal spacing
             double origArcX = originalArcPositions.get(i);
-            // How far is this arc from the first arc?
+            // How far is this arc from the first arc
             double offset = origArcX - anchorX;
-            // Compress that offset by a factor [1..minSpacingFactor]
+
             double currentFactorSpace = 1.0 - compressionRatio * (1.0 - minSpacingFactor);
             double newArcX = anchorX + offset * currentFactorSpace;
             arc.setLayoutX(newArcX);
