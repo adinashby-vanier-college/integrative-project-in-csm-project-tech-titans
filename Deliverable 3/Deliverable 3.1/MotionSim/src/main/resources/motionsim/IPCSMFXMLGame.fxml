@@ -18,7 +18,7 @@
 
 <AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1450.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.motionsim.Controller.IPCSMFXMLGameController">
    <children>
-      <AnchorPane id="AnchorPane" layoutY="1.0" prefHeight="1100.0" prefWidth="1800.0">
+      <AnchorPane id="AnchorPane" layoutY="1.0" prefHeight="800.0" prefWidth="1450.0" style="-fx-background-color: #F0F8FF;">
          <children>
             <MenuBar fx:id="MenuBar" layoutY="1.0" prefHeight="25.0" prefWidth="1450.0">
               <menus>
@@ -37,9 +37,14 @@
                     <MenuItem mnemonicParsing="false" text="About" />
                   </items>
                 </Menu>
+                  <Menu mnemonicParsing="false" text="Settings">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="Action 1" />
+                    </items>
+                  </Menu>
               </menus>
             </MenuBar>
-            <Pane fx:id="AnimationPane" layoutX="550.0" layoutY="27.0" prefHeight="1075.0" prefWidth="1301.0">
+            <Pane fx:id="AnimationPane" layoutX="550.0" layoutY="27.0" prefHeight="775.0" prefWidth="902.0">
                <children>
                   <AnchorPane fx:id="SpringPane" layoutX="-53.0" layoutY="569.0" prefHeight="200.0" prefWidth="277.0">
                      <children>

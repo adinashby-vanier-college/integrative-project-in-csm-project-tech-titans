@@ -18,7 +18,7 @@
 
 <AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1450.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.motionsim.Controller.IPCSMFXMLGameController">
    <children>
-      <AnchorPane id="AnchorPane" layoutY="1.0" prefHeight="1100.0" prefWidth="1800.0">
+      <AnchorPane id="AnchorPane" layoutY="1.0" prefHeight="800.0" prefWidth="1450.0" style="-fx-background-color: #F0F8FF;">
          <children>
             <MenuBar fx:id="MenuBar" layoutY="1.0" prefHeight="25.0" prefWidth="1450.0">
               <menus>
@@ -37,22 +37,27 @@
                     <MenuItem mnemonicParsing="false" text="About" />
                   </items>
                 </Menu>
+                  <Menu mnemonicParsing="false" text="Settings">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="Action 1" />
+                    </items>
+                  </Menu>
               </menus>
             </MenuBar>
-            <Pane fx:id="AnimationPane" layoutX="550.0" layoutY="27.0" prefHeight="1075.0" prefWidth="1301.0">
+            <Pane fx:id="AnimationPane" layoutX="550.0" layoutY="27.0" prefHeight="775.0" prefWidth="902.0">
                <children>
                   <AnchorPane fx:id="SpringPane" layoutX="-53.0" layoutY="569.0" prefHeight="200.0" prefWidth="277.0">
                      <children>
                         <Arc fx:id="SpringAdjusterPath" fill="DODGERBLUE" layoutX="11.0" layoutY="212.0" length="90.0" radiusX="100.0" radiusY="100.0" startAngle="6.3" stroke="BLACK" strokeType="INSIDE" strokeWidth="5.0" style="-fx-fill: TRANSPARENT;" />
-                        <Circle fx:id="springAdjuster" fill="DODGERBLUE" layoutX="110.0" layoutY="196.0" radius="10.0" stroke="BLACK" strokeType="INSIDE" />
+                        <Circle fx:id="springAdjuster" fill="#75b1e2" layoutX="110.0" layoutY="196.0" radius="10.0" stroke="BLACK" strokeType="INSIDE" />
                         <Pane fx:id="spring" layoutX="104.0" layoutY="157.0" prefHeight="53.0" prefWidth="162.0" style="-fx-view-order: 1;">
                            <children>
                               <Arc fill="DODGERBLUE" layoutX="28.0" layoutY="30.0" length="235.0" radiusX="25.0" radiusY="20.0" startAngle="315.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: TRANSPARENT;" />
                               <Arc fill="DODGERBLUE" layoutX="61.0" layoutY="30.0" length="270.0" radiusX="25.0" radiusY="20.0" startAngle="315.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: TRANSPARENT;" />
                               <Arc fill="DODGERBLUE" layoutX="98.0" layoutY="30.0" length="270.0" radiusX="25.0" radiusY="20.0" startAngle="315.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: TRANSPARENT;" />
                               <Arc fill="DODGERBLUE" layoutX="131.0" layoutY="30.0" length="270.0" radiusX="25.0" radiusY="20.0" startAngle="315.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: TRANSPARENT;" />
-                              <Circle fx:id="ball" fill="DODGERBLUE" layoutX="150.0" layoutY="24.0" onMouseDragged="#handleBallDrag" radius="25.0" stroke="BLACK" strokeType="INSIDE" />
-                              <Line fx:id="springPath" endX="52.0" endY="-3.0" layoutX="98.0" layoutY="26.0" startX="-89.0" startY="11.5" style="-fx-stroke: TRANSPARENT;" />
+                              <Circle fx:id="ball" fill="#75b1e2" layoutX="150.0" layoutY="24.0" onMouseDragged="#handleBallDrag" radius="25.0" stroke="BLACK" strokeType="INSIDE" />
+                              <Line fx:id="springPath" endX="51.5" endY="11.5" layoutX="98.0" layoutY="26.0" startX="-71.5" startY="11.5" style="-fx-stroke: TRANSPARENT;" />
                            </children>
                         </Pane>
                      </children>
@@ -65,7 +70,7 @@
                </font>
             </Label>
             <Line fx:id="OrthogonalToLeftLine" endX="288.3333435058594" endY="-24.99999237060547" layoutX="212.0" layoutY="76.0" startX="-212.99998474121094" startY="-25.00000762939453" />
-            <Rectangle fx:id="AmplitudeRec" arcHeight="5.0" arcWidth="5.0" fill="#1c8cec" height="25.0" layoutX="14.0" layoutY="276.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="150.0" />
+            <Rectangle fx:id="AmplitudeRec" arcHeight="5.0" arcWidth="5.0" fill="#75b1e2" height="25.0" layoutX="14.0" layoutY="276.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="150.0" />
             <Label fx:id="AmplitudeLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="276.0" prefHeight="25.0" prefWidth="150.0" text="Amplitude(m): " textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="12.0" />
@@ -78,7 +83,7 @@
                </font>
             </Label>
             <Slider fx:id="AmplitudeSlider" layoutX="14.0" layoutY="305.0" prefHeight="14.0" prefWidth="150.0" />
-            <Rectangle fx:id="VelocityRec" arcHeight="5.0" arcWidth="5.0" fill="#1c8cec" height="25.0" layoutX="260.0" layoutY="276.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="150.0" />
+            <Rectangle fx:id="VelocityRec" arcHeight="5.0" arcWidth="5.0" fill="#75b1e2" height="25.0" layoutX="260.0" layoutY="276.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="150.0" />
             <Label fx:id="VelocityLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="260.0" layoutY="276.0" prefHeight="25.0" prefWidth="150.0" text="Velocity(m/s):" textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="12.0" />
@@ -91,7 +96,7 @@
                </font>
             </Label>
             <Slider fx:id="VelocitySlider" layoutX="260.0" layoutY="305.0" prefHeight="14.0" prefWidth="150.0" />
-            <Rectangle fx:id="AngleRec" arcHeight="5.0" arcWidth="5.0" fill="#1c8cec" height="25.0" layoutX="141.0" layoutY="338.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="150.0" />
+            <Rectangle fx:id="AngleRec" arcHeight="5.0" arcWidth="5.0" fill="#75b1e2" height="25.0" layoutX="141.0" layoutY="338.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="150.0" />
             <Label fx:id="AngleLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="141.0" layoutY="338.0" prefHeight="25.0" prefWidth="150.0" text="Angle(°):" textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="12.0" />

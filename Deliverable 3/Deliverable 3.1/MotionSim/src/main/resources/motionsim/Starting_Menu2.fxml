@@ -37,7 +37,7 @@
       <StackPane>
          <VBox alignment="CENTER" spacing="20" style="-fx-background-color: #F0F8FF;">
             <children>
-               <Label text="Spring Projectile Sim" textAlignment="CENTER">
+               <Label text="Spring Projectile Sim" textAlignment="CENTER" underline="true">
                   <font>
                      <Font name="System Bold" size="32.0" />
                   </font>
