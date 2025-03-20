@@ -7,8 +7,10 @@ package org.example.motionsim.Controller;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Group;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
@@ -18,10 +20,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Polyline;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.*;
+import javafx.scene.transform.Rotate;
 
 /**
  * FXML Controller class
@@ -62,8 +65,6 @@ public class IPCSMFXMLSimulatorController implements Initializable {
     private Rectangle GravityRec;
     @FXML
     private Label GravityLabel;
-    @FXML
-    private Rectangle GravityFieldLabel;
     @FXML
     private Slider GravitySlider;
     @FXML
@@ -182,13 +183,35 @@ public class IPCSMFXMLSimulatorController implements Initializable {
     private Rectangle SimulationTimeFieldRec;
     @FXML
     private Label SimulationTimeFieldLabel;
+    @FXML
+    private Rectangle GravityFieldRec;
+    @FXML
+    private Pane spring;
+    @FXML
+    private Circle springAdjuster;
+    @FXML
+    private Label VelocityRecLabel;
+    @FXML
+    private AnchorPane SpringPane;
+    @FXML
+    private Group groupSpring;
+    @FXML
+    private Arc SpringAdjusterPath;
+    @FXML
+    private Label GravityFieldField;
 
-    /**
-     * Initializes the controller class.
-     */
+    private static double CenterX = 20;
+    private static double CenterY = 135;
+    private static double RadiusX = 100;
+    private static double RadiusY = 100;
+    private static double StartAngle = 0;
+    private static double Length = 90;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        double initialAngle = Math.toRadians(StartAngle);
+        groupSpring.setLayoutX(CenterX + RadiusX * Math.cos(initialAngle));
+        groupSpring.setLayoutY(CenterY - RadiusY* Math.sin(initialAngle));
     }    
 
     @FXML
@@ -220,7 +243,49 @@ public class IPCSMFXMLSimulatorController implements Initializable {
     }
 
     @FXML
-    private void hancleSimulationTimeComboBox(ActionEvent event) {
+    private void handleSimulationTimeComboBox(ActionEvent event) {
     }
-    
+
+    @FXML
+    public void handleSpringAdjuster(MouseEvent event) {
+        double dx = event.getX() - CenterX;
+        double dy = event.getY() - CenterY;
+        double angle = Math.toDegrees(Math.atan2(-dy, dx));
+
+        if (angle < 0) {
+            angle += 360;
+        }
+
+        if (angle >= StartAngle && angle <= StartAngle + Length) {
+            double radianAngle = Math.toRadians(angle);
+            groupSpring.setLayoutX(CenterX + RadiusX * Math.cos(radianAngle));
+            groupSpring.setLayoutY(CenterY - RadiusY * Math.sin(radianAngle));
+        }
+    }
+
+    @FXML
+    public void handleMassSlider(Event event) {
+    }
+
+    @FXML
+    public void handleSpringConstantSlider(Event event) {
+    }
+
+    @FXML
+    public void handleGravitySlider(Event event) {
+    }
+
+    @FXML
+    public void handleAngleSlider(Event event) {
+        AngleSlider.setMin(0);
+        AngleSlider.setMax(45);
+        AngleFieldLabel.textProperty().bind(AngleSlider.valueProperty().asString("%.2f"));
+        Rotate rotate = new Rotate();
+        groupSpring.getTransforms().add(rotate);
+        rotate.setPivotX(5);
+        rotate.setPivotY(75);
+        AngleSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            rotate.setAngle(newValue.doubleValue()*(-1));
+        });
+    }
 }

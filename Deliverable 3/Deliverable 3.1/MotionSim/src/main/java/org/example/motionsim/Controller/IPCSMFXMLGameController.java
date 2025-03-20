@@ -8,9 +8,11 @@ import java.util.ResourceBundle;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -18,8 +20,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.*;
+import javafx.scene.transform.Rotate;
 
 /**
  * FXML Controller class
@@ -170,7 +174,6 @@ public class IPCSMFXMLGameController implements Initializable {
     private Line springPath;
     @FXML
     private Pane spring;
-    @FXML
     private List<Arc> springArcs;
     private List<Double> originalArcRadius = new ArrayList<>();
     private List<Double> originalArcPositions = new ArrayList<>();
@@ -181,9 +184,31 @@ public class IPCSMFXMLGameController implements Initializable {
     private double springAngle;
     private DoubleProperty amplitude = new SimpleDoubleProperty(0.0);
     private double maxSpringDistance;
+    @FXML
+    private Label VelocityLabel;
+    @FXML
+    private Circle springAdjuster;
+    @FXML
+    private AnchorPane SpringPane;
+    @FXML
+    private Group groupSpring;
+    @FXML
+    private Arc SpringAdjusterPath;
+
+    private static double CenterX = -20;
+    private static double CenterY = 99;
+    private static double RadiusX = 100;
+    private static double RadiusY = 100;
+    private static double StartAngle = 0;
+    private static double Length = 90;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
+        double initialAngle = Math.toRadians(StartAngle);
+        groupSpring.setLayoutX(CenterX + RadiusX * Math.cos(initialAngle));
+        groupSpring.setLayoutY(CenterY - RadiusY * Math.sin(initialAngle));
+
         attachBallToLineEnd();
 
         AmplitudeSlider.setMin(0);
@@ -336,5 +361,48 @@ public class IPCSMFXMLGameController implements Initializable {
     @FXML
     public void compressSpring() {
 
+    }
+
+    @FXML
+    public void handleAOOComboBox(ActionEvent actionEvent) {
+    }
+
+    @FXML
+    public void handleVVelocityComboBox(ActionEvent actionEvent) {
+    }
+
+    @FXML
+    public void handleAngleSlider(Event event) {
+        AngleSlider.setMin(0);
+        AngleSlider.setMax(45);
+        AngleFieldLabel.textProperty().bind(AngleSlider.valueProperty().asString("%.2f"));
+        Rotate rotate = new Rotate();
+        groupSpring.getTransforms().add(rotate);
+        rotate.setPivotX(30);
+        rotate.setPivotY(89);
+        AngleSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            rotate.setAngle(newValue.doubleValue()*(-1));
+        });
+    }
+
+    @FXML
+    public void handleAmplitudeSlider(Event event) {
+    }
+
+    @FXML
+    public void handleSpringAdjuster(MouseEvent event) {
+        double dx = event.getX() - CenterX;
+        double dy = event.getY() - CenterY;
+        double angle = Math.toDegrees(Math.atan2(-dy, dx));
+
+        if (angle < 0) {
+            angle += 360;
+        }
+
+        if (angle >= StartAngle && angle <= StartAngle + Length) {
+            double radianAngle = Math.toRadians(angle);
+            groupSpring.setLayoutX(CenterX + RadiusX * Math.cos(radianAngle));
+            groupSpring.setLayoutY(CenterY - RadiusY * Math.sin(radianAngle));
+        }
     }
 }

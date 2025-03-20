@@ -2,6 +2,7 @@ module org.example.motionsim {
     requires javafx.graphics;
     requires javafx.controls;
     requires javafx.fxml;
+    requires java.desktop;
 
     opens org.example.motionsim.Controller to javafx.fxml;
     exports org.example.motionsim;
