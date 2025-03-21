@@ -113,7 +113,7 @@
                   <Font name="System Bold" size="14.0" />
                </font>
             </Label>
-            <Slider fx:id="AngleSlider" layoutX="141.0" layoutY="369.0" onMouseDragged="#handleAngleSlider" prefHeight="14.0" prefWidth="150.0" />
+            <Slider fx:id="AngleSlider" layoutX="141.0" layoutY="369.0" onMouseClicked="#handleAngleSlider" prefHeight="14.0" prefWidth="150.0" />
             <Line fx:id="OrthogonalToLeftLine3" endX="288.3333435058594" endY="-24.99999237060547" layoutX="212.0" layoutY="425.0" startX="-212.99998474121094" startY="-25.00000762939453" />
             <Rectangle fx:id="ControlsRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="25.0" layoutX="-1.0" layoutY="401.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="500.0" />
             <Label fx:id="ControlsLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="-1.0" layoutY="401.0" prefHeight="25.0" prefWidth="501.0" text="Controls" textAlignment="CENTER">

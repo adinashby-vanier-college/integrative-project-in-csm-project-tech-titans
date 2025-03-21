@@ -54,14 +54,14 @@
                   <Arc fx:id="SpringAdjusterPath" fill="DODGERBLUE" layoutX="11.0" layoutY="221.0" length="90.0" radiusX="100.0" radiusY="127.0" startAngle="6.3" stroke="BLACK" strokeType="INSIDE" strokeWidth="5.0" style="-fx-fill: TRANSPARENT;" />
                   <Group fx:id="groupSpring" layoutX="120.0" layoutY="135.0">
                      <children>
-                        <Pane fx:id="spring" layoutX="-22.0" layoutY="22.0" prefHeight="53.0" prefWidth="162.0" rotate="-1.0" style="-fx-view-order: 1;">
+                        <Pane fx:id="spring" layoutX="-22.0" layoutY="22.0" prefHeight="53.0" prefWidth="162.0" style="-fx-view-order: 1;">
                            <children>
                               <Arc fill="DODGERBLUE" layoutX="28.0" layoutY="30.0" length="235.0" radiusX="25.0" radiusY="20.0" startAngle="315.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: TRANSPARENT;" />
                               <Arc fill="DODGERBLUE" layoutX="61.0" layoutY="30.0" length="270.0" radiusX="25.0" radiusY="20.0" startAngle="315.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: TRANSPARENT;" />
                               <Arc fill="DODGERBLUE" layoutX="98.0" layoutY="30.0" length="270.0" radiusX="25.0" radiusY="20.0" startAngle="315.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: TRANSPARENT;" />
                               <Arc fill="DODGERBLUE" layoutX="131.0" layoutY="30.0" length="270.0" radiusX="25.0" radiusY="20.0" startAngle="315.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: TRANSPARENT;" />
                               <Circle fill="#75b1e2" layoutX="150.0" layoutY="24.0" radius="25.0" stroke="BLACK" strokeType="INSIDE" />
-                              <Circle fx:id="springAdjuster" fill="#75b1e2" layoutX="10.0" layoutY="38.0" onMouseDragged="#handleSpringAdjuster" radius="10.0" stroke="BLACK" strokeType="INSIDE" />
+                              <Circle fx:id="springAdjuster" fill="#75b1e2" layoutX="10.0" layoutY="39.0" onMouseDragged="#handleSpringAdjuster" radius="10.0" stroke="BLACK" strokeType="INSIDE" />
                            </children>
                         </Pane>
                      </children>
@@ -127,7 +127,7 @@
             <Font name="System Bold" size="14.0" />
          </font>
       </Label>
-      <Slider fx:id="AngleSlider" layoutX="259.0" layoutY="137.0" onMouseDragged="#handleAngleSlider" prefHeight="14.0" prefWidth="150.0" />
+      <Slider fx:id="AngleSlider" layoutX="259.0" layoutY="137.0" onMouseClicked="#handleAngleSlider" prefHeight="14.0" prefWidth="150.0" />
       <Rectangle fx:id="SpringConstantRec" arcHeight="5.0" arcWidth="5.0" fill="#75b1e2" height="25.0" layoutX="11.0" layoutY="169.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="150.0" />
       <Label fx:id="SpringConstantLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="11.0" layoutY="169.0" prefHeight="25.0" prefWidth="150.0" text="Spring Constant (N/m):" textAlignment="CENTER" textFill="WHITE">
          <font>

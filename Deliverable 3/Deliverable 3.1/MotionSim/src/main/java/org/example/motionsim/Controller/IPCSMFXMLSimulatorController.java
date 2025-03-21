@@ -11,6 +11,7 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
@@ -23,6 +24,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.*;
 import javafx.scene.transform.Rotate;
 
@@ -212,7 +214,9 @@ public class IPCSMFXMLSimulatorController implements Initializable {
         double initialAngle = Math.toRadians(StartAngle);
         groupSpring.setLayoutX(CenterX + RadiusX * Math.cos(initialAngle));
         groupSpring.setLayoutY(CenterY - RadiusY* Math.sin(initialAngle));
-    }    
+
+
+    }
 
     @FXML
     private void handleEnterTimeBtn(ActionEvent event) {
@@ -278,12 +282,12 @@ public class IPCSMFXMLSimulatorController implements Initializable {
     @FXML
     public void handleAngleSlider(Event event) {
         AngleSlider.setMin(0);
-        AngleSlider.setMax(45);
+        AngleSlider.setMax(37);
         AngleFieldLabel.textProperty().bind(AngleSlider.valueProperty().asString("%.2f"));
         Rotate rotate = new Rotate();
-        groupSpring.getTransforms().add(rotate);
-        rotate.setPivotX(5);
-        rotate.setPivotY(75);
+        spring.getTransforms().add(rotate);
+        rotate.setPivotX(10);
+        rotate.setPivotY(39);
         AngleSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
             rotate.setAngle(newValue.doubleValue()*(-1));
         });

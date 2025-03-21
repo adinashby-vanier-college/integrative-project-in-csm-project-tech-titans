@@ -371,21 +371,7 @@ public class IPCSMFXMLGameController implements Initializable {
     public void handleVVelocityComboBox(ActionEvent actionEvent) {
     }
 
-    @FXML
-    public void handleAngleSlider(Event event) {
-        AngleSlider.setMin(0);
-        AngleSlider.setMax(45);
-        AngleFieldLabel.textProperty().bind(AngleSlider.valueProperty().asString("%.2f"));
-        Rotate rotate = new Rotate();
-        groupSpring.getTransforms().add(rotate);
-        rotate.setPivotX(30);
-        rotate.setPivotY(89);
-        AngleSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            rotate.setAngle(newValue.doubleValue()*(-1));
-        });
-    }
-
-    @FXML
+    @Deprecated
     public void handleAmplitudeSlider(Event event) {
     }
 
@@ -404,5 +390,19 @@ public class IPCSMFXMLGameController implements Initializable {
             groupSpring.setLayoutX(CenterX + RadiusX * Math.cos(radianAngle));
             groupSpring.setLayoutY(CenterY - RadiusY * Math.sin(radianAngle));
         }
+    }
+
+    @FXML
+    public void handleAngleSlider(Event event) {
+        AngleSlider.setMin(0);
+        AngleSlider.setMax(37);
+        AngleFieldLabel.textProperty().bind(AngleSlider.valueProperty().asString("%.2f"));
+        Rotate rotate = new Rotate();
+        groupSpring.getTransforms().add(rotate);
+        rotate.setPivotX(30);
+        rotate.setPivotY(89);
+        AngleSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            rotate.setAngle(newValue.doubleValue()*(-1));
+        });
     }
 }
