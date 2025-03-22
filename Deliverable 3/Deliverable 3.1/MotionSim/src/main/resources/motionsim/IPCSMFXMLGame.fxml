@@ -30,17 +30,17 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Help">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="About" />
+                    <MenuItem mnemonicParsing="false" onAction="#handleMenuGoToManual" text="User Manual" />
                   </items>
                 </Menu>
                   <Menu mnemonicParsing="false" text="Settings">
                     <items>
-                      <MenuItem mnemonicParsing="false" text="Action 1" />
+                      <MenuItem mnemonicParsing="false" onAction="#handleMenuGoToSettings" text="Settings Menu" />
                     </items>
                   </Menu>
-                  <Menu mnemonicParsing="false" text="Simulator Mode">
+                  <Menu mnemonicParsing="false" text="Switch Simulator Mode">
                     <items>
-                      <MenuItem mnemonicParsing="false" text="Action 1" />
+                      <MenuItem mnemonicParsing="false" onAction="#handleMenuGoToSandbox" text="Sandbox " />
                     </items>
                   </Menu>
               </menus>
