@@ -214,7 +214,7 @@
                </font>
             </Label>
             <Rectangle fx:id="GravityFieldRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="20.0" layoutX="316.0" layoutY="157.0" stroke="BLACK" strokeType="INSIDE" width="100.0" />
-            <Label fx:id="GravityFieldLabel" alignment="CENTER" layoutX="316.0" layoutY="157.0" prefHeight="20.0" prefWidth="100.0" text="0.00" textAlignment="CENTER">
+            <Label fx:id="GravityFieldLabel" alignment="CENTER" layoutX="316.0" layoutY="157.0" prefHeight="20.0" prefWidth="100.0" text="9.8" textAlignment="CENTER">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font>
@@ -226,7 +226,7 @@
                </font>
             </Label>
             <Rectangle fx:id="SpringConstantFieldRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="20.0" layoutX="316.0" layoutY="191.0" stroke="BLACK" strokeType="INSIDE" width="100.0" />
-            <Label fx:id="SpringConstantFieldLabel" alignment="CENTER" layoutX="316.0" layoutY="191.0" prefHeight="20.0" prefWidth="100.0" text="0.00" textAlignment="CENTER">
+            <Label fx:id="SpringConstantFieldLabel" alignment="CENTER" layoutX="316.0" layoutY="191.0" prefHeight="20.0" prefWidth="100.0" text="10.00" textAlignment="CENTER">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font>

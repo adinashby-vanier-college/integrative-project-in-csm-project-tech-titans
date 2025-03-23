@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.event.ActionEvent;
@@ -29,6 +33,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.*;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+import org.example.motionsim.Model.SpringPhysics;
 
 /**
  * FXML Controller class
@@ -186,7 +192,6 @@ public class IPCSMFXMLGameController implements Initializable {
     private Point2D initialBallPosition;
     private Point2D lineStart;
     private Point2D lineEnd;
-    private double springAngle;
     private DoubleProperty amplitude = new SimpleDoubleProperty(0.0);
     private double maxSpringDistance;
     @FXML
@@ -206,6 +211,10 @@ public class IPCSMFXMLGameController implements Initializable {
     private static double RadiusY = 100;
     private static double StartAngle = 0;
     private static double Length = 90;
+    private static double springConstant = 10;
+    private double angle;
+    private double mass = 5;
+    private double gravity = 9.8;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -267,11 +276,6 @@ public class IPCSMFXMLGameController implements Initializable {
         lineEnd = initialBallPosition;
 
         maxSpringDistance = lineStart.distance(lineEnd);
-
-        // This calculates the angle of the spring line
-        double dx = lineEnd.getX() - lineStart.getX();
-        double dy = lineEnd.getY() - lineStart.getY();
-        springAngle = Math.atan2(dy, dx);
     }
 
     /**
@@ -353,6 +357,36 @@ public class IPCSMFXMLGameController implements Initializable {
 
     @FXML
     private void handleStartBtn(ActionEvent event) {
+        double currentAmplitude = amplitude.get();
+        double velocity = SpringPhysics.calculateLaunchVelocity(springConstant, mass, currentAmplitude);
+        double angleDeg = AngleSlider.getValue();
+        double angleRad = Math.toRadians(angleDeg);
+
+        double xVelocity = velocity * Math.cos(angleRad);
+        double yVelocity = -velocity * Math.sin(angleRad);
+
+        Timeline ballTimeline = new Timeline(new KeyFrame(Duration.millis(16), e -> {
+            // 16 ms = 60 fps
+            double dt = 0.016;
+
+            double x = ball.getLayoutX();
+            double y = ball.getLayoutY();
+
+            x += xVelocity * dt;
+            y += yVelocity * dt;
+
+            ball.setLayoutX(x);
+            ball.setLayoutY(y);
+        }));
+        ballTimeline.setCycleCount(Timeline.INDEFINITE);
+
+        // This animates the spring returning back to its original state when launch happens
+        KeyValue amplitudeToZero = new KeyValue(amplitude, 0, Interpolator.EASE_OUT);
+        KeyFrame springResetFrame = new KeyFrame(Duration.millis(300), amplitudeToZero);
+        Timeline springReturn = new Timeline(springResetFrame);
+
+        ballTimeline.play();
+        springReturn.play();
     }
 
     @FXML
@@ -379,7 +413,7 @@ public class IPCSMFXMLGameController implements Initializable {
     public void handleSpringAdjuster(MouseEvent event) {
         double dx = event.getX() - CenterX;
         double dy = event.getY() - CenterY;
-        double angle = Math.toDegrees(Math.atan2(-dy, dx));
+        angle = Math.toDegrees(Math.atan2(-dy, dx));
 
         if (angle < 0) {
             angle += 360;
