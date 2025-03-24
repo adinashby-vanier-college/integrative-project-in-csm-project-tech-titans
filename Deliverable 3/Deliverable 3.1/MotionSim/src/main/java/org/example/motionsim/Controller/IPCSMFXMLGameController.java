@@ -226,9 +226,7 @@ public class IPCSMFXMLGameController implements Initializable {
 
         AmplitudeSlider.setMin(0);
         AmplitudeSlider.setMax(maxSpringDistance);
-
         amplitude.bindBidirectional(AmplitudeSlider.valueProperty());
-
         amplitude.addListener((obs, oldVal, newVal) -> {
             AmplitudeFieldLabel.setText(String.format("%.2f", newVal.doubleValue()));
             updateBallPosition(newVal.doubleValue());
