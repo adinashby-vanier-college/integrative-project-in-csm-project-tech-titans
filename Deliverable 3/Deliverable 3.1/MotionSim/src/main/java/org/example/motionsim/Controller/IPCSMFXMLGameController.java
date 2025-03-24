@@ -5,7 +5,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -63,14 +62,6 @@ public class IPCSMFXMLGameController implements Initializable {
     private Label AmplitudeFieldLabel;
     @FXML
     private Slider AmplitudeSlider;
-    @FXML
-    private Rectangle VelocityRec;
-    @FXML
-    private Rectangle VelocityFieldRec;
-    @FXML
-    private Label VelocityFieldLabel;
-    @FXML
-    private Slider VelocitySlider;
     @FXML
     private Rectangle AngleRec;
     @FXML
@@ -195,8 +186,6 @@ public class IPCSMFXMLGameController implements Initializable {
     private DoubleProperty amplitude = new SimpleDoubleProperty(0.0);
     private double maxSpringDistance;
     @FXML
-    private Label VelocityLabel;
-    @FXML
     private Circle springAdjuster;
     @FXML
     private AnchorPane SpringPane;
@@ -215,6 +204,16 @@ public class IPCSMFXMLGameController implements Initializable {
     private double angle;
     private double mass = 5;
     private double gravity = 9.8;
+    @FXML
+    private Rectangle MassRec;
+    @FXML
+    private Rectangle MassFieldRec;
+    @FXML
+    private Label MassLabel;
+    @FXML
+    private Label MassFieldLabel;
+    @FXML
+    private Slider MassSlider;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -244,6 +243,23 @@ public class IPCSMFXMLGameController implements Initializable {
                 originalArcPositions.add(arc.getLayoutX());
             }
         }
+
+        MassSlider.setMin(0);
+        MassSlider.setMax(100);
+        MassSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            MassFieldLabel.setText(String.format("%.2f", newValue.doubleValue()));
+        });
+
+        AngleSlider.setMin(0);
+        AngleSlider.setMax(75);
+        AngleFieldLabel.textProperty().bind(AngleSlider.valueProperty().asString("%.2f"));
+        Rotate rotate = new Rotate();
+        groupSpring.getTransforms().add(rotate);
+        rotate.setPivotX(30);
+        rotate.setPivotY(89);
+        AngleSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            rotate.setAngle(newValue.doubleValue()*(-1));
+        });
     }
 
     /**
@@ -424,20 +440,6 @@ public class IPCSMFXMLGameController implements Initializable {
             groupSpring.setLayoutX(CenterX + RadiusX * Math.cos(radianAngle));
             groupSpring.setLayoutY(CenterY - RadiusY * Math.sin(radianAngle));
         }
-    }
-
-    @FXML
-    public void handleAngleSlider(Event event) {
-        AngleSlider.setMin(0);
-        AngleSlider.setMax(37);
-        AngleFieldLabel.textProperty().bind(AngleSlider.valueProperty().asString("%.2f"));
-        Rotate rotate = new Rotate();
-        groupSpring.getTransforms().add(rotate);
-        rotate.setPivotX(30);
-        rotate.setPivotY(89);
-        AngleSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            rotate.setAngle(newValue.doubleValue()*(-1));
-        });
     }
 
     @FXML

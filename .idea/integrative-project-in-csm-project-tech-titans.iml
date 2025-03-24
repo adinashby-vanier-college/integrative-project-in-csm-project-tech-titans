@@ -6,9 +6,9 @@
       <sourceFolder url="file://$MODULE_DIR$/Deliverable 3/Deliverable 3.1/MotionSim/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Deliverable 3/Deliverable 3.1/MotionSim/src/main/resources" type="java-resource" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="openjdk-24" jdkType="JavaSDK" />
     <orderEntry type="library" exported="" name="javafx-swt" level="project" />
-    <orderEntry type="library" exported="" name="lib" level="application" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="lib" level="project" />
   </component>
 </module>

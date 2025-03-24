@@ -56,14 +56,6 @@ public class IPCSMFXMLSimulatorController implements Initializable {
     @FXML
     private Slider AmplitudeSlider;
     @FXML
-    private Rectangle VelocityRec;
-    @FXML
-    private Rectangle VelocityFieldRec;
-    @FXML
-    private Label VelocityFieldLabel;
-    @FXML
-    private Slider VelocitySlider;
-    @FXML
     private Rectangle GravityRec;
     @FXML
     private Label GravityLabel;
@@ -192,8 +184,6 @@ public class IPCSMFXMLSimulatorController implements Initializable {
     @FXML
     private Circle springAdjuster;
     @FXML
-    private Label VelocityRecLabel;
-    @FXML
     private AnchorPane SpringPane;
     @FXML
     private Group groupSpring;
@@ -211,11 +201,21 @@ public class IPCSMFXMLSimulatorController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
         double initialAngle = Math.toRadians(StartAngle);
         groupSpring.setLayoutX(CenterX + RadiusX * Math.cos(initialAngle));
         groupSpring.setLayoutY(CenterY - RadiusY* Math.sin(initialAngle));
 
-
+        AngleSlider.setMin(0);
+        AngleSlider.setMax(75);
+        AngleFieldLabel.textProperty().bind(AngleSlider.valueProperty().asString("%.2f"));
+        Rotate rotate = new Rotate();
+        spring.getTransforms().add(rotate);
+        rotate.setPivotX(10);
+        rotate.setPivotY(39);
+        AngleSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            rotate.setAngle(newValue.doubleValue()*(-1));
+        });
     }
 
     @FXML
@@ -265,31 +265,5 @@ public class IPCSMFXMLSimulatorController implements Initializable {
             groupSpring.setLayoutX(CenterX + RadiusX * Math.cos(radianAngle));
             groupSpring.setLayoutY(CenterY - RadiusY * Math.sin(radianAngle));
         }
-    }
-
-    @FXML
-    public void handleMassSlider(Event event) {
-    }
-
-    @FXML
-    public void handleSpringConstantSlider(Event event) {
-    }
-
-    @FXML
-    public void handleGravitySlider(Event event) {
-    }
-
-    @FXML
-    public void handleAngleSlider(Event event) {
-        AngleSlider.setMin(0);
-        AngleSlider.setMax(37);
-        AngleFieldLabel.textProperty().bind(AngleSlider.valueProperty().asString("%.2f"));
-        Rotate rotate = new Rotate();
-        spring.getTransforms().add(rotate);
-        rotate.setPivotX(10);
-        rotate.setPivotY(39);
-        AngleSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            rotate.setAngle(newValue.doubleValue()*(-1));
-        });
     }
 }

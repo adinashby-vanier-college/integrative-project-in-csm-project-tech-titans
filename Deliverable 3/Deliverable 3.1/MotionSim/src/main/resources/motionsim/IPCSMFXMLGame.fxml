@@ -17,7 +17,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1450.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.motionsim.Controller.IPCSMFXMLGameController">
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1450.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.motionsim.Controller.IPCSMFXMLGameController">
    <children>
       <AnchorPane id="AnchorPane" layoutY="1.0" prefHeight="800.0" prefWidth="1450.0" style="-fx-background-color: #F0F8FF;">
          <children>
@@ -49,7 +49,7 @@
                <children>
                   <AnchorPane fx:id="SpringPane" layoutY="568.0" prefHeight="200.0" prefWidth="277.0">
                      <children>
-                        <Arc fx:id="SpringAdjusterPath" fill="DODGERBLUE" layoutX="11.0" layoutY="215.0" length="90.0" radiusX="100.0" radiusY="128.0" startAngle="6.3" stroke="BLACK" strokeType="INSIDE" strokeWidth="5.0" style="-fx-fill: TRANSPARENT;" />
+                        <Arc fx:id="SpringAdjusterPath" fill="DODGERBLUE" layoutX="10.0" layoutY="224.0" length="90.0" radiusX="103.0" radiusY="137.0" startAngle="6.3" stroke="BLACK" strokeType="INSIDE" strokeWidth="5.0" style="-fx-fill: TRANSPARENT;" />
                         <Group fx:id="groupSpring" layoutX="78.0" layoutY="106.0" rotate="-2.0">
                            <children>
                               <Circle fx:id="springAdjuster" fill="#75b1e2" layoutX="30.0" layoutY="89.0" onMouseDragged="#handleSpringAdjuster" radius="10.0" stroke="BLACK" strokeType="INSIDE" />
@@ -75,45 +75,32 @@
                </font>
             </Label>
             <Line fx:id="OrthogonalToLeftLine" endX="288.3333435058594" endY="-24.99999237060547" layoutX="212.0" layoutY="76.0" startX="-212.99998474121094" startY="-25.00000762939453" />
-            <Rectangle fx:id="AmplitudeRec" arcHeight="5.0" arcWidth="5.0" fill="#75b1e2" height="25.0" layoutX="14.0" layoutY="276.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="150.0" />
-            <Label fx:id="AmplitudeLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="276.0" prefHeight="25.0" prefWidth="150.0" text="Amplitude(m): " textAlignment="CENTER" textFill="WHITE">
+            <Rectangle fx:id="AmplitudeRec" arcHeight="5.0" arcWidth="5.0" fill="#75b1e2" height="25.0" layoutX="25.0" layoutY="280.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="150.0" />
+            <Label fx:id="AmplitudeLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="25.0" layoutY="280.0" prefHeight="25.0" prefWidth="150.0" text="Amplitude(m): " textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
             </Label>
-            <Rectangle fx:id="AmplitudeFieldRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="25.0" layoutX="164.0" layoutY="276.0" stroke="BLACK" strokeType="INSIDE" width="75.0" />
-            <Label fx:id="AmplitudeFieldLabel" alignment="CENTER" layoutX="164.0" layoutY="276.0" prefHeight="25.0" prefWidth="75.0" text="0.00" textAlignment="CENTER">
+            <Rectangle fx:id="AmplitudeFieldRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="25.0" layoutX="175.0" layoutY="280.0" stroke="BLACK" strokeType="INSIDE" width="75.0" />
+            <Label fx:id="AmplitudeFieldLabel" alignment="CENTER" layoutX="175.0" layoutY="280.0" prefHeight="25.0" prefWidth="75.0" text="0.00" textAlignment="CENTER">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font>
             </Label>
-            <Slider fx:id="AmplitudeSlider" layoutX="14.0" layoutY="305.0" prefHeight="14.0" prefWidth="150.0" />
-            <Rectangle fx:id="VelocityRec" arcHeight="5.0" arcWidth="5.0" fill="#75b1e2" height="25.0" layoutX="260.0" layoutY="276.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="150.0" />
-            <Label fx:id="VelocityLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="260.0" layoutY="276.0" prefHeight="25.0" prefWidth="150.0" text="Velocity(m/s):" textAlignment="CENTER" textFill="WHITE">
+            <Slider fx:id="AmplitudeSlider" layoutX="25.0" layoutY="309.0" prefHeight="14.0" prefWidth="150.0" />
+            <Rectangle fx:id="AngleRec" arcHeight="5.0" arcWidth="5.0" fill="#75b1e2" height="25.0" layoutX="158.0" layoutY="345.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="150.0" />
+            <Label fx:id="AngleLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="158.0" layoutY="345.0" prefHeight="25.0" prefWidth="150.0" text="Angle(°):" textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
             </Label>
-            <Rectangle fx:id="VelocityFieldRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="25.0" layoutX="410.0" layoutY="276.0" stroke="BLACK" strokeType="INSIDE" width="75.0" />
-            <Label fx:id="VelocityFieldLabel" alignment="CENTER" layoutX="410.0" layoutY="276.0" prefHeight="25.0" prefWidth="75.0" text="0.00" textAlignment="CENTER">
+            <Rectangle fx:id="AngleFieldRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="25.0" layoutX="308.0" layoutY="345.0" stroke="BLACK" strokeType="INSIDE" width="75.0" />
+            <Label fx:id="AngleFieldLabel" alignment="CENTER" layoutX="308.0" layoutY="345.0" prefHeight="25.0" prefWidth="75.0" text="0.00" textAlignment="CENTER">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font>
             </Label>
-            <Slider fx:id="VelocitySlider" layoutX="260.0" layoutY="305.0" prefHeight="14.0" prefWidth="150.0" />
-            <Rectangle fx:id="AngleRec" arcHeight="5.0" arcWidth="5.0" fill="#75b1e2" height="25.0" layoutX="141.0" layoutY="338.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="150.0" />
-            <Label fx:id="AngleLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="141.0" layoutY="338.0" prefHeight="25.0" prefWidth="150.0" text="Angle(°):" textAlignment="CENTER" textFill="WHITE">
-               <font>
-                  <Font name="System Bold" size="12.0" />
-               </font>
-            </Label>
-            <Rectangle fx:id="AngleFieldRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="25.0" layoutX="291.0" layoutY="338.0" stroke="BLACK" strokeType="INSIDE" width="75.0" />
-            <Label fx:id="AngleFieldLabel" alignment="CENTER" layoutX="291.0" layoutY="338.0" prefHeight="25.0" prefWidth="75.0" text="0.00" textAlignment="CENTER">
-               <font>
-                  <Font name="System Bold" size="14.0" />
-               </font>
-            </Label>
-            <Slider fx:id="AngleSlider" layoutX="141.0" layoutY="369.0" onMouseClicked="#handleAngleSlider" prefHeight="14.0" prefWidth="150.0" />
+            <Slider fx:id="AngleSlider" layoutX="158.0" layoutY="376.0" prefHeight="14.0" prefWidth="150.0" />
             <Line fx:id="OrthogonalToLeftLine3" endX="288.3333435058594" endY="-24.99999237060547" layoutX="212.0" layoutY="425.0" startX="-212.99998474121094" startY="-25.00000762939453" />
             <Rectangle fx:id="ControlsRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="25.0" layoutX="-1.0" layoutY="401.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="500.0" />
             <Label fx:id="ControlsLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="-1.0" layoutY="401.0" prefHeight="25.0" prefWidth="501.0" text="Controls" textAlignment="CENTER">
@@ -231,6 +218,19 @@
                   <Font name="System Bold" size="14.0" />
                </font>
             </Label>
+            <Rectangle fx:id="MassRec" arcHeight="5.0" arcWidth="5.0" fill="#75b1e2" height="25.0" layoutX="259.0" layoutY="280.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="150.0" />
+            <Label fx:id="MassLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="259.0" layoutY="280.0" prefHeight="25.0" prefWidth="150.0" text="Mass(kg):" textAlignment="CENTER" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <Rectangle fx:id="MassFieldRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="25.0" layoutX="409.0" layoutY="280.0" stroke="BLACK" strokeType="INSIDE" width="75.0" />
+            <Label fx:id="MassFieldLabel" alignment="CENTER" layoutX="409.0" layoutY="280.0" prefHeight="25.0" prefWidth="75.0" text="0.00" textAlignment="CENTER">
+               <font>
+                  <Font name="System Bold" size="14.0" />
+               </font>
+            </Label>
+            <Slider fx:id="MassSlider" layoutX="259.0" layoutY="305.0" prefHeight="14.0" prefWidth="150.0" />
          </children>
       </AnchorPane>
    </children>
