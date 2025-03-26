@@ -227,6 +227,7 @@ public class IPCSMFXMLGameController implements Initializable {
             AmplitudeFieldLabel.setText(String.format("%.2f", newVal.doubleValue()));
             updateBallPosition(newVal.doubleValue());
             physics.setAmplitude(Double.valueOf(AmplitudeFieldLabel.getText()));
+            updateRealTimeHeight();
         });
 
         springArcs = new ArrayList<>();
@@ -257,10 +258,26 @@ public class IPCSMFXMLGameController implements Initializable {
             rotate.setAngle(newValue.doubleValue()*(-1));
             physics.setAngle(Double.valueOf(AngleFieldLabel.getText()));
             physics.setAngleRad(physics.calculateAngleRad(physics.getAngle()));
+            updateRealTimeHeight();
         });
         physics.setGravity(Double.valueOf(GravityFieldLabel.getText()));
         physics.setSpringConstant(Double.valueOf(SpringConstantFieldLabel.getText()));
         physics.setHeight(Double.valueOf(HeightFieldLabel.getText()));
+    }
+
+    private void updateRealTimeHeight() {
+        double angleDegrees = Double.parseDouble(AngleFieldLabel.getText());
+        double angleRadians = Math.toRadians(angleDegrees);
+
+        double currentAmplitude = Double.parseDouble(AmplitudeFieldLabel.getText());
+
+        double rawHeight = (maxSpringDistance - currentAmplitude) * Math.sin(angleRadians);
+
+        if (Math.abs(rawHeight) < 1e-9) {
+            rawHeight = 0.0;
+        }
+
+        HeightFieldLabel.setText(String.format("%.2f", rawHeight));
     }
 
     /**
@@ -317,6 +334,8 @@ public class IPCSMFXMLGameController implements Initializable {
         double currentDistance = lineEnd.distance(projectedPoint);
 
         amplitude.set(currentDistance);
+
+        updateRealTimeHeight();
 
         double maxDistance = lineStart.distance(lineEnd);
 
