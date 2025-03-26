@@ -179,7 +179,6 @@ public class IPCSMFXMLGameController implements Initializable {
     private List<Arc> springArcs;
     private List<Double> originalArcRadius = new ArrayList<>();
     private List<Double> originalArcPositions = new ArrayList<>();
-
     private Point2D initialBallPosition;
     private Point2D lineStart;
     private Point2D lineEnd;
@@ -192,19 +191,6 @@ public class IPCSMFXMLGameController implements Initializable {
     @FXML
     private Group groupSpring;
     @FXML
-    private Arc SpringAdjusterPath;
-
-    private static double CenterX = -20;
-    private static double CenterY = 99;
-    private static double RadiusX = 100;
-    private static double RadiusY = 100;
-    private static double StartAngle = 0;
-    private static double Length = 90;
-    private static double springConstant = 10;
-    private double angle;
-    private double mass = 5;
-    private double gravity = 9.8;
-    @FXML
     private Rectangle MassRec;
     @FXML
     private Rectangle MassFieldRec;
@@ -214,13 +200,23 @@ public class IPCSMFXMLGameController implements Initializable {
     private Label MassFieldLabel;
     @FXML
     private Slider MassSlider;
+    @FXML
+    private Label HeightLabel;
+    @FXML
+    private Label HeightFieldLabel;
+    @FXML
+    private Rectangle HeightFieldRec;
+    @FXML
+    private Rectangle HeightRec;
+
+    private SpringPhysics physics;
+    private Timeline timeline;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        double initialAngle = Math.toRadians(StartAngle);
-        groupSpring.setLayoutX(CenterX + RadiusX * Math.cos(initialAngle));
-        groupSpring.setLayoutY(CenterY - RadiusY * Math.sin(initialAngle));
+        physics = SpringPhysics.getInstance();
+        physics.setObject(ball);
 
         attachBallToLineEnd();
 
@@ -230,6 +226,7 @@ public class IPCSMFXMLGameController implements Initializable {
         amplitude.addListener((obs, oldVal, newVal) -> {
             AmplitudeFieldLabel.setText(String.format("%.2f", newVal.doubleValue()));
             updateBallPosition(newVal.doubleValue());
+            physics.setAmplitude(Double.valueOf(AmplitudeFieldLabel.getText()));
         });
 
         springArcs = new ArrayList<>();
@@ -246,10 +243,11 @@ public class IPCSMFXMLGameController implements Initializable {
         MassSlider.setMax(100);
         MassSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
             MassFieldLabel.setText(String.format("%.2f", newValue.doubleValue()));
+            physics.setMass(Double.valueOf(MassFieldLabel.getText()));
         });
 
         AngleSlider.setMin(0);
-        AngleSlider.setMax(75);
+        AngleSlider.setMax(65);
         AngleFieldLabel.textProperty().bind(AngleSlider.valueProperty().asString("%.2f"));
         Rotate rotate = new Rotate();
         groupSpring.getTransforms().add(rotate);
@@ -257,7 +255,12 @@ public class IPCSMFXMLGameController implements Initializable {
         rotate.setPivotY(89);
         AngleSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
             rotate.setAngle(newValue.doubleValue()*(-1));
+            physics.setAngle(Double.valueOf(AngleFieldLabel.getText()));
+            physics.setAngleRad(physics.calculateAngleRad(physics.getAngle()));
         });
+        physics.setGravity(Double.valueOf(GravityFieldLabel.getText()));
+        physics.setSpringConstant(Double.valueOf(SpringConstantFieldLabel.getText()));
+        physics.setHeight(Double.valueOf(HeightFieldLabel.getText()));
     }
 
     /**
@@ -371,40 +374,15 @@ public class IPCSMFXMLGameController implements Initializable {
 
     @FXML
     private void handleStartBtn(ActionEvent event) {
-        double currentAmplitude = amplitude.get();
-        double velocity = SpringPhysics.calculateLaunchVelocity(springConstant, mass, currentAmplitude);
-        double angleDeg = AngleSlider.getValue();
-        double angleRad = Math.toRadians(angleDeg);
-
-        double xVelocity = velocity * Math.cos(angleRad);
-        double yVelocity = -velocity * Math.sin(angleRad);
-
-        Timeline ballTimeline = new Timeline(new KeyFrame(Duration.millis(16), e -> {
-            // 16 ms = 60 fps
-            double dt = 0.016;
-
-            double x = ball.getLayoutX();
-            double y = ball.getLayoutY();
-
-            x += xVelocity * dt;
-            y += yVelocity * dt;
-
-            ball.setLayoutX(x);
-            ball.setLayoutY(y);
-        }));
-        ballTimeline.setCycleCount(Timeline.INDEFINITE);
-
-        // This animates the spring returning back to its original state when launch happens
-        KeyValue amplitudeToZero = new KeyValue(amplitude, 0, Interpolator.EASE_OUT);
-        KeyFrame springResetFrame = new KeyFrame(Duration.millis(300), amplitudeToZero);
-        Timeline springReturn = new Timeline(springResetFrame);
-
-        ballTimeline.play();
-        springReturn.play();
+        physics.setVelocity(physics.calculateLaunchVelocity(physics.getSpringConstant(), physics.getMass(), physics.getAmplitude()));
+        physics.setVerticalVelocity(physics.calculateVerticalVelocity(physics.getVelocity(), physics.getAngleRad()));
+        physics.setHorizontalVelocity(physics.calculateHorizontalVelocity(physics.getVelocity(), physics.getAngleRad()));
+        physics.play();
     }
 
     @FXML
     private void handleResetBtn(ActionEvent event) {
+        physics.reset();
     }
 
     @FXML
@@ -421,23 +399,6 @@ public class IPCSMFXMLGameController implements Initializable {
 
     @Deprecated
     public void handleAmplitudeSlider(Event event) {
-    }
-
-    @FXML
-    public void handleSpringAdjuster(MouseEvent event) {
-        double dx = event.getX() - CenterX;
-        double dy = event.getY() - CenterY;
-        angle = Math.toDegrees(Math.atan2(-dy, dx));
-
-        if (angle < 0) {
-            angle += 360;
-        }
-
-        if (angle >= StartAngle && angle <= StartAngle + Length) {
-            double radianAngle = Math.toRadians(angle);
-            groupSpring.setLayoutX(CenterX + RadiusX * Math.cos(radianAngle));
-            groupSpring.setLayoutY(CenterY - RadiusY * Math.sin(radianAngle));
-        }
     }
 
     @FXML
