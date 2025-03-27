@@ -1,13 +1,11 @@
 package org.example.motionsim.Model;
 
-import javafx.animation.Interpolator;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
+import javafx.animation.*;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.DoublePropertyBase;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Point2D;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
@@ -29,6 +27,9 @@ public class SpringPhysics {
     private double HorizontalVelocity;
     private double AngleRad;
     private double Height;
+    private double initialX;
+    private double initialY;
+    private Point2D originalPosition;
 
     private Shape object;
 
@@ -68,10 +69,10 @@ public class SpringPhysics {
     }
 
     SpringPhysics() {
-        timeline = new Timeline(new KeyFrame(Duration.millis(1), event -> {
+        timeline = new Timeline(new KeyFrame(Duration.seconds(1.0/60.0), event -> {
             updatePosition();
-            setElapsedTime(getElapsedTime() + 0.001);
-            if (calculateY(getElapsedTime()) == 0 && getElapsedTime() > 0)
+            setElapsedTime(getElapsedTime() + 1.0/60.0);
+            if (calculateY(getElapsedTime()) <= 0 && getElapsedTime() > 0)
                 timeline.stop();
         }));
         timeline.setCycleCount(Timeline.INDEFINITE);
@@ -89,8 +90,16 @@ public class SpringPhysics {
     }
 
     public void updatePosition() {
-        object.setLayoutX(calculateX(getElapsedTime()) + getObjectWidth()/2);
-        object.setLayoutY(calculateY(getElapsedTime()) + getObjectHeight()/2);
+        if (object == null) return;
+
+        // Only update position if animation is running
+        if (timeline.getStatus() == Animation.Status.RUNNING) {
+            double currentX = calculateX(getElapsedTime());
+            double currentY = calculateY(getElapsedTime());
+
+            object.setLayoutX(currentX);
+            object.setLayoutY(currentY);
+        }
     }
 
     public double getObjectHeight() {
@@ -125,31 +134,19 @@ public class SpringPhysics {
         }
     }
 
+    public void setInitialPosition(double x, double y) {
+        this.initialX = x;
+        this.initialY = y;
+        this.originalPosition = new Point2D(x, y);
+    }
+
     public double calculateX(double time) {
-        System.out.println("Debugging Calculate X:");
-        System.out.println("Initial Horizontal Velocity: " + HorizontalVelocity);
-        System.out.println("Elapsed Time: " + time);
-
-        double result = HorizontalVelocity * time;
-        System.out.println("Calculated X Position: " + result);
-
-        return result;
+        return initialX + (HorizontalVelocity * time);
     }
 
 
     public double calculateY(double time) {
-        System.out.println("Debugging Calculate Y:");
-        System.out.println("Initial Height: " + Height);
-        System.out.println("Initial Vertical Velocity: " + VerticalVelocity);
-        System.out.println("Gravitational Acceleration: " + Gravity);
-        System.out.println("Elapsed Time: " + time);
-
-        double result = Height + (VerticalVelocity * time) - (0.5 * Gravity * time * time);
-        if (result < 0)
-            result = 0;
-        System.out.println("Calculated Y position: " + result);
-
-        return result;
+        return initialY + (VerticalVelocity * time) - (0.5 * Gravity * time * time);
     }
 
     public static double calculateSpringPotentialEnergy(double springConstant, double amplitude) {
@@ -169,7 +166,7 @@ public class SpringPhysics {
     }
 
     public static double calculateVerticalVelocity(double Velocity, double AngleRad){
-        return -Velocity*Math.sin(AngleRad);
+        return Velocity*Math.sin(AngleRad);
     }
 
     public static double calculateHorizontalVelocity(double Velocity, double AngleRad){
@@ -281,7 +278,23 @@ public class SpringPhysics {
     }
 
     public void reset() {
-        jumpTo(0);
+        // Stop the timeline
+        timeline.stop();
+
+        // Reset all motion parameters
+        setElapsedTime(0);
+        setVelocity(0);
+        setVerticalVelocity(0);
+        setHorizontalVelocity(0);
+
+        // Reset position to original
+        if (object != null && originalPosition != null) {
+            object.setLayoutX(originalPosition.getX());
+            object.setLayoutY(originalPosition.getY());
+        }
+
+        // Reset amplitude
+        setAmplitude(0);
     }
     public void jumpTo(double destination) {
         timeline.pause();

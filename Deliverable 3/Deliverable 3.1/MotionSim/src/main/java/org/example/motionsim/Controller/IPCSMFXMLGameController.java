@@ -5,9 +5,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import javafx.animation.Interpolator;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
+
 import javafx.animation.Timeline;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -32,7 +30,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.*;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import org.example.motionsim.Model.SpringPhysics;
 
 /**
@@ -211,6 +208,7 @@ public class IPCSMFXMLGameController implements Initializable {
 
     private SpringPhysics physics;
     private Timeline timeline;
+    private Point2D originalSpringEndPosition;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -262,7 +260,6 @@ public class IPCSMFXMLGameController implements Initializable {
         });
         physics.setGravity(Double.valueOf(GravityFieldLabel.getText()));
         physics.setSpringConstant(Double.valueOf(SpringConstantFieldLabel.getText()));
-        physics.setHeight(Double.valueOf(HeightFieldLabel.getText()));
     }
 
     private void updateRealTimeHeight() {
@@ -278,6 +275,7 @@ public class IPCSMFXMLGameController implements Initializable {
         }
 
         HeightFieldLabel.setText(String.format("%.2f", rawHeight));
+        physics.setHeight(Double.valueOf(HeightFieldLabel.getText()));
     }
 
     /**
@@ -300,16 +298,26 @@ public class IPCSMFXMLGameController implements Initializable {
         double lineEndXInPane = springPath.getLayoutX() + springPath.getEndX();
         double lineEndYInPane = springPath.getLayoutY() + springPath.getEndY();
 
+        // Store the original spring end position
+        originalSpringEndPosition = new Point2D(lineEndXInPane, lineEndYInPane);
+
+        // Set initial ball position
         ball.setLayoutX(lineEndXInPane);
         ball.setLayoutY(lineEndYInPane);
 
-        // These lines find the initial ball position and calculate the line direction
+        // Store position in physics
+        physics.setInitialPosition(lineEndXInPane, lineEndYInPane);
+
         initialBallPosition = new Point2D(lineEndXInPane, lineEndYInPane);
         lineStart = new Point2D(springPath.getLayoutX() + springPath.getStartX(),
                 springPath.getLayoutY() + springPath.getStartY());
         lineEnd = initialBallPosition;
 
         maxSpringDistance = lineStart.distance(lineEnd);
+
+        System.out.println("Initial Setup:");
+        System.out.println("Spring End Position: " + originalSpringEndPosition);
+        System.out.println("Ball Position: (" + ball.getLayoutX() + ", " + ball.getLayoutY() + ")");
     }
 
     /**
@@ -393,15 +401,53 @@ public class IPCSMFXMLGameController implements Initializable {
 
     @FXML
     private void handleStartBtn(ActionEvent event) {
-        physics.setVelocity(physics.calculateLaunchVelocity(physics.getSpringConstant(), physics.getMass(), physics.getAmplitude()));
-        physics.setVerticalVelocity(physics.calculateVerticalVelocity(physics.getVelocity(), physics.getAngleRad()));
-        physics.setHorizontalVelocity(physics.calculateHorizontalVelocity(physics.getVelocity(), physics.getAngleRad()));
+        System.out.println("Before Start:");
+        System.out.println("Ball Position: (" + ball.getLayoutX() + ", " + ball.getLayoutY() + ")");
+        // First ensure the ball is at the correct starting position
+        ball.setLayoutX(originalSpringEndPosition.getX());
+        ball.setLayoutY(originalSpringEndPosition.getY());
+
+        // Calculate and set velocities
+        physics.setVelocity(physics.calculateLaunchVelocity(
+                physics.getSpringConstant(),
+                physics.getMass(),
+                physics.getAmplitude()
+        ));
+        physics.setVerticalVelocity(physics.calculateVerticalVelocity(
+                physics.getVelocity(),
+                physics.getAngleRad()
+        ));
+        physics.setHorizontalVelocity(physics.calculateHorizontalVelocity(
+                physics.getVelocity(),
+                physics.getAngleRad()
+        ));
+
+        System.out.println("\nStarting launch\n");
         physics.play();
+        System.out.println("Start Launch:");
+        System.out.println("Initial Velocity: " + physics.getVelocity());
+        System.out.println("Angle (rad): " + physics.getAngleRad());
     }
 
     @FXML
     private void handleResetBtn(ActionEvent event) {
+        System.out.println("Before Reset:");
+        System.out.println("Ball Position: (" + ball.getLayoutX() + ", " + ball.getLayoutY() + ")");
+
         physics.reset();
+
+        System.out.println("After Reset:");
+        System.out.println("Ball Position: (" + ball.getLayoutX() + ", " + ball.getLayoutY() + ")");
+
+        // Explicitly reset ball position to spring end
+        ball.setLayoutX(originalSpringEndPosition.getX());
+        ball.setLayoutY(originalSpringEndPosition.getY());
+
+        // Reset amplitude to 0
+        amplitude.set(0);
+
+        // Update the real-time height
+        updateRealTimeHeight();
     }
 
     @FXML
