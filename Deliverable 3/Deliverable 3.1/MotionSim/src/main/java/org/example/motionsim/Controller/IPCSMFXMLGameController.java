@@ -173,14 +173,6 @@ public class IPCSMFXMLGameController implements Initializable {
     private Line springPath;
     @FXML
     private Pane spring;
-    private List<Arc> springArcs;
-    private List<Double> originalArcRadius = new ArrayList<>();
-    private List<Double> originalArcPositions = new ArrayList<>();
-    private Point2D initialBallPosition;
-    private Point2D lineStart;
-    private Point2D lineEnd;
-    private DoubleProperty amplitude = new SimpleDoubleProperty(0.0);
-    private double maxSpringDistance;
     @FXML
     private Circle springAdjuster;
     @FXML
@@ -207,15 +199,21 @@ public class IPCSMFXMLGameController implements Initializable {
     private Rectangle HeightRec;
 
     private SpringPhysics physics;
-    private Timeline timeline;
     private Point2D originalSpringEndPosition;
+    private List<Arc> springArcs;
+    private List<Double> originalArcRadius = new ArrayList<>();
+    private List<Double> originalArcPositions = new ArrayList<>();
+    private Point2D initialBallPosition;
+    private Point2D lineStart;
+    private Point2D lineEnd;
+    private DoubleProperty amplitude = new SimpleDoubleProperty(0.0);
+    private double maxSpringDistance;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
         physics = SpringPhysics.getInstance();
         physics.setObject(ball);
-
         attachBallToLineEnd();
 
         AmplitudeSlider.setMin(0);
@@ -466,18 +464,6 @@ public class IPCSMFXMLGameController implements Initializable {
 
         // Update the real-time height
         updateRealTimeHeight();
-    }
-
-    private void verifySpringOrientation() {
-        double startX = springPath.getLayoutX() + springPath.getStartX();
-        double startY = springPath.getLayoutY() + springPath.getStartY();
-        double endX = springPath.getLayoutX() + springPath.getEndX();
-        double endY = springPath.getLayoutY() + springPath.getEndY();
-
-        System.out.println("\nSpring Orientation:");
-        System.out.println("Start point: (" + startX + ", " + startY + ")");
-        System.out.println("End point: (" + endX + ", " + endY + ")");
-        System.out.println("Direction vector: (" + (endX - startX) + ", " + (endY - startY) + ")");
     }
 
     @FXML

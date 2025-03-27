@@ -71,7 +71,8 @@ public class SpringPhysics {
     }
 
     SpringPhysics() {
-        timeline = new Timeline(new KeyFrame(Duration.seconds(1.0/60.0), event -> {
+        // Change from Duration.seconds(1.0/60.0) to Duration.seconds((1.0/60.0)/1.5)
+        timeline = new Timeline(new KeyFrame(Duration.seconds((1.0/60.0)/1.5), event -> {
             updatePosition();
             setElapsedTime(getElapsedTime() + 1.0/60.0);
             // Changed condition because Y increases downward in JavaFX
@@ -92,6 +93,10 @@ public class SpringPhysics {
             }
         }
         return instance;
+    }
+
+    public interface PositionListener {
+        void onPositionChanged(double x, double y);
     }
 
     public void updatePosition() {
