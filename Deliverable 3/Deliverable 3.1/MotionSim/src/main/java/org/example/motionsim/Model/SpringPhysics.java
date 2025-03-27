@@ -30,6 +30,8 @@ public class SpringPhysics {
     private double initialX;
     private double initialY;
     private Point2D originalPosition;
+    private double lastX;
+    private double lastY;
 
     private Shape object;
 
@@ -93,18 +95,25 @@ public class SpringPhysics {
     }
 
     public void updatePosition() {
-        if (object == null) return;
+        if (object == null || timeline.getStatus() != Animation.Status.RUNNING) return;
 
-        if (timeline.getStatus() == Animation.Status.RUNNING) {
-            double currentX = calculateX(getElapsedTime());
-            double currentY = calculateY(getElapsedTime());
+        double currentTime = getElapsedTime();
+        double currentX = calculateX(currentTime);
+        double currentY = calculateY(currentTime);
 
-            System.out.println("Updating position to: (" + currentX + ", " + currentY + ")");
-
-            // Only update the ball's position, not its parent
-            object.setLayoutX(currentX);
-            object.setLayoutY(currentY);
+        // Debug output for motion
+        if (lastX != 0 && lastY != 0) {
+            double deltaX = currentX - lastX;
+            double deltaY = currentY - lastY;
+            System.out.println(String.format("Motion Delta: (%.2f, %.2f) Time: %.3f", deltaX, deltaY, currentTime));
         }
+
+        lastX = currentX;
+        lastY = currentY;
+
+        // Update position
+        object.setLayoutX(currentX);
+        object.setLayoutY(currentY);
     }
 
     public double getObjectHeight() {
@@ -151,23 +160,16 @@ public class SpringPhysics {
     }
 
     public double calculateX(double time) {
-        // Start exactly from initialX
-        double displacement = HorizontalVelocity * time;
-        double newX = initialX + displacement;
+        double newX = initialX + (HorizontalVelocity * time);
+        System.out.println(String.format("X Position: %.2f at time %.3f (v_x = %.2f)",
+                newX, time, HorizontalVelocity));
         return newX;
     }
 
-
     public double calculateY(double time) {
-        // For upward motion, we subtract displacement from initial Y
-        // because JavaFX Y increases downward
-        double displacement = (VerticalVelocity * time) + (0.5 * Gravity * time * time);
-        double newY = initialY + displacement;
-
-        System.out.println("Y calculation - Time: " + time +
-                " Initial Y: " + initialY +
-                " Displacement: " + displacement +
-                " New Y: " + newY);
+        double newY = initialY + (VerticalVelocity * time) + (0.5 * Gravity * time * time);
+        System.out.println(String.format("Y Position: %.2f at time %.3f (v_y = %.2f)",
+                newY, time, VerticalVelocity));
         return newY;
     }
 
@@ -296,6 +298,11 @@ public class SpringPhysics {
     }
 
     public void play() {
+        lastX = 0;
+        lastY = 0;
+        System.out.println("\nStarting motion with:");
+        System.out.println("Initial Position: (" + initialX + ", " + initialY + ")");
+        System.out.println("Velocities: (" + HorizontalVelocity + ", " + VerticalVelocity + ")");
         timeline.play();
     }
 

@@ -239,7 +239,7 @@ public class IPCSMFXMLGameController implements Initializable {
         }
 
         MassSlider.setMin(0);
-        MassSlider.setMax(100);
+        MassSlider.setMax(50);
         MassSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
             MassFieldLabel.setText(String.format("%.2f", newValue.doubleValue()));
             physics.setMass(Double.valueOf(MassFieldLabel.getText()));
@@ -401,35 +401,48 @@ public class IPCSMFXMLGameController implements Initializable {
 
     @FXML
     private void handleStartBtn(ActionEvent event) {
+        // Get current positions and spring orientation
         double startX = ball.getLayoutX();
         double startY = ball.getLayoutY();
 
-        physics.setInitialPosition(startX, startY);
+        // Get spring's end points to determine true direction
+        double springStartX = springPath.getLayoutX() + springPath.getStartX();
+        double springStartY = springPath.getLayoutY() + springPath.getStartY();
+        double springEndX = springPath.getLayoutX() + springPath.getEndX();
+        double springEndY = springPath.getLayoutY() + springPath.getEndY();
 
-        // Calculate base launch velocity
+        // Calculate spring's actual direction vector
+        double springDirX = springEndX - springStartX;
+        double springDirY = springEndY - springStartY;
+        double springLength = Math.sqrt(springDirX * springDirX + springDirY * springDirY);
+
+        // Normalize direction vector
+        springDirX /= springLength;
+        springDirY /= springLength;
+
+        // Calculate launch velocity magnitude
         double launchVelocity = physics.calculateLaunchVelocity(
                 physics.getSpringConstant(),
                 physics.getMass(),
                 physics.getAmplitude()
         );
-        physics.setVelocity(launchVelocity);
 
-        // Get the angle in radians
-        double angleRad = physics.getAngleRad();
+        // Set velocity components based on spring's actual direction
+        double horizontalVelocity = launchVelocity * springDirX;
+        double verticalVelocity = launchVelocity * springDirY;
 
-        // In JavaFX, positive Y is downward, so we need to make upward velocity negative
-        double verticalVelocity = -launchVelocity * Math.sin(angleRad);
-        double horizontalVelocity = launchVelocity * Math.cos(angleRad);
-
-        System.out.println("Launch Parameters:");
+        System.out.println("\nLaunch Debug Information:");
+        System.out.println("Spring Direction: (" + springDirX + ", " + springDirY + ")");
         System.out.println("Start Position: (" + startX + ", " + startY + ")");
         System.out.println("Launch Velocity: " + launchVelocity);
-        System.out.println("Angle (rad): " + angleRad);
-        System.out.println("Vertical Velocity: " + verticalVelocity);
         System.out.println("Horizontal Velocity: " + horizontalVelocity);
+        System.out.println("Vertical Velocity: " + verticalVelocity);
 
-        physics.setVerticalVelocity(verticalVelocity);
+        // Update physics with correct values
+        physics.setInitialPosition(startX, startY);
+        physics.setVelocity(launchVelocity);
         physics.setHorizontalVelocity(horizontalVelocity);
+        physics.setVerticalVelocity(verticalVelocity);
 
         physics.play();
     }
@@ -453,6 +466,18 @@ public class IPCSMFXMLGameController implements Initializable {
 
         // Update the real-time height
         updateRealTimeHeight();
+    }
+
+    private void verifySpringOrientation() {
+        double startX = springPath.getLayoutX() + springPath.getStartX();
+        double startY = springPath.getLayoutY() + springPath.getStartY();
+        double endX = springPath.getLayoutX() + springPath.getEndX();
+        double endY = springPath.getLayoutY() + springPath.getEndY();
+
+        System.out.println("\nSpring Orientation:");
+        System.out.println("Start point: (" + startX + ", " + startY + ")");
+        System.out.println("End point: (" + endX + ", " + endY + ")");
+        System.out.println("Direction vector: (" + (endX - startX) + ", " + (endY - startY) + ")");
     }
 
     @FXML
