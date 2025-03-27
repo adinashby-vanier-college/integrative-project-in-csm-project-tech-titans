@@ -401,32 +401,37 @@ public class IPCSMFXMLGameController implements Initializable {
 
     @FXML
     private void handleStartBtn(ActionEvent event) {
-        System.out.println("Before Start:");
-        System.out.println("Ball Position: (" + ball.getLayoutX() + ", " + ball.getLayoutY() + ")");
-        // First ensure the ball is at the correct starting position
-        ball.setLayoutX(originalSpringEndPosition.getX());
-        ball.setLayoutY(originalSpringEndPosition.getY());
+        double startX = ball.getLayoutX();
+        double startY = ball.getLayoutY();
 
-        // Calculate and set velocities
-        physics.setVelocity(physics.calculateLaunchVelocity(
+        physics.setInitialPosition(startX, startY);
+
+        // Calculate base launch velocity
+        double launchVelocity = physics.calculateLaunchVelocity(
                 physics.getSpringConstant(),
                 physics.getMass(),
                 physics.getAmplitude()
-        ));
-        physics.setVerticalVelocity(physics.calculateVerticalVelocity(
-                physics.getVelocity(),
-                physics.getAngleRad()
-        ));
-        physics.setHorizontalVelocity(physics.calculateHorizontalVelocity(
-                physics.getVelocity(),
-                physics.getAngleRad()
-        ));
+        );
+        physics.setVelocity(launchVelocity);
 
-        System.out.println("\nStarting launch\n");
+        // Get the angle in radians
+        double angleRad = physics.getAngleRad();
+
+        // In JavaFX, positive Y is downward, so we need to make upward velocity negative
+        double verticalVelocity = -launchVelocity * Math.sin(angleRad);
+        double horizontalVelocity = launchVelocity * Math.cos(angleRad);
+
+        System.out.println("Launch Parameters:");
+        System.out.println("Start Position: (" + startX + ", " + startY + ")");
+        System.out.println("Launch Velocity: " + launchVelocity);
+        System.out.println("Angle (rad): " + angleRad);
+        System.out.println("Vertical Velocity: " + verticalVelocity);
+        System.out.println("Horizontal Velocity: " + horizontalVelocity);
+
+        physics.setVerticalVelocity(verticalVelocity);
+        physics.setHorizontalVelocity(horizontalVelocity);
+
         physics.play();
-        System.out.println("Start Launch:");
-        System.out.println("Initial Velocity: " + physics.getVelocity());
-        System.out.println("Angle (rad): " + physics.getAngleRad());
     }
 
     @FXML

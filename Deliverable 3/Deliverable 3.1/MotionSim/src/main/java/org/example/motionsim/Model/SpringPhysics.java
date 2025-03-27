@@ -72,8 +72,11 @@ public class SpringPhysics {
         timeline = new Timeline(new KeyFrame(Duration.seconds(1.0/60.0), event -> {
             updatePosition();
             setElapsedTime(getElapsedTime() + 1.0/60.0);
-            if (calculateY(getElapsedTime()) <= 0 && getElapsedTime() > 0)
+            // Changed condition because Y increases downward in JavaFX
+            double currentY = calculateY(getElapsedTime());
+            if (currentY >= getObject().getScene().getHeight() && getElapsedTime() > 0) {
                 timeline.stop();
+            }
         }));
         timeline.setCycleCount(Timeline.INDEFINITE);
     }
@@ -92,11 +95,13 @@ public class SpringPhysics {
     public void updatePosition() {
         if (object == null) return;
 
-        // Only update position if animation is running
         if (timeline.getStatus() == Animation.Status.RUNNING) {
             double currentX = calculateX(getElapsedTime());
             double currentY = calculateY(getElapsedTime());
 
+            System.out.println("Updating position to: (" + currentX + ", " + currentY + ")");
+
+            // Only update the ball's position, not its parent
             object.setLayoutX(currentX);
             object.setLayoutY(currentY);
         }
@@ -135,18 +140,35 @@ public class SpringPhysics {
     }
 
     public void setInitialPosition(double x, double y) {
+        System.out.println("Setting initial position to: (" + x + ", " + y + ")");
         this.initialX = x;
         this.initialY = y;
-        this.originalPosition = new Point2D(x, y);
+    }
+
+    public void synchronizeWithBallPosition(double x, double y) {
+        setInitialPosition(x, y);
+        setElapsedTime(0);
     }
 
     public double calculateX(double time) {
-        return initialX + (HorizontalVelocity * time);
+        // Start exactly from initialX
+        double displacement = HorizontalVelocity * time;
+        double newX = initialX + displacement;
+        return newX;
     }
 
 
     public double calculateY(double time) {
-        return initialY + (VerticalVelocity * time) - (0.5 * Gravity * time * time);
+        // For upward motion, we subtract displacement from initial Y
+        // because JavaFX Y increases downward
+        double displacement = (VerticalVelocity * time) + (0.5 * Gravity * time * time);
+        double newY = initialY + displacement;
+
+        System.out.println("Y calculation - Time: " + time +
+                " Initial Y: " + initialY +
+                " Displacement: " + displacement +
+                " New Y: " + newY);
+        return newY;
     }
 
     public static double calculateSpringPotentialEnergy(double springConstant, double amplitude) {
@@ -166,11 +188,11 @@ public class SpringPhysics {
     }
 
     public static double calculateVerticalVelocity(double Velocity, double AngleRad){
-        return Velocity*Math.sin(AngleRad);
+        return Velocity * Math.sin(AngleRad);
     }
 
     public static double calculateHorizontalVelocity(double Velocity, double AngleRad){
-        return Velocity*Math.cos(AngleRad);
+        return Velocity * Math.cos(AngleRad);
     }
 
     public void setAmplitude(double Amplitude){
@@ -278,19 +300,19 @@ public class SpringPhysics {
     }
 
     public void reset() {
-        // Stop the timeline
         timeline.stop();
-
-        // Reset all motion parameters
         setElapsedTime(0);
+
+        // Reset velocities
         setVelocity(0);
         setVerticalVelocity(0);
         setHorizontalVelocity(0);
 
-        // Reset position to original
+        // Reset position using the stored original position
         if (object != null && originalPosition != null) {
             object.setLayoutX(originalPosition.getX());
             object.setLayoutY(originalPosition.getY());
+            synchronizeWithBallPosition(originalPosition.getX(), originalPosition.getY());
         }
 
         // Reset amplitude
