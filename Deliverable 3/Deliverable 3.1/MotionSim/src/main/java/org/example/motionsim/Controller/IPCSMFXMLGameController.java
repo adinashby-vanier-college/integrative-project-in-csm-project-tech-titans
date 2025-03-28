@@ -204,6 +204,8 @@ public class IPCSMFXMLGameController implements Initializable {
     private Rectangle HeightFieldRec;
     @FXML
     private Rectangle HeightRec;
+    @FXML
+    private Line RightBorderLine;
 
     private SpringPhysics physics;
     private Point2D originalSpringEndPosition;
@@ -215,7 +217,7 @@ public class IPCSMFXMLGameController implements Initializable {
     private Point2D lineEnd;
     private DoubleProperty amplitude = new SimpleDoubleProperty(0.0);
     private double maxSpringDistance;
-    private Circle launchBall; // This will be the ball that actually moves
+    private Circle launchBall;
     private boolean isLaunched = false;
     private Label resetMessage;
 
@@ -224,6 +226,7 @@ public class IPCSMFXMLGameController implements Initializable {
 
         physics = SpringPhysics.getInstance();
         physics.setObject(ball);
+        physics.addBoundaryLine(RightBorderLine);
         attachBallToLineEnd();
 
         physics.setVelocityUpdateCallback(velocities -> {
@@ -409,7 +412,7 @@ public class IPCSMFXMLGameController implements Initializable {
         Point2D pointVector = projectPoint.subtract(lineStart);
 
         double projectionScale = pointVector.dotProduct(lineVector) / lineVector.dotProduct(lineVector);
-        projectionScale = Math.max(0, Math.min(1, projectionScale)); // Clamping to the line segment
+        projectionScale = Math.max(0, Math.min(1, projectionScale));
 
         return lineStart.add(lineVector.multiply(projectionScale));
     }
@@ -418,7 +421,7 @@ public class IPCSMFXMLGameController implements Initializable {
     private void handleStartBtn(ActionEvent event) {
         if (isLaunched) return;
 
-        VVelocityFieldLabel.setText(String.format("%.2f", physics.getVerticalVelocity()*(-1))); // Negative because Y is inverted
+        VVelocityFieldLabel.setText(String.format("%.2f", physics.getVerticalVelocity()*(-1)));
         HVelocityFieldLabel.setText(String.format("%.2f", physics.getHorizontalVelocity()));
 
         physics.setOutOfBoundsCallback(isOutOfBounds -> {
@@ -463,6 +466,7 @@ public class IPCSMFXMLGameController implements Initializable {
         physics.setVelocity(launchVelocity);
         physics.setHorizontalVelocity(horizontalVelocity);
         physics.setVerticalVelocity(verticalVelocity);
+        physics.addBoundaryLine(RightBorderLine);
 
         System.out.println("\nStarting Launch\n");
 

@@ -1,23 +1,20 @@
 package org.example.motionsim.Model;
 
 import javafx.animation.*;
+import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.DoublePropertyBase;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
 import javafx.util.Duration;
-import org.example.motionsim.Controller.IPCSMFXMLGameController;
-
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class SpringPhysics {
 
-    private Timeline timeline;
-    private DoubleProperty elapsedTime;
     private static volatile SpringPhysics instance;
     private double Amplitude;
     private double Angle;
@@ -31,11 +28,18 @@ public class SpringPhysics {
     private double Height;
     private double initialX;
     private double initialY;
-    private Point2D originalPosition;
     private double lastX;
     private double lastY;
+    private boolean isPaused = false;
+    private double pausedTime = 0;
+    private Point2D pausedPosition = null;
     private Consumer<Point2D> velocityUpdateCallback;
     private Consumer<Boolean> outOfBoundsCallback;
+    private List<Line> boundaryLines = new ArrayList<>();
+    private Consumer<Double> timeUpdateCallback;
+    private Point2D originalPosition;
+    private Timeline timeline;
+    private DoubleProperty elapsedTime;
 
     private Shape object;
 
@@ -78,6 +82,10 @@ public class SpringPhysics {
         timeline = new Timeline(new KeyFrame(Duration.seconds((1.0/60.0)/1.5), event -> {
             updatePosition();
             setElapsedTime(getElapsedTime() + 1.0/60.0);
+
+            if (timeUpdateCallback != null) {
+                Platform.runLater(() -> timeUpdateCallback.accept(getElapsedTime()));
+            }
 
             if (object != null && object.getParent() != null) {
 
@@ -133,19 +141,29 @@ public class SpringPhysics {
             velocityUpdateCallback.accept(new Point2D(currentHorizontalVelocity, currentVerticalVelocity));
         }
 
+        double radius = 0;
+        if (object instanceof Circle) {
+            radius = ((Circle) object).getRadius();
+        }
+
+        boolean outOfBounds = (currentX - radius < 0) ||
+                (currentX + radius > object.getParent().getBoundsInLocal().getWidth()) ||
+                (currentY - radius < 0) ||
+                (currentY + radius > object.getParent().getBoundsInLocal().getHeight()) ||
+                intersectsAnyLine(currentX, currentY, radius);
+
+        if (outOfBounds && getElapsedTime() > 0) {
+
+            timeline.stop();
+
+            if (outOfBoundsCallback != null) {
+                Platform.runLater(() -> outOfBoundsCallback.accept(true));
+            }
+            return;
+        }
+
         object.setLayoutX(currentX);
         object.setLayoutY(currentY);
-
-        if (outOfBoundsCallback != null) {
-            double radius = 0;
-            if (object instanceof Circle) {
-                radius = ((Circle) object).getRadius();
-            }
-            outOfBoundsCallback.accept(currentX - radius < 0 ||
-                    currentX + radius > object.getParent().getBoundsInLocal().getWidth() ||
-                    currentY - radius < 0 ||
-                    currentY + radius > object.getParent().getBoundsInLocal().getHeight());
-        }
     }
 
     public void setInitialPosition(double x, double y) {
@@ -288,15 +306,56 @@ public class SpringPhysics {
         this.velocityUpdateCallback = callback;
     }
 
+    public void setTimeUpdateCallback(Consumer<Double> callback) {
+        this.timeUpdateCallback = callback;
+    }
+
+    public void addBoundaryLine(Line boundaryLine) {
+        if (boundaryLine != null && !boundaryLines.contains(boundaryLine)) {
+            boundaryLines.add(boundaryLine);
+        }
+    }
+
+    public boolean isPaused() {
+        return isPaused;
+    }
+
     public void play() {
-        lastX = 0;
-        lastY = 0;
+        if (isPaused && pausedPosition != null) {
+            setElapsedTime(pausedTime);
+            object.setLayoutX(pausedPosition.getX());
+            object.setLayoutY(pausedPosition.getY());
+        } else {
+            lastX = 0;
+            lastY = 0;
+            setElapsedTime(0);
+        }
+        isPaused = false;
         timeline.play();
+    }
+
+    public void pause() {
+        timeline.pause();
+        isPaused = true;
+        pausedTime = getElapsedTime();
+        if (object != null) {
+            pausedPosition = new Point2D(object.getLayoutX(), object.getLayoutY());
+        }
+        if (timeUpdateCallback != null) {
+            Platform.runLater(() -> timeUpdateCallback.accept(getElapsedTime()));
+        }
     }
 
     public void reset() {
         timeline.stop();
+        isPaused = false;
+        pausedTime = 0;
+        pausedPosition = null;
         setElapsedTime(0);
+
+        if (timeUpdateCallback != null) {
+            Platform.runLater(() -> timeUpdateCallback.accept(0.0));
+        }
 
         setVelocity(0);
         setVerticalVelocity(0);
@@ -310,10 +369,37 @@ public class SpringPhysics {
 
         setAmplitude(0);
     }
+
     public void jumpTo(double destination) {
-        timeline.pause();
-        setElapsedTime(destination);;
-        updatePosition();
+        if (object == null) return;
+
+        setElapsedTime(destination);
+
+        double newX = calculateX(destination);
+        double newY = calculateY(destination);
+
+        Platform.runLater(() -> {
+            object.setLayoutX(newX);
+            object.setLayoutY(newY);
+
+            double currentVerticalVelocity = VerticalVelocity + (Gravity * destination);
+            double currentHorizontalVelocity = HorizontalVelocity;
+
+            if (velocityUpdateCallback != null) {
+                velocityUpdateCallback.accept(new Point2D(currentHorizontalVelocity, currentVerticalVelocity));
+            }
+
+            if (timeUpdateCallback != null) {
+                timeUpdateCallback.accept(destination);
+            }
+        });
+
+        if (isPaused) {
+            pausedPosition = new Point2D(newX, newY);
+            pausedTime = destination;
+        }
+
+        System.out.println("[2025-03-28 19:36:52] Ball position updated - X: " + newX + ", Y: " + newY + " - User: LGF-1800");
     }
 
     public double getTimeOfFlight() {
@@ -335,5 +421,31 @@ public class SpringPhysics {
         double time = (vy + Math.sqrt(discriminant)) / g;
         System.out.println("Time of flight calculated: " + time + " seconds.");
         return time;
+    }
+
+    public boolean intersectsAnyLine(double x, double y, double radius) {
+        if (boundaryLines.isEmpty()) return false;
+
+        for (Line line : boundaryLines) {
+            Point2D lineStart = line.localToParent(line.getStartX(), line.getStartY());
+            Point2D lineEnd = line.localToParent(line.getEndX(), line.getEndY());
+
+            if (Math.abs(lineStart.getY() - lineEnd.getY()) < 1e-6) {
+                double lineY = lineStart.getY();
+                double ballBottom = y + radius;
+                if (ballBottom >= lineY) {
+                    return true;
+                }
+            }
+
+            if (Math.abs(lineStart.getX() - lineEnd.getX()) < 1e-6) {
+                double lineX = lineStart.getX();
+                double ballRight = x + radius;
+                if (ballRight >= lineX) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

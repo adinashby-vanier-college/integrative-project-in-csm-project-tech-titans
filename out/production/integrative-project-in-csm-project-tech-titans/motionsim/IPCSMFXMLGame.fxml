@@ -66,6 +66,7 @@
                         </Group>
                      </children>
                   </AnchorPane>
+                  <Line fx:id="RightBorderLine" endX="190.3333740234375" endY="-212.99998474121094" layoutX="761.0" layoutY="213.0" startX="190.3333740234375" startY="562.3333740234375" stroke="WHITE" />
                </children></Pane>
             <Rectangle fx:id="GameReadingsRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="25.0" layoutY="26.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="501.0" />
             <Label fx:id="GameReadingsLabel" alignment="CENTER" contentDisplay="CENTER" layoutY="26.0" prefHeight="25.0" prefWidth="501.0" text="Game Readings" textAlignment="CENTER">
