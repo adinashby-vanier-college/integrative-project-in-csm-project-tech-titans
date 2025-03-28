@@ -12,6 +12,8 @@ import javafx.scene.shape.Shape;
 import javafx.util.Duration;
 import org.example.motionsim.Controller.IPCSMFXMLGameController;
 
+import java.util.function.Consumer;
+
 public class SpringPhysics {
 
     private Timeline timeline;
@@ -32,6 +34,8 @@ public class SpringPhysics {
     private Point2D originalPosition;
     private double lastX;
     private double lastY;
+    private Consumer<Point2D> velocityUpdateCallback;
+    private Consumer<Boolean> outOfBoundsCallback;
 
     private Shape object;
 
@@ -71,14 +75,30 @@ public class SpringPhysics {
     }
 
     SpringPhysics() {
-        // Change from Duration.seconds(1.0/60.0) to Duration.seconds((1.0/60.0)/1.5)
         timeline = new Timeline(new KeyFrame(Duration.seconds((1.0/60.0)/1.5), event -> {
             updatePosition();
             setElapsedTime(getElapsedTime() + 1.0/60.0);
-            // Changed condition because Y increases downward in JavaFX
-            double currentY = calculateY(getElapsedTime());
-            if (currentY >= getObject().getScene().getHeight() && getElapsedTime() > 0) {
-                timeline.stop();
+
+            if (object != null && object.getParent() != null) {
+
+                double currentX = calculateX(getElapsedTime());
+                double currentY = calculateY(getElapsedTime());
+                double radius = (object instanceof Circle) ? ((Circle) object).getRadius() : 0;
+
+                double parentWidth = object.getParent().getBoundsInLocal().getWidth();
+                double parentHeight = object.getParent().getBoundsInLocal().getHeight();
+
+                boolean outOfBounds = (currentX - radius <= 0) ||
+                        (currentX + radius >= parentWidth) ||
+                        (currentY - radius <= 0) ||
+                        (currentY + radius >= parentHeight);
+
+                if (outOfBounds && getElapsedTime() > 0) {
+                    timeline.stop();
+                    if (outOfBoundsCallback != null) {
+                        outOfBoundsCallback.accept(true);
+                    }
+                }
             }
         }));
         timeline.setCycleCount(Timeline.INDEFINITE);
@@ -95,8 +115,8 @@ public class SpringPhysics {
         return instance;
     }
 
-    public interface PositionListener {
-        void onPositionChanged(double x, double y);
+    public void setOutOfBoundsCallback(Consumer<Boolean> callback) {
+        this.outOfBoundsCallback = callback;
     }
 
     public void updatePosition() {
@@ -106,55 +126,29 @@ public class SpringPhysics {
         double currentX = calculateX(currentTime);
         double currentY = calculateY(currentTime);
 
-        // Debug output for motion
-        if (lastX != 0 && lastY != 0) {
-            double deltaX = currentX - lastX;
-            double deltaY = currentY - lastY;
-            System.out.println(String.format("Motion Delta: (%.2f, %.2f) Time: %.3f", deltaX, deltaY, currentTime));
+        double currentHorizontalVelocity = HorizontalVelocity;
+        double currentVerticalVelocity = VerticalVelocity + (Gravity * currentTime);
+
+        if (velocityUpdateCallback != null) {
+            velocityUpdateCallback.accept(new Point2D(currentHorizontalVelocity, currentVerticalVelocity));
         }
 
-        lastX = currentX;
-        lastY = currentY;
-
-        // Update position
         object.setLayoutX(currentX);
         object.setLayoutY(currentY);
-    }
 
-    public double getObjectHeight() {
-        if (object == null) {
-            return 0;
-        }
-        if (object instanceof Circle) {
-            Circle circle = (Circle) object;
-            return circle.getRadius() * 2;
-        } else if (object instanceof Rectangle) {
-            Rectangle rectangle = (Rectangle) object;
-            return rectangle.getWidth();
-        } else {
-            System.out.println("The object is using an unsupported Shape type: " + object.getClass().getSimpleName());
-            return 0;
-        }
-    }
-
-    public double getObjectWidth() {
-        if (object == null) {
-            return 0;
-        }
-        if (object instanceof Circle) {
-            Circle circle = (Circle) object;
-            return circle.getRadius() * 2;
-        } else if (object instanceof Rectangle) {
-            Rectangle rectangle = (Rectangle) object;
-            return rectangle.getWidth();
-        } else {
-            System.out.println("The object is using an unsupported Shape type: " + object.getClass().getSimpleName());
-            return 0;
+        if (outOfBoundsCallback != null) {
+            double radius = 0;
+            if (object instanceof Circle) {
+                radius = ((Circle) object).getRadius();
+            }
+            outOfBoundsCallback.accept(currentX - radius < 0 ||
+                    currentX + radius > object.getParent().getBoundsInLocal().getWidth() ||
+                    currentY - radius < 0 ||
+                    currentY + radius > object.getParent().getBoundsInLocal().getHeight());
         }
     }
 
     public void setInitialPosition(double x, double y) {
-        System.out.println("Setting initial position to: (" + x + ", " + y + ")");
         this.initialX = x;
         this.initialY = y;
     }
@@ -166,15 +160,11 @@ public class SpringPhysics {
 
     public double calculateX(double time) {
         double newX = initialX + (HorizontalVelocity * time);
-        System.out.println(String.format("X Position: %.2f at time %.3f (v_x = %.2f)",
-                newX, time, HorizontalVelocity));
         return newX;
     }
 
     public double calculateY(double time) {
         double newY = initialY + (VerticalVelocity * time) + (0.5 * Gravity * time * time);
-        System.out.println(String.format("Y Position: %.2f at time %.3f (v_y = %.2f)",
-                newY, time, VerticalVelocity));
         return newY;
     }
 
@@ -192,14 +182,6 @@ public class SpringPhysics {
 
     public static double calculateAngleRad(double Angle){
         return Math.toRadians(Angle);
-    }
-
-    public static double calculateVerticalVelocity(double Velocity, double AngleRad){
-        return Velocity * Math.sin(AngleRad);
-    }
-
-    public static double calculateHorizontalVelocity(double Velocity, double AngleRad){
-        return Velocity * Math.cos(AngleRad);
     }
 
     public void setAmplitude(double Amplitude){
@@ -302,12 +284,13 @@ public class SpringPhysics {
         return Height;
     }
 
+    public void setVelocityUpdateCallback(Consumer<Point2D> callback) {
+        this.velocityUpdateCallback = callback;
+    }
+
     public void play() {
         lastX = 0;
         lastY = 0;
-        System.out.println("\nStarting motion with:");
-        System.out.println("Initial Position: (" + initialX + ", " + initialY + ")");
-        System.out.println("Velocities: (" + HorizontalVelocity + ", " + VerticalVelocity + ")");
         timeline.play();
     }
 
@@ -315,19 +298,16 @@ public class SpringPhysics {
         timeline.stop();
         setElapsedTime(0);
 
-        // Reset velocities
         setVelocity(0);
         setVerticalVelocity(0);
         setHorizontalVelocity(0);
 
-        // Reset position using the stored original position
         if (object != null && originalPosition != null) {
             object.setLayoutX(originalPosition.getX());
             object.setLayoutY(originalPosition.getY());
             synchronizeWithBallPosition(originalPosition.getX(), originalPosition.getY());
         }
 
-        // Reset amplitude
         setAmplitude(0);
     }
     public void jumpTo(double destination) {
@@ -356,6 +336,4 @@ public class SpringPhysics {
         System.out.println("Time of flight calculated: " + time + " seconds.");
         return time;
     }
-
-
 }

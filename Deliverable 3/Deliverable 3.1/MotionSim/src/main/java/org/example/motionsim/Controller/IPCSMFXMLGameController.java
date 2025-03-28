@@ -6,7 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import javafx.animation.FadeTransition;
+import javafx.animation.PauseTransition;
+import javafx.animation.SequentialTransition;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.event.ActionEvent;
@@ -27,9 +31,12 @@ import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
+import javafx.scene.text.Font;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import org.example.motionsim.Model.SpringPhysics;
 
 /**
@@ -208,6 +215,9 @@ public class IPCSMFXMLGameController implements Initializable {
     private Point2D lineEnd;
     private DoubleProperty amplitude = new SimpleDoubleProperty(0.0);
     private double maxSpringDistance;
+    private Circle launchBall; // This will be the ball that actually moves
+    private boolean isLaunched = false;
+    private Label resetMessage;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -215,6 +225,22 @@ public class IPCSMFXMLGameController implements Initializable {
         physics = SpringPhysics.getInstance();
         physics.setObject(ball);
         attachBallToLineEnd();
+
+        physics.setVelocityUpdateCallback(velocities -> {
+            Platform.runLater(() -> {
+                VVelocityFieldLabel.setText(String.format("%.2f", -velocities.getY())); // Negative because Y is inverted
+                HVelocityFieldLabel.setText(String.format("%.2f", velocities.getX()));
+            });
+        });
+
+        physics.setOutOfBoundsCallback(isOutOfBounds -> {
+            if (isOutOfBounds) {
+                Platform.runLater(() -> {
+                    showResetMessage();
+                    handleResetBtn(new ActionEvent());
+                });
+            }
+        });
 
         AmplitudeSlider.setMin(0);
         AmplitudeSlider.setMax(maxSpringDistance);
@@ -237,7 +263,7 @@ public class IPCSMFXMLGameController implements Initializable {
         }
 
         MassSlider.setMin(0);
-        MassSlider.setMax(50);
+        MassSlider.setMax(15);
         MassSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
             MassFieldLabel.setText(String.format("%.2f", newValue.doubleValue()));
             physics.setMass(Double.valueOf(MassFieldLabel.getText()));
@@ -296,14 +322,11 @@ public class IPCSMFXMLGameController implements Initializable {
         double lineEndXInPane = springPath.getLayoutX() + springPath.getEndX();
         double lineEndYInPane = springPath.getLayoutY() + springPath.getEndY();
 
-        // Store the original spring end position
         originalSpringEndPosition = new Point2D(lineEndXInPane, lineEndYInPane);
 
-        // Set initial ball position
         ball.setLayoutX(lineEndXInPane);
         ball.setLayoutY(lineEndYInPane);
 
-        // Store position in physics
         physics.setInitialPosition(lineEndXInPane, lineEndYInPane);
 
         initialBallPosition = new Point2D(lineEndXInPane, lineEndYInPane);
@@ -323,17 +346,15 @@ public class IPCSMFXMLGameController implements Initializable {
      */
     @FXML
     private void handleBallDrag(MouseEvent event) {
-        // This converts the mouse position from scene coords to the pane's local coords
+        if (isLaunched) return;
+
         Point2D mousePosInLocal = ball.getParent().sceneToLocal(event.getSceneX(), event.getSceneY());
-        // This part projects onto the line in that same local coordinate system.
         Point2D projectedPoint = projectPointOntoLine(mousePosInLocal, lineStart, lineEnd);
 
-        // Prevents the ball from being moved forward
         if (projectedPoint.distance(lineStart) > lineStart.distance(lineEnd)) {
             return;
         }
 
-        // Makes sure the ball moves strictly along the line.
         ball.setLayoutX(projectedPoint.getX());
         ball.setLayoutY(projectedPoint.getY());
 
@@ -344,7 +365,6 @@ public class IPCSMFXMLGameController implements Initializable {
         updateRealTimeHeight();
 
         double maxDistance = lineStart.distance(lineEnd);
-
         double compressionRatio = currentDistance/maxDistance;
 
         compressArcs(compressionRatio);
@@ -354,12 +374,9 @@ public class IPCSMFXMLGameController implements Initializable {
      * Compresses arcs based on a ratio.
      */
     private void compressArcs(double compressionRatio) {
-        // Decide how small arcs get at maximum compression
-        // arcs are half their original radius at ratio=1
+
         double minRadiusFactor = 0.5;
-        // Same logic for spacing
         double minSpacingFactor = 0.2;
-        // Arc #0 is leftmost arc which we'll compress distances relative to it.
         double anchorX = originalArcPositions.get(0);
 
         for (int i = 0; i < springArcs.size(); i++) {
@@ -399,70 +416,82 @@ public class IPCSMFXMLGameController implements Initializable {
 
     @FXML
     private void handleStartBtn(ActionEvent event) {
-        // Get current positions and spring orientation
-        double startX = ball.getLayoutX();
-        double startY = ball.getLayoutY();
+        if (isLaunched) return;
 
-        // Get spring's end points to determine true direction
-        double springStartX = springPath.getLayoutX() + springPath.getStartX();
-        double springStartY = springPath.getLayoutY() + springPath.getStartY();
-        double springEndX = springPath.getLayoutX() + springPath.getEndX();
-        double springEndY = springPath.getLayoutY() + springPath.getEndY();
+        VVelocityFieldLabel.setText(String.format("%.2f", physics.getVerticalVelocity()*(-1))); // Negative because Y is inverted
+        HVelocityFieldLabel.setText(String.format("%.2f", physics.getHorizontalVelocity()));
 
-        // Calculate spring's actual direction vector
-        double springDirX = springEndX - springStartX;
-        double springDirY = springEndY - springStartY;
-        double springLength = Math.sqrt(springDirX * springDirX + springDirY * springDirY);
+        physics.setOutOfBoundsCallback(isOutOfBounds -> {
+            if (isOutOfBounds) {
+                Platform.runLater(() -> {
+                    showResetMessage();
+                    handleResetBtn(new ActionEvent());
+                });
+            }
+        });
 
-        // Normalize direction vector
-        springDirX /= springLength;
-        springDirY /= springLength;
+        launchBall = new Circle();
+        launchBall.setRadius(ball.getRadius());
+        launchBall.setFill(ball.getFill());
+        launchBall.setStroke(ball.getStroke());
+        launchBall.setStrokeType(ball.getStrokeType());
 
-        // Calculate launch velocity magnitude
+        double angle = physics.getAngle();
+        double angleRad = Math.toRadians(angle);
+
+        Point2D ballScenePos = ball.localToScene(0, 0);
+        Point2D ballPanePos = AnimationPane.sceneToLocal(ballScenePos);
+
+        launchBall.setLayoutX(ballPanePos.getX());
+        launchBall.setLayoutY(ballPanePos.getY());
+
+        AnimationPane.getChildren().add(launchBall);
+
+        ball.setVisible(false);
+
         double launchVelocity = physics.calculateLaunchVelocity(
                 physics.getSpringConstant(),
                 physics.getMass(),
                 physics.getAmplitude()
         );
 
-        // Set velocity components based on spring's actual direction
-        double horizontalVelocity = launchVelocity * springDirX;
-        double verticalVelocity = launchVelocity * springDirY;
+        double horizontalVelocity = launchVelocity * Math.cos(angleRad);
+        double verticalVelocity = -launchVelocity * Math.sin(angleRad);
 
-        System.out.println("\nLaunch Debug Information:");
-        System.out.println("Spring Direction: (" + springDirX + ", " + springDirY + ")");
-        System.out.println("Start Position: (" + startX + ", " + startY + ")");
-        System.out.println("Launch Velocity: " + launchVelocity);
-        System.out.println("Horizontal Velocity: " + horizontalVelocity);
-        System.out.println("Vertical Velocity: " + verticalVelocity);
-
-        // Update physics with correct values
-        physics.setInitialPosition(startX, startY);
+        physics.setObject(launchBall);
+        physics.setInitialPosition(ballPanePos.getX(), ballPanePos.getY());
         physics.setVelocity(launchVelocity);
         physics.setHorizontalVelocity(horizontalVelocity);
         physics.setVerticalVelocity(verticalVelocity);
 
+        System.out.println("\nStarting Launch\n");
+
+        isLaunched = true;
         physics.play();
     }
 
     @FXML
     private void handleResetBtn(ActionEvent event) {
-        System.out.println("Before Reset:");
-        System.out.println("Ball Position: (" + ball.getLayoutX() + ", " + ball.getLayoutY() + ")");
-
         physics.reset();
 
-        System.out.println("After Reset:");
-        System.out.println("Ball Position: (" + ball.getLayoutX() + ", " + ball.getLayoutY() + ")");
+        VVelocityFieldLabel.setText("0.00");
+        HVelocityFieldLabel.setText("0.00");
 
-        // Explicitly reset ball position to spring end
+        if (launchBall != null) {
+            AnimationPane.getChildren().remove(launchBall);
+            launchBall = null;
+        }
+
+        ball.setVisible(true);
+
         ball.setLayoutX(originalSpringEndPosition.getX());
         ball.setLayoutY(originalSpringEndPosition.getY());
 
-        // Reset amplitude to 0
-        amplitude.set(0);
+        physics.setObject(ball);
 
-        // Update the real-time height
+        amplitude.set(0);
+        isLaunched = false;
+
         updateRealTimeHeight();
     }
 
@@ -519,5 +548,37 @@ public class IPCSMFXMLGameController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void showResetMessage() {
+
+        if (resetMessage == null) {
+            resetMessage = new Label("BALL RESET OUT OF BOUNDS");
+            resetMessage.setTextFill(Color.RED);
+            resetMessage.setFont(new Font("System Bold", 24));
+            resetMessage.setOpacity(0); // Start invisible
+        }
+
+        resetMessage.setLayoutX((AnimationPane.getWidth() - resetMessage.getWidth()) / 2);
+        resetMessage.setLayoutY((AnimationPane.getHeight() - resetMessage.getHeight()) / 2);
+
+        if (!AnimationPane.getChildren().contains(resetMessage)) {
+            AnimationPane.getChildren().add(resetMessage);
+        }
+
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(200), resetMessage);
+        fadeIn.setFromValue(0.0);
+        fadeIn.setToValue(1.0);
+
+        FadeTransition fadeOut = new FadeTransition(Duration.millis(200), resetMessage);
+        fadeOut.setFromValue(1.0);
+        fadeOut.setToValue(0.0);
+
+        PauseTransition pause = new PauseTransition(Duration.millis(600));
+
+        SequentialTransition sequence = new SequentialTransition(fadeIn, pause, fadeOut);
+        sequence.setOnFinished(e -> AnimationPane.getChildren().remove(resetMessage));
+
+        sequence.play();
     }
 }
