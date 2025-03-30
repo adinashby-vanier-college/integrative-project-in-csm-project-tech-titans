@@ -368,10 +368,11 @@ public class NewSettingsScreenController implements Initializable {
     private Button PlayMusicBtn;
     @FXML
     private Button StopMusicBtn;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         setupVolumeControl();
-        playMusic("SettingsMenuSong.wav");
+      //  loadMusic("SettingsMenuSong.wav");
         setupTooltips();
 
 // Language ComboBox setup
@@ -405,23 +406,38 @@ public class NewSettingsScreenController implements Initializable {
         SFXVolumeMuteBox.setSelected(false);
         MusicVolumeMuteBox.setSelected(false);
     }
-    private void playMusic(String fileName) {
-        try {
-            Media media = new Media(getClass().getResource("/audio/" + fileName).toExternalForm());
-            mediaPlayer = new MediaPlayer(media);
-            mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-            mediaPlayer.setVolume(MusicVolumeSlider.getValue() / 100);  // Set initial volume
-            mediaPlayer.play();
-        } catch (Exception e) {
-            e.printStackTrace();
 
-        }
-    }
+
     private void setupTooltips() {
         createTooltip(LanguageLabel, "Select the preferred language of display.");
         createTooltip(GameplayLabel, "Adjust the level of difficulty in the simulator's 'Game Mode.'");
         createTooltip(WallpaperLabel, "Alter the background and thematic color.");
         createTooltip(AudioLabel, "Adjust the level of sound effects and/or music volume.");
+    }
+    @FXML
+    private void handlePlayMusic(ActionEvent event) {
+        try {
+            // Update the path to the song file accordingly
+            String musicPath = "file:src/main/resources/motionsim/songs/SettingsMenuSong.wav";
+            Media media = new Media(new File(musicPath).toURI().toString());
+            mediaPlayer = new MediaPlayer(media);
+            mediaPlayer.play();
+            System.out.println("Playing music...");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleStopMusic(ActionEvent event) {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            System.out.println("Music stopped.");
+        }
+    }
+    @FXML
+    private void handleSaveBtn(ActionEvent event) {
+        System.out.println("Settings saved!");
     }
 
     private void createTooltip(Label label, String message) {
@@ -445,19 +461,29 @@ public class NewSettingsScreenController implements Initializable {
         if (mediaPlayer != null) {
             mediaPlayer.stop();
         }
-        File audioFile = new File("src/main/resources/sounds/" + fileName);
-        Media media = new Media(audioFile.toURI().toString());
-        mediaPlayer = new MediaPlayer(media);
-        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-        mediaPlayer.setVolume(MusicVolumeSlider.getValue() / 100.0);
-        mediaPlayer.play();
+        try {
+            // Use class loader to load the resource file
+            URL resource = getClass().getResource("/songs/" + fileName);
+            if (resource == null) {
+                throw new RuntimeException("File not found: " + fileName);
+            }
+            Media media = new Media(resource.toString());
+            mediaPlayer = new MediaPlayer(media);
+            mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+            mediaPlayer.setVolume(MusicVolumeSlider.getValue() / 100.0);
+            mediaPlayer.play();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-@FXML
-private void handleVolumeChange() {
+
+    @FXML
+    private void handleVolumeChange() {
         if (mediaPlayer != null) {
             mediaPlayer.setVolume(MusicVolumeSlider.getValue() / 100);
         }
-}
+    }
+
     @FXML
     private void handleMusicSelection(ActionEvent event) {
         String selectedMusic = MusicComboBox.getValue();
@@ -482,6 +508,7 @@ private void handleVolumeChange() {
         String language = LanguageComboBox.getValue();
         Locale.setDefault(language.equals("Français") ? Locale.FRENCH : Locale.ENGLISH);
         System.out.println("Language set to: " + language);
+    updateLanguage();
     }
 
     @FXML
@@ -539,16 +566,30 @@ private void handleVolumeChange() {
         System.out.println("Settings reset to default.");
     }
 
-@FXML
-private void setupVolumeControl() {
-    MusicVolumeSlider.setMin(0);
-    MusicVolumeSlider.setMax(100);
-    MusicVolumeSlider.setValue(50);
-    MusicVolumeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-        if (mediaPlayer != null) {
-            mediaPlayer.setVolume(newValue.doubleValue() / 100);
-        }
-    });
+    @FXML
+    private void setupVolumeControl() {
+        MusicVolumeSlider.setMin(0);
+        MusicVolumeSlider.setMax(100);
+        MusicVolumeSlider.setValue(50);
+        MusicVolumeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (mediaPlayer != null) {
+                mediaPlayer.setVolume(newValue.doubleValue() / 100);
+            }
+        });
+    }
+
+    //from 186 to end
+    private void updateLanguage() {
+        SettingsScreenLabel.setText(LanguageController.getString("settings.title"));
+        LanguageLabel.setText(LanguageController.getString("settings.language"));
+        GameplayLabel.setText(LanguageController.getString("settings.gameplay"));
+        WallpaperLabel.setText(LanguageController.getString("settings.wallpaper"));
+        AudioLabel.setText(LanguageController.getString("settings.audio"));
+        MusicVolumeLabel.setText(LanguageController.getString("settings.music"));
+        SFXVolumeLabel.setText(LanguageController.getString("settings.sfx"));
+        MusicVolumeMuteBox.setText(LanguageController.getString("settings.mute"));
+        SaveBtn.setText(LanguageController.getString("settings.save"));
+        ExitBtn.setText(LanguageController.getString("settings.exit"));
+        HelpBtn.setText(LanguageController.getString("settings.help"));
     }
 }
-//from 186 to end
