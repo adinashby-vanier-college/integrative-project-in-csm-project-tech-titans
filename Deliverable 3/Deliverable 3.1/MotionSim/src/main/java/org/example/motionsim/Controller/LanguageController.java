@@ -49,6 +49,10 @@ public class LanguageController {
         }
         bundle = ResourceBundle.getBundle("messages",currentLocale);
     } public static String getString(String key ) {
+
         return bundle.getString(key);
+    }
+    public static Locale getCurrentLocale() {
+        return currentLocale;
     }
 }

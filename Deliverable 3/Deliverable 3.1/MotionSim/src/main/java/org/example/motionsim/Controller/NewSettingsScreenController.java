@@ -1,5 +1,6 @@
+/*
 package org.example.motionsim.Controller;
-
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -17,10 +18,15 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Popup;
+import javafx.scene.Parent;
+import javafx.fxml.FXMLLoader;
+//import javafx.scene.media.Media;
+//import javafx.scene.media.MediaPlayer;
+import javafx.scene.Node;
 
 
-public class NewSettingsScreenController implements Initializable {
-
+//public class NewSettingsScreenController implements Initializable {
+public class NewSettingsScreenController {
     @FXML
     private Rectangle TopRec;
     @FXML
@@ -85,11 +91,11 @@ public class NewSettingsScreenController implements Initializable {
     private ComboBox<?> ThemeComboBox;
     
     
-    
 
-    @Override
+
+    @FXML
     public void initialize(URL url, ResourceBundle rb) {
-       
+
         VBox tooltipBox = new VBox();
         tooltipBox.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-padding: 5px; -fx-spacing: 5px;");
         Popup popup = new Popup();
@@ -177,3 +183,372 @@ public class NewSettingsScreenController implements Initializable {
     }
     
 }
+/*
+package org.example.motionsim.Controller;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
+
+import java.awt.event.MouseEvent;
+
+public class NewSettingsScreenController {
+    @FXML
+    private ComboBox<String> LanguageComboBox;
+    @FXML
+    private ComboBox<String> WallpaperComboBox;
+    @FXML
+    private ComboBox<String> ThemeComboBox;
+    @FXML
+    private RadioButton EasyOption, NormalOption,HardOption;
+    @FXML
+    private Slider MusicVolumeSlider, SFXVolumeSlider;
+    @FXML
+    private CheckBox MusicMuteBox, SFXMuteBox;
+    @FXML
+    private Button DefaultBtn, ExitBtn;
+    @FXML
+    private Pane SpringPane;
+    @FXML
+    private Label SettingsScreenLabel;
+
+@FXML
+public void initialize() {
+LanguageComboBox.getItems().addAll("English","Français");
+WallpaperComboBox.getItems().addAll("Blue","Green");
+ThemeComboBox.getItems().addAll("Light","Dark");
+EasyOption.setText(LanguageController.getString("easy"));
+NormalOption.setText(LanguageController.getString("normal"));
+HardOption.setText(LanguageController.getString("hard"));
+SettingsScreenLabel.setText(LanguageController.getString("settings"));
+MusicVolumeSlider.valueProperty().addListener(obs,oldVal,newVal) ->  {
+        System.out.println("Music Volume" + newVal);
+    };
+SFXVolumeSlider.valueProperty().addListener(obs,oldVal,newVal) -> {
+        System.out.println("SFX Volume: " + newVal);
+    };
+}
+@FXML
+public void handleLanguageComboBox(ActionEvent event) {
+    String selectedLanguage = LanguageComboBox.getValue();
+    LanguageController.setLanguage(selectedLanguage);
+    initialize();
+}
+@FXML
+    private void handleWallpaperComboBox(ActionEvent event) {
+    String selectedWallaper = WallpaperComboBox.getValue();
+    switch (selectedWallaper) {
+    case "Blue" -> SpringPane.setStyle("-fx-background-color: lightblue;");
+    case "Green" -> SpringPane.setStyle("-fx-background-color: lightgreen;");
+    case "Gray" -> SpringPane.setStyle("-fx-background-color: ligtgray;");
+    default -> SpringPane.setStyle("fx-background-color: white;");
+}
+}
+@FXML
+private void handleThemeComboBox(ActionEvent event) {
+    String selectedTheme = ThemeComboBox.getValue();
+    if (selectedTheme.equals("Dark")) {
+        SpringPane.setStyle("-fx-background-color: #333;");
+    }else {
+        SpringPane.setStyle("-fx-background-color: #fff;");
+    }
+}
+@FXML
+private void handleDefaultBtn(ActionEvent event) {
+    LanguageComboBox.setValue("English");
+    WallpaperComboBox.setValue("Blue");
+    ThemeComboBox.setValue("Light");
+    EasyOption.setSelected(true);
+    MusicVolumeSlider.setValue(50);
+    SFXVolumeSlider.setValue(50);
+    MusicMuteBox.setSelected(false);
+    SFXMuteBox.setSelected(false);
+}
+@FXML
+private void handleExitBtn(ActionEvent event) {
+    Stage stage = (Stage) ExitBtn.getScene().getWindow();
+    stage.close();
+}
+@FXML
+private void handleMusicMuteBox(ActionEvent event) {
+    //MusicVolumeSlider.setDisable(MusicMuteBox.isSelected());
+    if (MusicMuteBox.isSelected()) {
+        MusicVolumeSlider.setDisable(true);
+        System.out.println("Music muted");
+    }else {
+        MusicVolumeSlider.setDisable(false);
+        System.out.println("Music unmuted");
+    }
+}
+
+@FXML
+private void handleSFXMuteBox(ActionEvent event) {
+    //SFXVolumeSlider.setDisable(SFXMuteBox.isSelected());
+    if (SFXMuteBox.isSelected()) {
+        SFXVolumeSlider.setDisable(true);
+        System.out.println("SFX muted.");
+    }else {
+        SFXVolumeSlider.setDisable(false);
+        System.out.println("SFX unmuted.");
+    }
+}
+@FXML
+    private void handleDifficultySelection(ActionEvent event) {
+    if (EasyOption.isSelected()) {
+        System.out.println("Diffculty set to Easy");
+    } else if (NormalOption.isSelected()) {
+        System.out.println("Difficulty set to Normal");
+
+    } else if (HardOption.isSelected()) {
+        System.out.println("Difficulty set to Hard");
+
+    }
+}
+@FXML
+    private void handleMusicVolumeChange(MouseEvent event) {
+    double volume = MusicVolumeSlider.getValue();
+    System.out.println("Music Volume:" + volume);
+}
+@FXML
+    private void handleSFXVolumeChange(MouseEvent event) {
+    double volume = SFXVolumeSlider.getValue();
+    System.out.println("SFX Volume: " + volume);
+}
+}
+ */
+package org.example.motionsim.Controller;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Locale;
+import java.util.ResourceBundle;
+
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
+import javafx.stage.Popup;
+import javafx.stage.Stage;
+import javafx.scene.Node;
+
+public class NewSettingsScreenController implements Initializable {
+
+    @FXML
+    private Rectangle TopRec, LanguageRec, GameplayRec, WallpaperRec, AudioRec, MusicVolumeRec, SFXVolumeRec, BottomRec;
+    @FXML
+    private Line TopLine, BottomLine;
+    @FXML
+    private Label SettingsScreenLabel, LanguageLabel, GameplayLabel, WallpaperLabel, AudioLabel, MusicVolumeLabel, SFXVolumeLabel;
+    @FXML
+    private ComboBox<String> LanguageComboBox, WallpaperComboBox, ThemeComboBox, MusicComboBox;
+    @FXML
+    private RadioButton EasyOption, NormalOption, HardOption;
+    @FXML
+    private Slider MusicVolumeSlider, SFXVolumeSlider;
+    @FXML
+    private CheckBox MusicVolumeMuteBox, SFXVolumeMuteBox;
+    @FXML
+    private Button DefaultBtn, SaveBtn, ExitBtn, HelpBtn;
+
+    private ToggleGroup difficultyGroup;
+    private MediaPlayer mediaPlayer;
+    @FXML
+    private Button PlayMusicBtn;
+    @FXML
+    private Button StopMusicBtn;
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        setupVolumeControl();
+        playMusic("SettingsMenuSong.wav");
+        setupTooltips();
+
+// Language ComboBox setup
+        LanguageComboBox.getItems().addAll("English", "Français");
+        LanguageComboBox.setValue("English");
+
+// Difficulty setup
+        difficultyGroup = new ToggleGroup();
+        EasyOption.setToggleGroup(difficultyGroup);
+        NormalOption.setToggleGroup(difficultyGroup);
+        HardOption.setToggleGroup(difficultyGroup);
+        NormalOption.setSelected(true);
+
+// Wallpaper setup
+        WallpaperComboBox.getItems().addAll("Default", "Dark Mode", "Light Mode");
+        WallpaperComboBox.setValue("Default");
+
+// Music Selection setup
+        MusicComboBox.getItems().addAll("Main Menu Song", "Settings Menu Song", "Song 1", "Song 2");
+        MusicComboBox.setValue("Main Menu Song");
+        loadMusic("MainMenuSong.mp3");
+
+// Volume Slider setup
+        MusicVolumeSlider.setMin(0);
+        MusicVolumeSlider.setMax(100);
+        MusicVolumeSlider.setValue(50);
+        MusicVolumeSlider.setShowTickLabels(true);
+        MusicVolumeSlider.setShowTickMarks(true);
+
+// Sound Effects Toggle
+        SFXVolumeMuteBox.setSelected(false);
+        MusicVolumeMuteBox.setSelected(false);
+    }
+    private void playMusic(String fileName) {
+        try {
+            Media media = new Media(getClass().getResource("/audio/" + fileName).toExternalForm());
+            mediaPlayer = new MediaPlayer(media);
+            mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+            mediaPlayer.setVolume(MusicVolumeSlider.getValue() / 100);  // Set initial volume
+            mediaPlayer.play();
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+    }
+    private void setupTooltips() {
+        createTooltip(LanguageLabel, "Select the preferred language of display.");
+        createTooltip(GameplayLabel, "Adjust the level of difficulty in the simulator's 'Game Mode.'");
+        createTooltip(WallpaperLabel, "Alter the background and thematic color.");
+        createTooltip(AudioLabel, "Adjust the level of sound effects and/or music volume.");
+    }
+
+    private void createTooltip(Label label, String message) {
+        VBox tooltipBox = new VBox();
+        tooltipBox.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-padding: 5px;");
+        Popup popup = new Popup();
+        Text tooltipText = new Text(message);
+        tooltipText.setFill(Color.BLACK);
+        tooltipBox.getChildren().add(tooltipText);
+        popup.getContent().add(tooltipBox);
+
+        label.setOnMouseEntered(e -> popup.show(label, e.getScreenX() + 10, e.getScreenY() + 10));
+        label.setOnMouseExited(e -> popup.hide());
+        label.setOnMouseMoved(e -> {
+            popup.setX(e.getScreenX() + 10);
+            popup.setY(e.getScreenY() + 10);
+        });
+    }
+
+    private void loadMusic(String fileName) {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+        }
+        File audioFile = new File("src/main/resources/sounds/" + fileName);
+        Media media = new Media(audioFile.toURI().toString());
+        mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+        mediaPlayer.setVolume(MusicVolumeSlider.getValue() / 100.0);
+        mediaPlayer.play();
+    }
+@FXML
+private void handleVolumeChange() {
+        if (mediaPlayer != null) {
+            mediaPlayer.setVolume(MusicVolumeSlider.getValue() / 100);
+        }
+}
+    @FXML
+    private void handleMusicSelection(ActionEvent event) {
+        String selectedMusic = MusicComboBox.getValue();
+        switch (selectedMusic) {
+            case "Main Menu Song":
+                loadMusic("MainMenuSong.mp3");
+                break;
+            case "Settings Menu Song":
+                loadMusic("SettingsMenuSong.wav");
+                break;
+            case "Song 1":
+                loadMusic("song.wav");
+                break;
+            case "Song 2":
+                loadMusic("song2.wav");
+                break;
+        }
+    }
+
+    @FXML
+    private void handleLanguageComboBox(ActionEvent event) {
+        String language = LanguageComboBox.getValue();
+        Locale.setDefault(language.equals("Français") ? Locale.FRENCH : Locale.ENGLISH);
+        System.out.println("Language set to: " + language);
+    }
+
+    @FXML
+    private void handleWallpaperComboBox(ActionEvent event) {
+        String wallpaper = WallpaperComboBox.getValue();
+        System.out.println("Wallpaper set to: " + wallpaper);
+    }
+
+
+    @FXML
+    private void handleMusicVolumeChange() {
+        double volume = MusicVolumeSlider.getValue() / 100.0;
+        mediaPlayer.setVolume(volume);
+        System.out.println("Music Volume: " + volume);
+    }
+
+    @FXML
+    private void handleSoundEffectsToggle(ActionEvent event) {
+        boolean isMuted = SFXVolumeMuteBox.isSelected();
+        System.out.println("Sound Effects Muted: " + isMuted);
+    }
+
+    @FXML
+    private void handleHelpBtn(ActionEvent event) {
+        try {
+            Parent helpRoot = FXMLLoader.load(getClass().getResource("/motionsim/UserManual.fxml"));
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(helpRoot));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleExitBtn(ActionEvent event) {
+        try {
+            Parent mainRoot = FXMLLoader.load(getClass().getResource("/motionsim/MainScreen.fxml"));
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(mainRoot));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleDefaultBtn(ActionEvent event) {
+        LanguageComboBox.setValue("English");
+        NormalOption.setSelected(true);
+        WallpaperComboBox.setValue("Default");
+        MusicVolumeSlider.setValue(50);
+        MusicComboBox.setValue("Main Menu Song");
+        SFXVolumeMuteBox.setSelected(false);
+        System.out.println("Settings reset to default.");
+    }
+
+@FXML
+private void setupVolumeControl() {
+    MusicVolumeSlider.setMin(0);
+    MusicVolumeSlider.setMax(100);
+    MusicVolumeSlider.setValue(50);
+    MusicVolumeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+        if (mediaPlayer != null) {
+            mediaPlayer.setVolume(newValue.doubleValue() / 100);
+        }
+    });
+    }
+}
+//from 186 to end
