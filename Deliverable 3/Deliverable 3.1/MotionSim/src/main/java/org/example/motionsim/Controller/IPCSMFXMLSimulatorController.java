@@ -22,6 +22,7 @@ import javafx.scene.Node;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -98,7 +99,7 @@ public class IPCSMFXMLSimulatorController implements Initializable {
     @FXML
     private Label BarGraphLabel;
     @FXML
-    private BarChart<?, ?> BarGraph;
+    private BarChart<String, Number> BarGraph;
     @FXML
     private NumberAxis BarChartYAxis;
     @FXML
@@ -215,6 +216,7 @@ public class IPCSMFXMLSimulatorController implements Initializable {
     private List<Arc> springArcs;
     private List<Double> originalArcRadius = new ArrayList<>();
     private Label resetMessage;
+    private XYChart.Series<String, Number> energySeries;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -300,6 +302,28 @@ public class IPCSMFXMLSimulatorController implements Initializable {
             physics.setAngleRad(physics.calculateAngleRad(physics.getAngle()));
             updateRealTimeHeight();
         });
+
+        energySeries = new XYChart.Series<>();
+        energySeries.getData().add(new XYChart.Data<>("Mechanical", 0));
+        energySeries.getData().add(new XYChart.Data<>("Kinetic", 0));
+        energySeries.getData().add(new XYChart.Data<>("Spring Potential", 0));
+        energySeries.getData().add(new XYChart.Data<>("Gravitational Potential", 0));
+        BarGraph.getData().add(energySeries);
+
+        BarGraph.setLegendVisible(false);
+        BarChartYAxis.setAutoRanging(false);
+        BarChartYAxis.setLowerBound(0);
+        BarChartYAxis.setUpperBound(250);
+        BarChartYAxis.setTickUnit(50);
+        BarGraph.setAnimated(false);
+
+        physics.setEnergySeries(energySeries);
+
+        Timeline energyTimeline = new Timeline(new KeyFrame(Duration.millis(1), e -> {
+            updateEnergyBarChart();
+        }));
+        energyTimeline.setCycleCount(Timeline.INDEFINITE);
+        energyTimeline.play();
     }
 
     private void updateRealTimeHeight() {
@@ -624,4 +648,22 @@ public class IPCSMFXMLSimulatorController implements Initializable {
         alert.showAndWait();
     }
 
+    private void updateEnergyBarChart() {
+        double mass = physics.getMass();
+        double springConstant = physics.getSpringConstant();
+        double amplitude = physics.getAmplitude();
+        double velocity = physics.getVelocity();
+        double height = physics.getHeight();
+        double gravity = physics.getGravity();
+
+        double springPotential = SpringPhysics.calculateSpringPotentialEnergy(springConstant, amplitude)/1000;
+        double kinetic = SpringPhysics.calculateKineticEnergy(mass, velocity)/1000;
+        double gravitationalPotential = SpringPhysics.calculateGravitationalEnergy(mass,gravity,height)/1000;
+        double mechanical = SpringPhysics.calculateMechanicalEnergy(springConstant, amplitude, mass, velocity, gravity, height)/1000;
+
+        energySeries.getData().get(0).setYValue(mechanical);
+        energySeries.getData().get(1).setYValue(kinetic);
+        energySeries.getData().get(2).setYValue(springPotential);
+        energySeries.getData().get(3).setYValue(gravitationalPotential);
+    }
 }

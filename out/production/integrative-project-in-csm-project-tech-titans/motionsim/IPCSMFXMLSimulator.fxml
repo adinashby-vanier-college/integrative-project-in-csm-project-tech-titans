@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
 <?import javafx.scene.Group?>
 <?import javafx.scene.chart.BarChart?>
 <?import javafx.scene.chart.CategoryAxis?>
@@ -21,7 +23,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1450.0" style="-fx-background-color: #F0F8FF;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.motionsim.Controller.IPCSMFXMLSimulatorController">
+<AnchorPane id="AnchorPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1450.0" style="-fx-background-color: #F0F8FF;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.motionsim.Controller.IPCSMFXMLSimulatorController">
    <children>
       <MenuBar fx:id="MenuBar" layoutY="1.0" prefHeight="25.0" prefWidth="1450.0">
          <menus>
@@ -55,7 +57,7 @@
                      <children>
                         <Pane fx:id="spring" prefHeight="50.0" prefWidth="162.0" style="-fx-view-order: 1;">
                            <children>
-                              <Line fx:id="springPath" endX="152.5" endY="32.10357666015625" startX="58.64642333984375" startY="32.10357666015625" style="-fx-stroke: TRANSPARENT;" />
+                              <Line fx:id="springPath" endX="156.0" endY="25.0" startX="58.64642333984375" startY="32.10357666015625" style="-fx-stroke: TRANSPARENT;" />
                               <Arc fill="DODGERBLUE" layoutX="28.0" layoutY="30.0" length="235.0" radiusX="25.0" radiusY="20.0" startAngle="315.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: TRANSPARENT;" />
                               <Arc fill="DODGERBLUE" layoutX="61.0" layoutY="30.0" length="270.0" radiusX="25.0" radiusY="20.0" startAngle="315.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: TRANSPARENT;" />
                               <Arc fill="DODGERBLUE" layoutX="98.0" layoutY="30.0" length="270.0" radiusX="25.0" radiusY="20.0" startAngle="315.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: TRANSPARENT;" />
@@ -147,12 +149,21 @@
             <Font name="System Bold" size="18.0" />
          </font>
       </Label>
-      <BarChart fx:id="BarGraph" layoutY="280.0" prefHeight="277.0" prefWidth="500.0">
+      <BarChart fx:id="BarGraph" layoutY="280.0" legendVisible="false" prefHeight="277.0" prefWidth="500.0">
          <xAxis>
-            <CategoryAxis fx:id="BarChartXAxis" side="BOTTOM" />
+            <CategoryAxis fx:id="BarChartXAxis" side="BOTTOM">
+               <categories>
+                  <FXCollections fx:factory="observableArrayList">
+                     <String fx:value="Mechanical" />
+                     <String fx:value="Kinetic" />
+                     <String fx:value="Spring Potential" />
+                     <String fx:value="Gravitational Potential" />
+                  </FXCollections>
+               </categories>
+            </CategoryAxis>
          </xAxis>
          <yAxis>
-            <NumberAxis fx:id="BarChartYAxis" side="LEFT" />
+            <NumberAxis fx:id="BarChartYAxis" autoRanging="false" label="Energy (KJ)" minorTickCount="2" side="LEFT" upperBound="300.0" />
          </yAxis>
       </BarChart>
       <Line fx:id="OrthogonalToLeftLine2" endX="288.3333435058594" endY="-24.99999237060547" layoutX="212.0" layoutY="304.0" startX="-212.99998474121094" startY="-25.00000762939453" />
