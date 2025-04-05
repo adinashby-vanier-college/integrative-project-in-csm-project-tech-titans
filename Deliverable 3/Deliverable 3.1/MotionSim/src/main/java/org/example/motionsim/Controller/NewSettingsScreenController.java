@@ -342,9 +342,17 @@ import javafx.scene.text.Text;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.scene.Node;
+import org.example.motionsim.Model.SpringPhysics;
 
 public class NewSettingsScreenController implements Initializable {
-
+    @FXML
+    private SpringPhysics physics = SpringPhysics.getInstance();
+    @FXML
+    private RadioButton EasyOption;
+    @FXML
+    private RadioButton NormalOption;
+    @FXML
+    private RadioButton HardOption;
     @FXML
     private Rectangle TopRec, LanguageRec, GameplayRec, WallpaperRec, AudioRec, MusicVolumeRec, SFXVolumeRec, BottomRec;
     @FXML
@@ -565,7 +573,6 @@ public class NewSettingsScreenController implements Initializable {
         SFXVolumeMuteBox.setSelected(false);
         System.out.println("Settings reset to default.");
     }
-
     @FXML
     private void setupVolumeControl() {
         MusicVolumeSlider.setMin(0);
@@ -591,5 +598,10 @@ public class NewSettingsScreenController implements Initializable {
         SaveBtn.setText(LanguageController.getString("settings.save"));
         ExitBtn.setText(LanguageController.getString("settings.exit"));
         HelpBtn.setText(LanguageController.getString("settings.help"));
+    }
+    private void EasyMode(ActionEvent event){
+        physics.setGravity(9.81);
+        physics.setSpringConstant(10);
+        System.out.println("Easy mode selected: gravity = 9.81, k = 10");
     }
 }
