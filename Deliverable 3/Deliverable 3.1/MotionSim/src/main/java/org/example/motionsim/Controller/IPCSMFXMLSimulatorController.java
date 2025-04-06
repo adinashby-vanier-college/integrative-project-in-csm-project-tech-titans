@@ -217,6 +217,12 @@ public class IPCSMFXMLSimulatorController implements Initializable {
     private List<Double> originalArcRadius = new ArrayList<>();
     private Label resetMessage;
     private XYChart.Series<String, Number> energySeries;
+    private double storedMechanicalEnergy;
+    private double storedSpringPotentialEnergy;
+    private boolean springReturnInProgress = false;
+    private long springReturnStartTime;
+    private final double springReturnDuration = 300;
+    private boolean isPausedByUser = false;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -307,7 +313,6 @@ public class IPCSMFXMLSimulatorController implements Initializable {
         energySeries.getData().add(new XYChart.Data<>("Mechanical", 0));
         energySeries.getData().add(new XYChart.Data<>("Kinetic", 0));
         energySeries.getData().add(new XYChart.Data<>("Spring Potential", 0));
-        energySeries.getData().add(new XYChart.Data<>("Gravitational Potential", 0));
         BarGraph.getData().add(energySeries);
 
         BarGraph.setLegendVisible(false);
@@ -316,8 +321,6 @@ public class IPCSMFXMLSimulatorController implements Initializable {
         BarChartYAxis.setUpperBound(250);
         BarChartYAxis.setTickUnit(50);
         BarGraph.setAnimated(false);
-
-        physics.setEnergySeries(energySeries);
 
         Timeline energyTimeline = new Timeline(new KeyFrame(Duration.millis(1), e -> {
             updateEnergyBarChart();
@@ -450,15 +453,36 @@ public class IPCSMFXMLSimulatorController implements Initializable {
             physics.setVerticalVelocity(verticalVelocity);
             physics.addBoundaryLine(OrthogonalToLeftLine4);
 
+            // Energy values
+            double springPotential = SpringPhysics.calculateSpringPotentialEnergy(physics.getSpringConstant(), physics.getAmplitude()) / 1000;
+            storedMechanicalEnergy = springPotential;
+
             isLaunched = true;
         }
+
+        if (!isPausedByUser) {
+            // Stores the energy at the moment of launch (so when kinetic energy is 0)
+            storedSpringPotentialEnergy = storedMechanicalEnergy;
+            springReturnInProgress = true;
+            springReturnStartTime = System.currentTimeMillis();
+
+            // animates the spring returning back to its original state when launched
+            KeyValue amplitudeToZero = new KeyValue(amplitude, 0, Interpolator.EASE_OUT);
+            KeyFrame springResetFrame = new KeyFrame(Duration.millis(300), amplitudeToZero);
+            Timeline springReturn = new Timeline(springResetFrame);
+            springReturn.play();
+        }
+
         physics.play();
+
+        isPausedByUser = false;
     }
 
     @FXML
     private void handleStopBtn(ActionEvent event) {
         if (isLaunched) {
             physics.pause();
+            isPausedByUser = true;
         }
     }
 
@@ -649,21 +673,34 @@ public class IPCSMFXMLSimulatorController implements Initializable {
     }
 
     private void updateEnergyBarChart() {
-        double mass = physics.getMass();
-        double springConstant = physics.getSpringConstant();
-        double amplitude = physics.getAmplitude();
-        double velocity = physics.getVelocity();
-        double height = physics.getHeight();
-        double gravity = physics.getGravity();
-
-        double springPotential = SpringPhysics.calculateSpringPotentialEnergy(springConstant, amplitude)/1000;
-        double kinetic = SpringPhysics.calculateKineticEnergy(mass, velocity)/1000;
-        double gravitationalPotential = SpringPhysics.calculateGravitationalEnergy(mass,gravity,height)/1000;
-        double mechanical = SpringPhysics.calculateMechanicalEnergy(springConstant, amplitude, mass, velocity, gravity, height)/1000;
-
-        energySeries.getData().get(0).setYValue(mechanical);
-        energySeries.getData().get(1).setYValue(kinetic);
-        energySeries.getData().get(2).setYValue(springPotential);
-        energySeries.getData().get(3).setYValue(gravitationalPotential);
+        if (!isLaunched) {
+            double amplitudeValue = Double.parseDouble(AmplitudeFieldLabel.getText());
+            double potential = SpringPhysics.calculateSpringPotentialEnergy(physics.getSpringConstant(), amplitudeValue) / 1000.0;
+            // Before the launch, mechanical energy equals the potential energy and kinetic energy is 0.
+            energySeries.getData().get(0).setYValue(potential);  // Mechanical Energy
+            energySeries.getData().get(1).setYValue(0);          // Kinetic Energy
+            energySeries.getData().get(2).setYValue(potential);  // Spring Potential
+        } else if (springReturnInProgress) {
+            // During the spring return animation
+            long elapsed = System.currentTimeMillis() - springReturnStartTime;
+            double fraction = Math.min(1.0, (double) elapsed / springReturnDuration);
+            double currentSpringPotential = storedSpringPotentialEnergy * (1 - fraction);
+            double currentKinetic = storedSpringPotentialEnergy * fraction;
+            energySeries.getData().get(0).setYValue(storedMechanicalEnergy); // Mechanical remains locked
+            energySeries.getData().get(1).setYValue(currentKinetic);         // Kinetic increases
+            energySeries.getData().get(2).setYValue(currentSpringPotential);  // Potential decreases
+            if (fraction >= 1.0) {
+                springReturnInProgress = false;
+                // Final state after animation.
+                energySeries.getData().get(0).setYValue(storedMechanicalEnergy);
+                energySeries.getData().get(1).setYValue(storedSpringPotentialEnergy);
+                energySeries.getData().get(2).setYValue(0);
+            }
+        } else {
+            // After launch and after the spring return animation
+            energySeries.getData().get(0).setYValue(storedMechanicalEnergy);
+            energySeries.getData().get(1).setYValue(storedSpringPotentialEnergy);
+            energySeries.getData().get(2).setYValue(0);
+        }
     }
 }
