@@ -41,7 +41,7 @@ public class SpringPhysics {
     private Point2D originalPosition;
     private Timeline timeline;
     private DoubleProperty elapsedTime;
-    private XYChart.Series<String, Number> energySeries;
+
 
     private Shape object;
 
@@ -52,10 +52,6 @@ public class SpringPhysics {
     public void setObject(Shape object) {
         this.object = object;
         updatePosition();
-    }
-
-    public void setEnergySeries(XYChart.Series<String, Number> series) {
-        this.energySeries = series;
     }
 
     public final void setElapsedTime(double value) {
@@ -88,24 +84,6 @@ public class SpringPhysics {
         timeline = new Timeline(new KeyFrame(Duration.seconds((1.0/60.0)/1.5), event -> {
             updatePosition();
             setElapsedTime(getElapsedTime() + 1.0/60.0);
-
-            // This will update the energy chart
-            double mass = getMass();
-            double springConstant = getSpringConstant();
-            double amplitude = getAmplitude();
-            double velocity = getVelocity();
-            double height = getHeight();
-            double gravity = getGravity();
-            double springPotential = SpringPhysics.calculateSpringPotentialEnergy(springConstant, amplitude) / 1000;
-            double kinetic = SpringPhysics.calculateKineticEnergy(mass, velocity) / 1000;
-            double gravitationalPotential = SpringPhysics.calculateGravitationalEnergy(mass, gravity, height) / 1000;
-            double mechanical = SpringPhysics.calculateMechanicalEnergy(springConstant, amplitude, mass, velocity, gravity, height) / 1000;
-            Platform.runLater(() -> {
-                energySeries.getData().get(0).setYValue(mechanical);
-                energySeries.getData().get(1).setYValue(kinetic);
-                energySeries.getData().get(2).setYValue(springPotential);
-                energySeries.getData().get(3).setYValue(gravitationalPotential);
-            });
 
             if (timeUpdateCallback != null) {
                 Platform.runLater(() -> timeUpdateCallback.accept(getElapsedTime()));
@@ -219,12 +197,8 @@ public class SpringPhysics {
         return 0.5 * mass * velocity * velocity;
     }
 
-    public static double calculateGravitationalEnergy(double mass, double gravity, double height) {
-        return mass * gravity * height;
-    }
-
-    public static double calculateMechanicalEnergy(double springConstant, double amplitude, double mass, double velocity, double gravity, double height) {
-        return calculateSpringPotentialEnergy(springConstant, amplitude) + calculateKineticEnergy(mass, velocity) + calculateGravitationalEnergy(mass, gravity, height);
+    public static double calculateMechanicalEnergy(double springConstant, double amplitude, double mass, double velocity) {
+        return calculateSpringPotentialEnergy(springConstant, amplitude) + calculateKineticEnergy(mass, velocity);
     }
 
     public static double calculateLaunchVelocity(double springConstant, double mass, double amplitude) {

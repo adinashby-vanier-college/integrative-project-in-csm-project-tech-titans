@@ -149,7 +149,7 @@
             <Font name="System Bold" size="18.0" />
          </font>
       </Label>
-      <BarChart fx:id="BarGraph" layoutY="280.0" legendVisible="false" prefHeight="277.0" prefWidth="500.0">
+      <BarChart fx:id="BarGraph" layoutY="280.0" legendVisible="false" prefHeight="277.0" prefWidth="500.0" title="Spring Energy Graph">
          <xAxis>
             <CategoryAxis fx:id="BarChartXAxis" side="BOTTOM">
                <categories>
@@ -157,7 +157,6 @@
                      <String fx:value="Mechanical" />
                      <String fx:value="Kinetic" />
                      <String fx:value="Spring Potential" />
-                     <String fx:value="Gravitational Potential" />
                   </FXCollections>
                </categories>
             </CategoryAxis>
