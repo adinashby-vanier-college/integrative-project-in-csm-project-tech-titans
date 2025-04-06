@@ -220,6 +220,12 @@ public class IPCSMFXMLGameController implements Initializable {
     private Circle launchBall;
     private boolean isLaunched = false;
     private Label resetMessage;
+    @FXML
+    private RadioButton EasyOption;
+    @FXML
+    private RadioButton NormalOption;
+    @FXML
+    private RadioButton HardOption;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -585,4 +591,22 @@ public class IPCSMFXMLGameController implements Initializable {
 
         sequence.play();
     }
+    private void handleScore(){
+        if(NormalOption.isSelected())
+        NormalRandomization();
+        else if (HardOption.isSelected())
+            HardRandomization();
+        }
+    private void NormalRandomization(){
+        SpringPhysics physics = SpringPhysics.getInstance();
+        double RandomGravity = 5 + Math.random() * 15;
+        physics.setGravity(RandomGravity);
+        GravityFieldLabel.setText(String.format("%.2f", RandomGravity));
+
+    }
+    private void HardRandomization(){
+        SpringPhysics physics = SpringPhysics.getInstance();
+        double RandomGravity = 5 + Math.random() * 15;
+    }
+
 }

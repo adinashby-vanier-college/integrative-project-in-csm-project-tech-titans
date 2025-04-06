@@ -35,17 +35,17 @@
             <Font name="System Bold" size="24.0" />
          </font>
       </Label>
-      <RadioButton fx:id="EasyOption" layoutX="675.0" layoutY="241.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="Easy" onAction="#handleEasyMode">
+      <RadioButton fx:id="EasyOption" layoutX="675.0" layoutY="241.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="Easy" onAction="#EasyMode">
          <font>
             <Font size="15.0" />
          </font>
       </RadioButton>
-      <RadioButton fx:id="NormalOption" layoutX="675.0" layoutY="266.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="Normal">
+      <RadioButton fx:id="NormalOption" layoutX="675.0" layoutY="266.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="Normal" onAction="#NormalMode">
          <font>
             <Font size="15.0" />
          </font>
       </RadioButton>
-      <RadioButton fx:id="HardOption" layoutX="675.0" layoutY="291.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="Hard">
+      <RadioButton fx:id="HardOption" layoutX="675.0" layoutY="291.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="Hard" onAction="#HardMode">
          <font>
             <Font size="15.0" />
          </font>

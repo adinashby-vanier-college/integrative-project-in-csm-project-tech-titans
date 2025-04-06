@@ -319,6 +319,7 @@ private void handleSFXMuteBox(ActionEvent event) {
  */
 package org.example.motionsim.Controller;
 
+import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -600,8 +601,17 @@ public class NewSettingsScreenController implements Initializable {
         HelpBtn.setText(LanguageController.getString("settings.help"));
     }
     private void EasyMode(ActionEvent event){
+        SpringPhysics physics = SpringPhysics.getInstance();
         physics.setGravity(9.81);
         physics.setSpringConstant(10);
         System.out.println("Easy mode selected: gravity = 9.81, k = 10");
+    }
+    private void NormalMode(ActionEvent event){
+        SpringPhysics physics = SpringPhysics.getInstance();
+        physics.setSpringConstant(10);
+        System.out.println("Normal mode selected: k = 10");
+    }
+    private void HardMode(ActionEvent event){
+        SpringPhysics physics = SpringPhysics.getInstance();
     }
 }
