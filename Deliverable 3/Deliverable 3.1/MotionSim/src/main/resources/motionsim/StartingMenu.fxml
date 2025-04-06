@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="660.0" prefWidth="774.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane prefHeight="660.0" prefWidth="774.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.motionsim.Controller.StartingMenuController">
 
    <!-- TOP SECTION -->
    <top>
@@ -42,12 +42,12 @@
                      <Font name="System Bold" size="32.0" />
                   </font>
                </Label>
-               <Button style="-fx-border-color: BLACK; -fx-border-width: 2;" text="NEW GAME" textAlignment="CENTER">
+               <Button fx:id="startButton" onAction="#handleGoToSimScene" style="-fx-border-color: BLACK; -fx-border-width: 2;" text="START" textAlignment="CENTER">
                   <font>
                      <Font size="18.0" />
                   </font>
                </Button>
-               <Button style="-fx-border-color: BLACK; -fx-border-width: 2;" text="SETTINGS" textAlignment="CENTER">
+               <Button fx:id="settingsButton" onAction="#handleGoToSettings" style="-fx-border-color: BLACK; -fx-border-width: 2;" text="SETTINGS" textAlignment="CENTER">
                   <font>
                      <Font size="18.0" />
                   </font>
@@ -57,7 +57,7 @@
                      <Font size="18.0" />
                   </font>
                </Button>
-               <Button style="-fx-border-color: BLACK; -fx-border-width: 2;" text="EXIT APPLICATION" textAlignment="CENTER">
+               <Button fx:id="exitButton" onAction="#handleExit" style="-fx-border-color: BLACK; -fx-border-width: 2;" text="EXIT APPLICATION" textAlignment="CENTER">
                   <font>
                      <Font size="18.0" />
                   </font>
