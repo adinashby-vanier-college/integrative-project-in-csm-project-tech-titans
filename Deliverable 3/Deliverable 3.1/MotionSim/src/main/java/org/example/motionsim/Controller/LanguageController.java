@@ -39,17 +39,18 @@ import java.util.ResourceBundle;
 
 public class LanguageController {
     private static Locale currentLocale = Locale.ENGLISH;
-    private static ResourceBundle bundle = ResourceBundle.getBundle("messages",currentLocale);
+    private static ResourceBundle bundle = ResourceBundle.getBundle("motionsim.messages",currentLocale);
+
     public static void setLanguage(String language) {
+       // LanguageController.setLanguage("English");
         if (language.equalsIgnoreCase("Français")) {
             currentLocale = Locale.FRENCH;
         }
         else {
             currentLocale = Locale.ENGLISH;
         }
-        bundle = ResourceBundle.getBundle("messages",currentLocale);
+        bundle = ResourceBundle.getBundle("motionsim.messages",currentLocale);
     } public static String getString(String key ) {
-
         return bundle.getString(key);
     }
     public static Locale getCurrentLocale() {

@@ -4,6 +4,7 @@
  */
 package org.example.motionsim.Controller;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,10 +16,13 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
@@ -31,6 +35,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.scene.text.Font;
 import javafx.scene.transform.Rotate;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.example.motionsim.Model.SpringPhysics;
 
@@ -701,6 +706,45 @@ public class IPCSMFXMLSimulatorController implements Initializable {
             energySeries.getData().get(0).setYValue(storedMechanicalEnergy);
             energySeries.getData().get(1).setYValue(storedSpringPotentialEnergy);
             energySeries.getData().get(2).setYValue(0);
+        }
+    }
+
+    @FXML
+    private void handleMenuGoToGame() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/motionsim/IPCSMFXMLGame.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) MenuBar.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleMenuGoToManual() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/motionsim/UserManual.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) MenuBar.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleMenuGoToSettings() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/motionsim/SettingsScreen.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) MenuBar.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

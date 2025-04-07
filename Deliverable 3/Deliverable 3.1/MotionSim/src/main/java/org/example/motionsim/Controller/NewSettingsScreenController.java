@@ -326,7 +326,6 @@ import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -348,12 +347,6 @@ import org.example.motionsim.Model.SpringPhysics;
 public class NewSettingsScreenController implements Initializable {
     @FXML
     private SpringPhysics physics = SpringPhysics.getInstance();
-    @FXML
-    private RadioButton EasyOption;
-    @FXML
-    private RadioButton NormalOption;
-    @FXML
-    private RadioButton HardOption;
     @FXML
     private Rectangle TopRec, LanguageRec, GameplayRec, WallpaperRec, AudioRec, MusicVolumeRec, SFXVolumeRec, BottomRec;
     @FXML

@@ -11,8 +11,6 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1450.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.motionsim.Controller.NewSettingsScreenController">
    <children>
       <Rectangle fx:id="TopRec" arcHeight="5.0" arcWidth="5.0" fill="#75b1e2" height="50.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="1450.0" />
@@ -28,24 +26,24 @@
             <Font name="System Bold" size="24.0" />
          </font>
       </Label>
-      <ComboBox fx:id="LanguageComboBox" layoutX="620.0" layoutY="139.0" onAction="#handleLanguageComboBox" prefHeight="35.0" prefWidth="210.0" promptText="- Default Language (English) - " />
+      <ComboBox fx:id="LanguageComboBox" layoutX="620.0" layoutY="139.0" onAction="#handleLanguageComboBox" prefHeight="35.0" prefWidth="210.0" promptText="- Select Language - " />
       <Rectangle fx:id="GameplayRec" arcHeight="5.0" arcWidth="5.0" fill="#75b1e2" height="50.0" layoutX="575.0" layoutY="191.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="300.0" />
       <Label fx:id="GameplayLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="600.0" layoutY="191.0" prefHeight="50.0" prefWidth="250.0" text="Gameplay" textFill="WHITE">
          <font>
             <Font name="System Bold" size="24.0" />
          </font>
       </Label>
-      <RadioButton fx:id="EasyOption" layoutX="675.0" layoutY="241.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="Easy" onAction="#EasyMode">
+      <RadioButton fx:id="EasyOption" layoutX="675.0" layoutY="241.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="Easy">
          <font>
             <Font size="15.0" />
          </font>
       </RadioButton>
-      <RadioButton fx:id="NormalOption" layoutX="675.0" layoutY="266.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="Normal" onAction="#NormalMode">
+      <RadioButton fx:id="NormalOption" layoutX="675.0" layoutY="266.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="Normal">
          <font>
             <Font size="15.0" />
          </font>
       </RadioButton>
-      <RadioButton fx:id="HardOption" layoutX="675.0" layoutY="291.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="Hard" onAction="#HardMode">
+      <RadioButton fx:id="HardOption" layoutX="675.0" layoutY="291.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="100.0" text="Hard">
          <font>
             <Font size="15.0" />
          </font>
@@ -56,29 +54,37 @@
             <Font name="System Bold" size="24.0" />
          </font>
       </Label>
-      <ComboBox fx:id="WallpaperComboBox" layoutX="620.0" layoutY="391.0" onAction="#handleWallpaperComboBox" prefHeight="35.0" prefWidth="210.0" promptText="- Default Background (White) - " />
+      <ComboBox fx:id="WallpaperComboBox" layoutX="620.0" layoutY="391.0" onAction="#handleWallpaperComboBox" prefHeight="35.0" prefWidth="210.0" promptText="- Select Background - " />
       <Rectangle fx:id="AudioRec" arcHeight="5.0" arcWidth="5.0" fill="#75b1e2" height="50.0" layoutX="575.0" layoutY="497.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="300.0" />
       <Label fx:id="AudioLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="600.0" layoutY="497.0" prefHeight="50.0" prefWidth="250.0" text="Audio" textFill="WHITE">
          <font>
             <Font name="System Bold" size="24.0" />
          </font>
       </Label>
-      <HBox layoutX="425.0" layoutY="557.0" spacing="10.0" alignment="CENTER">
-         <ComboBox fx:id="MusicComboBox" onAction="#handleMusicSelection" prefHeight="35.0" prefWidth="200.0" promptText="Select Music" />
-         <Slider fx:id="MusicVolumeSlider" prefHeight="14.0" prefWidth="200.0" onMouseReleased="#handleMusicVolumeChange"/>
-      </HBox>
-
-      <VBox layoutX="525.0" layoutY="602.0" spacing="10.0" alignment="CENTER">
-         <Button fx:id="PlayMusicBtn" text="Play Music" onAction="#handlePlayMusic" prefHeight="35.0" prefWidth="100.0" />
-         <Button fx:id="StopMusicBtn" text="Stop Music" onAction="#handleStopMusic" prefHeight="35.0" prefWidth="100.0" />
-      </VBox>
-
-
-
-      <CheckBox fx:id="MusicVolumeMuteBox" layoutX="825.0" layoutY="560.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="60.0" text="Mute" />
+      <Slider fx:id="MusicVolumeSlider" layoutX="625.0" layoutY="582.0" prefHeight="14.0" prefWidth="200.0" />
+      <Rectangle fx:id="MusicVolumeRec" arcHeight="5.0" arcWidth="5.0" fill="#75b1e2" height="25.0" layoutX="625.0" layoutY="557.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="200.0" />
+      <Label fx:id="MusicVolumeLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="625.0" layoutY="557.0" prefHeight="25.0" prefWidth="200.0" text="Music Volume" textFill="WHITE">
+         <Button fx:id="PLayMusicBtn" layoutX="600.0" layoutY="630.0" text="Play Music" onAction="#handlePlayMusic"/>
+         <Button fx:id="StopMusicBtn" layoutX="750.0" layoutY="630.0" text="Stop Music" onAction="#handleStopMusic"/>
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <CheckBox fx:id="MusicVolumeMuteBox" layoutX="825.0" layoutY="560.0" mnemonicParsing="false" onAction="#handleMuteToggle" prefHeight="20.0" prefWidth="60.0" text="Mute" />
+      <Slider fx:id="SFXVolumeSlider" layoutX="625.0" layoutY="635.0" prefHeight="14.0" prefWidth="200.0" />
+      <Rectangle fx:id="SFXVolumeRec" arcHeight="5.0" arcWidth="5.0" fill="#75b1e2" height="25.0" layoutX="625.0" layoutY="610.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="200.0" />
+      <Label fx:id="SFXVolumeLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="625.0" layoutY="610.0" prefHeight="25.0" prefWidth="200.0" text="SFX Volume" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <CheckBox fx:id="SFXVolumeMuteBox" layoutX="825.0" layoutY="613.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="60.0" text="Mute" />
       <Button fx:id="DefaultBtn" layoutX="750.0" layoutY="697.0" mnemonicParsing="false" onAction="#handleDefaultBtn" prefHeight="40.0" prefWidth="100.0" text="Default" />
       <Button fx:id="SaveBtn" layoutX="600.0" layoutY="697.0" mnemonicParsing="false" onAction="#handleSaveBtn" prefHeight="40.0" prefWidth="100.0" text="Save" />
-      <Button fx:id="ExitBtn" layoutX="475.0" layoutY="697.0" mnemonicParsing="false" onAction="#handleExitBtn" prefHeight="40.0" prefWidth="100.0" text="Exit" />
+      <Button fx:id="ExitBtn" layoutX="475.0" layoutY="697.0" mnemonicParsing="false" onAction="#handleExitBtn" prefHeight="40.0" prefWidth="100.0" text="%settings.exit" />
+      <Rectangle fx:id="BottomRec" arcHeight="5.0" arcWidth="5.0" fill="#75b1e2" height="50.0" layoutY="750.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="1450.0" />
+      <Line fx:id="BottomLine" endX="1349.0" endY="1.1444091796875E-5" layoutX="101.0" layoutY="750.0" startX="-100.9999771118164" startY="1.1444091796875E-5" />
       <Button fx:id="HelpBtn" layoutX="875.0" layoutY="697.0" mnemonicParsing="false" onAction="#handleHelpBtn" prefHeight="40.0" prefWidth="100.0" text="Help" />
    </children>
 </AnchorPane>
+
