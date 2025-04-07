@@ -210,102 +210,102 @@ public class SpringPhysics {
     }
 
     public void setAmplitude(double Amplitude){
-        System.out.println("Setting Amplitude: " + Amplitude);
+//        System.out.println("Setting Amplitude: " + Amplitude);
         this.Amplitude = Amplitude;
     }
 
     public double getAmplitude() {
-        System.out.println("Getting Amplitude: " + Amplitude);
+//        System.out.println("Getting Amplitude: " + Amplitude);
         return Amplitude;
     }
 
     public void setMass(double Mass){
-        System.out.println("Setting Mass: " + Mass);
+//        System.out.println("Setting Mass: " + Mass);
         this.Mass = Mass;
     }
 
     public double getMass() {
-        System.out.println("Getting Mass: " + Mass);
+//        System.out.println("Getting Mass: " + Mass);
         return Mass;
     }
 
     public void setAngle(double Angle){
-        System.out.println("Setting Angle: " + Angle);
+//        System.out.println("Setting Angle: " + Angle);
         this.Angle = Angle;
     }
 
     public double getAngle() {
-        System.out.println("Getting Angle: " + Angle);
+//        System.out.println("Getting Angle: " + Angle);
         return Angle;
     }
 
     public void setGravity(double Gravity){
-        System.out.println("Setting Gravity: " + Gravity);
+//        System.out.println("Setting Gravity: " + Gravity);
         this.Gravity = Gravity;
     }
 
     public double getGravity() {
-        System.out.println("Getting Gravity: " + Gravity);
+//        System.out.println("Getting Gravity: " + Gravity);
         return Gravity;
     }
 
     public void setSpringConstant(double SpringConstant){
-        System.out.println("Setting SpringConstant: " + SpringConstant);
+//        System.out.println("Setting SpringConstant: " + SpringConstant);
         this.SpringConstant = SpringConstant;
     }
 
     public double getSpringConstant() {
-        System.out.println("Getting SpringConstant: " + SpringConstant);
+//        System.out.println("Getting SpringConstant: " + SpringConstant);
         return SpringConstant;
     }
 
     public void setVelocity(double Velocity){
-        System.out.println("Setting Velocity: " + Velocity);
+//        System.out.println("Setting Velocity: " + Velocity);
         this.Velocity = Velocity;
     }
 
     public double getVelocity() {
-        System.out.println("Getting Velocity: " + Velocity);
+//        System.out.println("Getting Velocity: " + Velocity);
         return Velocity;
     }
 
     public void setVerticalVelocity(double VerticalVelocity){
-        System.out.println("Setting VerticalVelocity: " + VerticalVelocity);
+//        System.out.println("Setting VerticalVelocity: " + VerticalVelocity);
         this.VerticalVelocity = VerticalVelocity;
     }
 
     public double getVerticalVelocity() {
-        System.out.println("Getting VerticalVelocity: " + VerticalVelocity);
+//        System.out.println("Getting VerticalVelocity: " + VerticalVelocity);
         return VerticalVelocity;
     }
 
     public void setHorizontalVelocity(double HorizontalVelocity){
-        System.out.println("Setting HorizontalVelocity: " + HorizontalVelocity);
+//        System.out.println("Setting HorizontalVelocity: " + HorizontalVelocity);
         this.HorizontalVelocity = HorizontalVelocity;
     }
 
     public double getHorizontalVelocity() {
-        System.out.println("Getting HorizontalVelocity: " + HorizontalVelocity);
+//        System.out.println("Getting HorizontalVelocity: " + HorizontalVelocity);
         return HorizontalVelocity;
     }
 
     public void setAngleRad(double AngleRad){
-        System.out.println("Setting AngleRad: " + AngleRad);
+//        System.out.println("Setting AngleRad: " + AngleRad);
         this.AngleRad = AngleRad;
     }
 
     public double getAngleRad() {
-        System.out.println("Getting AngleRad: " + AngleRad);
+//        System.out.println("Getting AngleRad: " + AngleRad);
         return AngleRad;
     }
 
     public void setHeight(double Height){
-        System.out.println("Setting Height: " + Height);
+//        System.out.println("Setting Height: " + Height);
         this.Height = Height;
     }
 
     public double getHeight() {
-        System.out.println("Getting Height: " + Height);
+//        System.out.println("Getting Height: " + Height);
         return Height;
     }
 
@@ -430,7 +430,7 @@ public class SpringPhysics {
         return time;
     }
 
-    public boolean intersectsAnyLine(double x, double y, double radius) {
+     public boolean intersectsAnyLine(double x, double y, double radius) {
         if (boundaryLines.isEmpty()) return false;
 
         for (Line line : boundaryLines) {

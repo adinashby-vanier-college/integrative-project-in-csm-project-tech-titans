@@ -43,6 +43,8 @@ public class StartingMenuController implements Initializable {
     @FXML
     private void handleGoToSettings(ActionEvent actionEvent) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/motionsim/NewSettingsScreen.fxml"));
+        fxmlLoader.setResources(ResourceBundle.getBundle("motionsim.messages",LanguageController.getCurrentLocale()));
+
         Parent nextRoot = fxmlLoader.load();
         Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         Scene scene = new Scene(nextRoot);

@@ -465,7 +465,7 @@ public class NewSettingsScreenController implements Initializable {
         }
         try {
             // Use class loader to load the resource file
-            URL resource = getClass().getResource("/motionsim/audio/" + fileName);
+            URL resource = getClass().getResource("/motionsim/songs/" + fileName);
             if (resource == null) {
                 throw new RuntimeException("File not found: " + fileName);
             }

@@ -27,6 +27,8 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.scene.text.Font;
@@ -216,6 +218,7 @@ public class IPCSMFXMLGameController implements Initializable {
     private Circle launchBall;
     private boolean isLaunched = false;
     private Label resetMessage;
+    private MediaPlayer mediaPlayer;
     @FXML
     private RadioButton EasyOption;
     @FXML
@@ -238,7 +241,7 @@ public class IPCSMFXMLGameController implements Initializable {
             });
         });
 
-        physics.setOutOfBoundsCallback(isOutOfBounds -> {
+       physics.setOutOfBoundsCallback(isOutOfBounds -> {
             if (isOutOfBounds) {
                 Platform.runLater(() -> {
                     showResetMessage();
@@ -289,6 +292,7 @@ public class IPCSMFXMLGameController implements Initializable {
         });
         physics.setGravity(Double.valueOf(GravityFieldLabel.getText()));
         physics.setSpringConstant(Double.valueOf(SpringConstantFieldLabel.getText()));
+        playMainMenuSong();
     }
 
     private void updateRealTimeHeight() {
@@ -520,7 +524,10 @@ public class IPCSMFXMLGameController implements Initializable {
     @FXML
     private void handleMenuGoToSettings() {
         try {
+            stopMusic(); // Stop the main menu song before switching
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/motionsim/SettingsScreen.fxml"));
+            loader.setResources(ResourceBundle.getBundle("motionsim.messages",LanguageController.getCurrentLocale()));
+
             Parent root = loader.load();
             Stage stage = (Stage) MenuBar.getScene().getWindow();
             stage.setScene(new Scene(root));
@@ -530,14 +537,35 @@ public class IPCSMFXMLGameController implements Initializable {
         }
     }
 
+    private void playMainMenuSong() {
+        try {
+            String musicPath = getClass().getResource("/motionsim/songs/MainMenuSong.mp3").toString();
+            Media media = new Media(musicPath);
+            mediaPlayer = new MediaPlayer(media);
+            mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE); // Loop the song
+            mediaPlayer.setVolume(0.5); // Set initial volume (adjust as needed)
+            mediaPlayer.play();
+            System.out.println("Playing Main Menu Song...");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error playing Main Menu Song: " + e.getMessage());
+        }
+    }
+    // Method to stop any currently playing song
+    private void stopMusic() {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+        }
+    }
+
     @FXML
     private void handleMenuGoToManual() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/motionsim/UserManual.fxml"));
             Parent root = loader.load();
-            Stage stage = (Stage) MenuBar.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
+            Stage popupStage = new Stage();
+            popupStage.setScene(new Scene(root));
+            popupStage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }

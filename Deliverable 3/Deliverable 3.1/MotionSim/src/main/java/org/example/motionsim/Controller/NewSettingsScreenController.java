@@ -89,8 +89,8 @@ public class NewSettingsScreenController {
     private Button HelpBtn;
     @FXML
     private ComboBox<?> ThemeComboBox;
-
-
+    
+    
 
 
     @FXML
@@ -107,9 +107,9 @@ public class NewSettingsScreenController {
         LanguageLabel.setOnMouseExited(e -> popup.hide());
         LanguageLabel.setOnMouseMoved(e -> {
         popup.setX(e.getScreenX() + 10);
-        popup.setY(e.getScreenY() + 10);
+        popup.setY(e.getScreenY() + 10); 
         });
-
+       
         VBox tooltipBox2 = new VBox();
         tooltipBox2.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-padding: 5px; -fx-spacing: 5px;");
         Popup popup2 = new Popup();
@@ -121,9 +121,9 @@ public class NewSettingsScreenController {
         GameplayLabel.setOnMouseExited(e -> popup2.hide());
         GameplayLabel.setOnMouseMoved(e -> {
         popup2.setX(e.getScreenX() + 10);
-        popup2.setY(e.getScreenY() + 10);
+        popup2.setY(e.getScreenY() + 10); 
         });
-
+        
         VBox tooltipBox3 = new VBox();
         tooltipBox3.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-padding: 5px; -fx-spacing: 5px;");
         Popup popup3 = new Popup();
@@ -135,9 +135,9 @@ public class NewSettingsScreenController {
         WallpaperLabel.setOnMouseExited(e -> popup3.hide());
         WallpaperLabel.setOnMouseMoved(e -> {
         popup3.setX(e.getScreenX() + 10);
-        popup3.setY(e.getScreenY() + 10);
+        popup3.setY(e.getScreenY() + 10); 
         });
-
+        
         VBox tooltipBox4 = new VBox();
         tooltipBox4.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-padding: 5px; -fx-spacing: 5px;");
         Popup popup4 = new Popup();
@@ -149,10 +149,10 @@ public class NewSettingsScreenController {
         AudioLabel.setOnMouseExited(e -> popup4.hide());
         AudioLabel.setOnMouseMoved(e -> {
         popup4.setX(e.getScreenX() + 10);
-        popup4.setY(e.getScreenY() + 10);
+        popup4.setY(e.getScreenY() + 10); 
         });
-
-    }
+        
+    }    
 
     @FXML
     private void handleLanguageComboBox(ActionEvent event) {
@@ -181,7 +181,7 @@ public class NewSettingsScreenController {
     @FXML
     private void handleThemeComboBox(ActionEvent event) {
     }
-
+    
 }
 /*
 package org.example.motionsim.Controller;
@@ -319,13 +319,12 @@ private void handleSFXMuteBox(ActionEvent event) {
  */
 package org.example.motionsim.Controller;
 
-import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -345,8 +344,7 @@ import javafx.scene.Node;
 import org.example.motionsim.Model.SpringPhysics;
 
 public class NewSettingsScreenController implements Initializable {
-    @FXML
-    private SpringPhysics physics = SpringPhysics.getInstance();
+
     @FXML
     private Rectangle TopRec, LanguageRec, GameplayRec, WallpaperRec, AudioRec, MusicVolumeRec, SFXVolumeRec, BottomRec;
     @FXML
@@ -374,13 +372,15 @@ public class NewSettingsScreenController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         setupVolumeControl();
-        //  loadMusic("SettingsMenuSong.wav");
+        //loadMusic("playSettingsMenuSong");
+        loadMusic("SettingsMenuSong.wav");
         setupTooltips();
-
+       // updateLanguage();
 // Language ComboBox setup
         LanguageComboBox.getItems().addAll("English", "Français");
         LanguageComboBox.setValue("English");
-
+        playSettingsMenuSong();
+        //updateLanguage();
 // Difficulty setup
         difficultyGroup = new ToggleGroup();
         EasyOption.setToggleGroup(difficultyGroup);
@@ -391,11 +391,15 @@ public class NewSettingsScreenController implements Initializable {
 // Wallpaper setup
         WallpaperComboBox.getItems().addAll("Default", "Dark Mode", "Light Mode");
         WallpaperComboBox.setValue("Default");
-
+if (MusicComboBox != null) {
+    MusicComboBox.getItems().addAll("Main Menu Song", "Settings Menu Song", "Song 1", "Song 2");
+    MusicComboBox.setValue("Main Menu Song");
+    loadMusic("MainMenuSong.mp3");
+} else {
+    System.err.println("Music is null");
+}
 // Music Selection setup
-        MusicComboBox.getItems().addAll("Main Menu Song", "Settings Menu Song", "Song 1", "Song 2");
-        MusicComboBox.setValue("Main Menu Song");
-        loadMusic("MainMenuSong.mp3");
+       // loadMusic("MainMenuSong.mp3");
 
 // Volume Slider setup
         MusicVolumeSlider.setMin(0);
@@ -420,7 +424,7 @@ public class NewSettingsScreenController implements Initializable {
     private void handlePlayMusic(ActionEvent event) {
         try {
             // Update the path to the song file accordingly
-            String musicPath = "file:src/main/resources/motionsim/audio/SettingsMenuSong.wav";
+            String musicPath = "file:src/main/resources/motionsim/songs/SettingsMenuSong.wav";
             Media media = new Media(new File(musicPath).toURI().toString());
             mediaPlayer = new MediaPlayer(media);
             mediaPlayer.play();
@@ -465,7 +469,7 @@ public class NewSettingsScreenController implements Initializable {
         }
         try {
             // Use class loader to load the resource file
-            URL resource = getClass().getResource("/motionsim/audio/" + fileName);
+            URL resource = getClass().getResource("/motionsim/songs/" + fileName);
             if (resource == null) {
                 throw new RuntimeException("File not found: " + fileName);
             }
@@ -478,14 +482,33 @@ public class NewSettingsScreenController implements Initializable {
             e.printStackTrace();
         }
     }
-
+    @FXML
+    private void playSettingsMenuSong() {
+        try {
+            String musicPath = getClass().getResource( "/motionsim/songs/SettingsMenuSong.wav").toString();
+            Media media = new Media(musicPath);
+            mediaPlayer = new MediaPlayer(media);
+            mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE); // Loop the song
+            mediaPlayer.setVolume(MusicVolumeSlider.getValue() / 100.0); //
+            mediaPlayer.play();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    private void stopSettingsMenuSong() {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            System.out.println("Settings Menu song stopped");
+        }
+    }
     @FXML
     private void handleVolumeChange() {
         if (mediaPlayer != null) {
             mediaPlayer.setVolume(MusicVolumeSlider.getValue() / 100);
         }
     }
-
+/*
     @FXML
     private void handleMusicSelection(ActionEvent event) {
         String selectedMusic = MusicComboBox.getValue();
@@ -504,13 +527,35 @@ public class NewSettingsScreenController implements Initializable {
                 break;
         }
     }
-
+*/
     @FXML
     private void handleLanguageComboBox(ActionEvent event) {
         String language = LanguageComboBox.getValue();
-        Locale.setDefault(language.equals("Français") ? Locale.FRENCH : Locale.ENGLISH);
-        System.out.println("Language set to: " + language);
+        //Locale.setDefault(language.equals("Français") ? Locale.FRENCH : Locale.ENGLISH);
+        //System.out.println("Language set to: " + language);
+        LanguageController.setLanguage(language);
         updateLanguage();
+    }
+
+    @FXML
+    private void handleLanguageChange(ActionEvent event) {
+        String selectedlanguage = LanguageComboBox.getValue();
+        LanguageController.setLanguage(selectedlanguage);
+        updateLanguage();
+    }
+    private void playMainMenuSong() {
+        try {
+            String musicPath = getClass().getResource("/resources/motionsim/songs/MainMenuSong.mp3").toString();
+            Media media = new Media(musicPath);
+            mediaPlayer = new MediaPlayer(media);
+            mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE); // Loop the song
+            mediaPlayer.setVolume(MusicVolumeSlider.getValue() / 100.0); // Set initial volume
+            mediaPlayer.play();
+            System.out.println("Playing Main Menu Song...");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error playing Main Menu Song: " + e.getMessage());
+        }
     }
 
     @FXML
@@ -525,6 +570,14 @@ public class NewSettingsScreenController implements Initializable {
         double volume = MusicVolumeSlider.getValue() / 100.0;
         mediaPlayer.setVolume(volume);
         System.out.println("Music Volume: " + volume);
+    }
+    @FXML
+    private void handleMuteToggle(ActionEvent event) {
+        if (MusicVolumeMuteBox.isSelected()) {
+            mediaPlayer.setMute(true);
+        } else {
+            mediaPlayer.setMute(false);
+        }
     }
 
     @FXML
@@ -544,7 +597,7 @@ public class NewSettingsScreenController implements Initializable {
             e.printStackTrace();
         }
     }
-
+/*
     @FXML
     private void handleExitBtn(ActionEvent event) {
         try {
@@ -556,7 +609,22 @@ public class NewSettingsScreenController implements Initializable {
             e.printStackTrace();
         }
     }
-
+*/
+    @FXML
+    private void handleExitBtn(ActionEvent event) {
+        try {
+           // stopSettingsMenuSong();
+           // playMainMenuSong();
+            loadMusic("MainMenuSong.mp3");
+            Parent mainRoot = FXMLLoader.load(getClass().getResource("/motionsim/IPCSMFXMLGame.fxml"));
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(mainRoot));
+            stage.show();
+            System.out.println("Swicthed to Main menu song");
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     @FXML
     private void handleDefaultBtn(ActionEvent event) {
         LanguageComboBox.setValue("English");
@@ -567,6 +635,7 @@ public class NewSettingsScreenController implements Initializable {
         SFXVolumeMuteBox.setSelected(false);
         System.out.println("Settings reset to default.");
     }
+
     @FXML
     private void setupVolumeControl() {
         MusicVolumeSlider.setMin(0);
@@ -589,22 +658,42 @@ public class NewSettingsScreenController implements Initializable {
         MusicVolumeLabel.setText(LanguageController.getString("settings.music"));
         SFXVolumeLabel.setText(LanguageController.getString("settings.sfx"));
         MusicVolumeMuteBox.setText(LanguageController.getString("settings.mute"));
+        EasyOption.setText(LanguageController.getString("settings.easy"));
+        NormalOption.setText(LanguageController.getString("settings.normal"));
+        HardOption.setText(LanguageController.getString("settings.hard"));
         SaveBtn.setText(LanguageController.getString("settings.save"));
         ExitBtn.setText(LanguageController.getString("settings.exit"));
         HelpBtn.setText(LanguageController.getString("settings.help"));
+        DefaultBtn.setText(LanguageController.getString("settings.default"));
+    ThemeComboBox.getItems().setAll(
+            LanguageController.getString("settings.light"),LanguageController.getString("settings.dark"),LanguageController.getString("settings.default")
+    );
+    WallpaperComboBox.getItems().setAll(
+            LanguageController.getString("settings.light"),LanguageController.getString("settings.dark"),LanguageController.getString("settings.default")
+                );
     }
-    private void EasyMode(ActionEvent event){
+    @FXML
+    private void handleThemeComboBox() {
+        String selectedTheme = ThemeComboBox.getValue();
+        if (selectedTheme.equals("Dark")) {
+            System.out.println("Theme set to Dark");
+        }else {
+            System.out.println("Theme set to light");
+        }
+    }
+
+    private void EasyMode(java.awt.event.ActionEvent event){
         SpringPhysics physics = SpringPhysics.getInstance();
         physics.setGravity(9.81);
         physics.setSpringConstant(10);
         System.out.println("Easy mode selected: gravity = 9.81, k = 10");
     }
-    private void NormalMode(ActionEvent event){
+    private void NormalMode(java.awt.event.ActionEvent event){
         SpringPhysics physics = SpringPhysics.getInstance();
         physics.setSpringConstant(10);
         System.out.println("Normal mode selected: k = 10");
     }
-    private void HardMode(ActionEvent event){
+    private void HardMode(java.awt.event.ActionEvent event){
         SpringPhysics physics = SpringPhysics.getInstance();
     }
 }
