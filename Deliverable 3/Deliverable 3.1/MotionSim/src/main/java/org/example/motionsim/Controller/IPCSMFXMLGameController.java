@@ -106,6 +106,8 @@ public class IPCSMFXMLGameController implements Initializable {
     private Rectangle TimeRemainingRec;
     @FXML
     private Label TimeRemainingLabel;
+    private Timeline gameTimer;
+    private int timeRemaining = 60;
     @FXML
     private Rectangle TimeRemainingFieldRec;
     @FXML
@@ -478,6 +480,7 @@ public class IPCSMFXMLGameController implements Initializable {
 
         isLaunched = true;
         physics.play();
+        startGameTimer();
     }
 
     @FXML
@@ -632,5 +635,36 @@ public class IPCSMFXMLGameController implements Initializable {
         SpringPhysics physics = SpringPhysics.getInstance();
         double RandomGravity = 5 + Math.random() * 15;
     }
+    private void startGameTimer() {
+        timeRemaining = 60;
+        TimeRemainingFieldLabel.setText(String.valueOf(timeRemaining));
 
+        gameTimer = new TimeLine(new KeyFrame(Duration.seconds(1), e->{
+            timeRemaining--;
+            TimeRemainingFieldLabel.setTecxt(String.valueOf(timeRemaining));
+        if (timeRemaining <= 0) {
+            gameTimer.stop();
+            endGame();
+        }
+
+        }));
+        gameTimer.setCycleCount(Timeline.INDEFINITE);
+        gameTimer.play();
+
+    }
+    private void endGame(){
+        physics.pause();
+        Label gameOverLabel = new Label("Game Over!");
+        gameOverLabel.setstyle("-fx-font-size: 36px; -fx-text-fill: red;");
+        gameOverLabel.setLayoutX((AnimationPane.getWidth() - 200) / 2);
+        gameOverLabel.setLayoutY((AnimationPane.getHeight() - 50) / 2);
+        AnimationPane.getChildren().add(gameOverLabel);
+
+        if(launchball != null) {
+            launchBall.setVisisble(false);
+        }
+        ball.setVisible(false);
+        StartBtn.setDisable(true);
+        ResetBtn.setDisable(true);
+    }
 }
