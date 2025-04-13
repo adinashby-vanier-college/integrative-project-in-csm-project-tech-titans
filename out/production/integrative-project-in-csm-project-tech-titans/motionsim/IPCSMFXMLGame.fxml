@@ -47,6 +47,7 @@
             </MenuBar>
             <Pane fx:id="AnimationPane" layoutX="501.0" layoutY="27.0" prefHeight="775.0" prefWidth="951.0">
                <children>
+                  <ImageView fx:id="Basket" layoutX="1350" layoutY="500" fitWidth="60" fitHeight="80" image="">
                   <AnchorPane fx:id="SpringPane" layoutY="568.0" prefHeight="200.0" prefWidth="277.0">
                      <children>
                         <Group fx:id="groupSpring" layoutX="-13.0" layoutY="105.0" rotate="-2.0">

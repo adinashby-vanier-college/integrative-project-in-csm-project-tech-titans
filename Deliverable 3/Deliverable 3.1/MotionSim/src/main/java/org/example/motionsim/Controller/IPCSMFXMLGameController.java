@@ -227,6 +227,8 @@ public class IPCSMFXMLGameController implements Initializable {
     private RadioButton NormalOption;
     @FXML
     private RadioButton HardOption;
+    @FXML
+    private ImageView Basket;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -623,7 +625,9 @@ public class IPCSMFXMLGameController implements Initializable {
         NormalRandomization();
         else if (HardOption.isSelected())
             HardRandomization();
-        }
+    }
+
+
     private void NormalRandomization(){
         SpringPhysics physics = SpringPhysics.getInstance();
         double RandomGravity = 5 + Math.random() * 15;
@@ -635,13 +639,23 @@ public class IPCSMFXMLGameController implements Initializable {
         SpringPhysics physics = SpringPhysics.getInstance();
         double RandomGravity = 5 + Math.random() * 15;
     }
+    private void checkCollisionWithBasket() {
+        if (launchBall == null || !launchBall.isVisible()) return;
+
+        Bounds ballBounds = launchBall.localToScene(launchBall.getBoundsInLocal());
+        Bounds basketBounds = Basket.localToScene(Basket.getBoundsInLocal());
+
+        if (ballBounds.intersects(basketBounds)) {
+            System.out.println("🏀 Score!");
+        }
+    }
     private void startGameTimer() {
         timeRemaining = 60;
         TimeRemainingFieldLabel.setText(String.valueOf(timeRemaining));
 
-        gameTimer = new TimeLine(new KeyFrame(Duration.seconds(1), e->{
+        gameTimer = new Timeline(new KeyFrame(Duration.seconds(1), e->{
             timeRemaining--;
-            TimeRemainingFieldLabel.setTecxt(String.valueOf(timeRemaining));
+            TimeRemainingFieldLabel.setText(String.valueOf(timeRemaining));
         if (timeRemaining <= 0) {
             gameTimer.stop();
             endGame();
@@ -655,13 +669,13 @@ public class IPCSMFXMLGameController implements Initializable {
     private void endGame(){
         physics.pause();
         Label gameOverLabel = new Label("Game Over!");
-        gameOverLabel.setstyle("-fx-font-size: 36px; -fx-text-fill: red;");
+        gameOverLabel.setStyle("-fx-font-size: 36px; -fx-text-fill: red;");
         gameOverLabel.setLayoutX((AnimationPane.getWidth() - 200) / 2);
         gameOverLabel.setLayoutY((AnimationPane.getHeight() - 50) / 2);
         AnimationPane.getChildren().add(gameOverLabel);
 
         if(launchball != null) {
-            launchBall.setVisisble(false);
+            launchBall.setVisible(false);
         }
         ball.setVisible(false);
         StartBtn.setDisable(true);
