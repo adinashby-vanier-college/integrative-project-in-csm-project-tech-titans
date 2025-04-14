@@ -39,7 +39,7 @@ import java.util.ResourceBundle;
 
 public class LanguageController {
     private static Locale currentLocale = Locale.ENGLISH;
-    private static ResourceBundle bundle = ResourceBundle.getBundle("messages",currentLocale);
+    private static ResourceBundle bundle = ResourceBundle.getBundle("message",currentLocale);
     public static void setLanguage(String language) {
         if (language.equalsIgnoreCase("Français")) {
             currentLocale = Locale.FRENCH;
@@ -49,10 +49,6 @@ public class LanguageController {
         }
         bundle = ResourceBundle.getBundle("messages",currentLocale);
     } public static String getString(String key ) {
-
         return bundle.getString(key);
-    }
-    public static Locale getCurrentLocale() {
-        return currentLocale;
     }
 }

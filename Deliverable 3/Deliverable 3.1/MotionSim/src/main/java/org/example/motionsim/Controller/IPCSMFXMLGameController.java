@@ -5,10 +5,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import javafx.animation.Interpolator;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
+
+import javafx.animation.FadeTransition;
+import javafx.animation.PauseTransition;
+import javafx.animation.SequentialTransition;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.event.ActionEvent;
@@ -21,15 +23,15 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.Slider;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
+import javafx.scene.text.Font;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -104,6 +106,8 @@ public class IPCSMFXMLGameController implements Initializable {
     private Rectangle TimeRemainingRec;
     @FXML
     private Label TimeRemainingLabel;
+    private Timeline gameTimer;
+    private int timeRemaining = 60;
     @FXML
     private Rectangle TimeRemainingFieldRec;
     @FXML
@@ -176,34 +180,12 @@ public class IPCSMFXMLGameController implements Initializable {
     private Line springPath;
     @FXML
     private Pane spring;
-    private List<Arc> springArcs;
-    private List<Double> originalArcRadius = new ArrayList<>();
-    private List<Double> originalArcPositions = new ArrayList<>();
-
-    private Point2D initialBallPosition;
-    private Point2D lineStart;
-    private Point2D lineEnd;
-    private DoubleProperty amplitude = new SimpleDoubleProperty(0.0);
-    private double maxSpringDistance;
     @FXML
     private Circle springAdjuster;
     @FXML
     private AnchorPane SpringPane;
     @FXML
     private Group groupSpring;
-    @FXML
-    private Arc SpringAdjusterPath;
-
-    private static double CenterX = -20;
-    private static double CenterY = 99;
-    private static double RadiusX = 100;
-    private static double RadiusY = 100;
-    private static double StartAngle = 0;
-    private static double Length = 90;
-    private static double springConstant = 10;
-    private double angle;
-    private double mass = 5;
-    private double gravity = 9.8;
     @FXML
     private Rectangle MassRec;
     @FXML
@@ -214,15 +196,63 @@ public class IPCSMFXMLGameController implements Initializable {
     private Label MassFieldLabel;
     @FXML
     private Slider MassSlider;
+    @FXML
+    private Label HeightLabel;
+    @FXML
+    private Label HeightFieldLabel;
+    @FXML
+    private Rectangle HeightFieldRec;
+    @FXML
+    private Rectangle HeightRec;
+    @FXML
+    private Line RightBorderLine;
+
+    private SpringPhysics physics;
+    private Point2D originalSpringEndPosition;
+    private List<Arc> springArcs;
+    private List<Double> originalArcRadius = new ArrayList<>();
+    private List<Double> originalArcPositions = new ArrayList<>();
+    private Point2D initialBallPosition;
+    private Point2D lineStart;
+    private Point2D lineEnd;
+    private DoubleProperty amplitude = new SimpleDoubleProperty(0.0);
+    private double maxSpringDistance;
+    private Circle launchBall;
+    private boolean isLaunched = false;
+    private Label resetMessage;
+    private MediaPlayer mediaPlayer;
+    @FXML
+    private RadioButton EasyOption;
+    @FXML
+    private RadioButton NormalOption;
+    @FXML
+    private RadioButton HardOption;
+    @FXML
+    private ImageView Basket;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        double initialAngle = Math.toRadians(StartAngle);
-        groupSpring.setLayoutX(CenterX + RadiusX * Math.cos(initialAngle));
-        groupSpring.setLayoutY(CenterY - RadiusY * Math.sin(initialAngle));
-
+        physics = SpringPhysics.getInstance();
+        physics.setObject(ball);
+        physics.addBoundaryLine(RightBorderLine);
         attachBallToLineEnd();
+
+        physics.setVelocityUpdateCallback(velocities -> {
+            Platform.runLater(() -> {
+                VVelocityFieldLabel.setText(String.format("%.2f", -velocities.getY())); // Negative because Y is inverted
+                HVelocityFieldLabel.setText(String.format("%.2f", velocities.getX()));
+            });
+        });
+
+       physics.setOutOfBoundsCallback(isOutOfBounds -> {
+            if (isOutOfBounds) {
+                Platform.runLater(() -> {
+                    showResetMessage();
+                    handleResetBtn(new ActionEvent());
+                });
+            }
+        });
 
         AmplitudeSlider.setMin(0);
         AmplitudeSlider.setMax(maxSpringDistance);
@@ -230,6 +260,8 @@ public class IPCSMFXMLGameController implements Initializable {
         amplitude.addListener((obs, oldVal, newVal) -> {
             AmplitudeFieldLabel.setText(String.format("%.2f", newVal.doubleValue()));
             updateBallPosition(newVal.doubleValue());
+            physics.setAmplitude(Double.valueOf(AmplitudeFieldLabel.getText()));
+            updateRealTimeHeight();
         });
 
         springArcs = new ArrayList<>();
@@ -243,13 +275,14 @@ public class IPCSMFXMLGameController implements Initializable {
         }
 
         MassSlider.setMin(0);
-        MassSlider.setMax(100);
+        MassSlider.setMax(15);
         MassSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
             MassFieldLabel.setText(String.format("%.2f", newValue.doubleValue()));
+            physics.setMass(Double.valueOf(MassFieldLabel.getText()));
         });
 
         AngleSlider.setMin(0);
-        AngleSlider.setMax(75);
+        AngleSlider.setMax(65);
         AngleFieldLabel.textProperty().bind(AngleSlider.valueProperty().asString("%.2f"));
         Rotate rotate = new Rotate();
         groupSpring.getTransforms().add(rotate);
@@ -257,7 +290,29 @@ public class IPCSMFXMLGameController implements Initializable {
         rotate.setPivotY(89);
         AngleSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
             rotate.setAngle(newValue.doubleValue()*(-1));
+            physics.setAngle(Double.valueOf(AngleFieldLabel.getText()));
+            physics.setAngleRad(physics.calculateAngleRad(physics.getAngle()));
+            updateRealTimeHeight();
         });
+        physics.setGravity(Double.valueOf(GravityFieldLabel.getText()));
+        physics.setSpringConstant(Double.valueOf(SpringConstantFieldLabel.getText()));
+        playMainMenuSong();
+    }
+
+    private void updateRealTimeHeight() {
+        double angleDegrees = Double.parseDouble(AngleFieldLabel.getText());
+        double angleRadians = Math.toRadians(angleDegrees);
+
+        double currentAmplitude = Double.parseDouble(AmplitudeFieldLabel.getText());
+
+        double rawHeight = (maxSpringDistance - currentAmplitude) * Math.sin(angleRadians);
+
+        if (Math.abs(rawHeight) < 1e-9) {
+            rawHeight = 0.0;
+        }
+
+        HeightFieldLabel.setText(String.format("%.2f", rawHeight));
+        physics.setHeight(Double.valueOf(HeightFieldLabel.getText()));
     }
 
     /**
@@ -280,16 +335,23 @@ public class IPCSMFXMLGameController implements Initializable {
         double lineEndXInPane = springPath.getLayoutX() + springPath.getEndX();
         double lineEndYInPane = springPath.getLayoutY() + springPath.getEndY();
 
+        originalSpringEndPosition = new Point2D(lineEndXInPane, lineEndYInPane);
+
         ball.setLayoutX(lineEndXInPane);
         ball.setLayoutY(lineEndYInPane);
 
-        // These lines find the initial ball position and calculate the line direction
+        physics.setInitialPosition(lineEndXInPane, lineEndYInPane);
+
         initialBallPosition = new Point2D(lineEndXInPane, lineEndYInPane);
         lineStart = new Point2D(springPath.getLayoutX() + springPath.getStartX(),
                 springPath.getLayoutY() + springPath.getStartY());
         lineEnd = initialBallPosition;
 
         maxSpringDistance = lineStart.distance(lineEnd);
+
+        System.out.println("Initial Setup:");
+        System.out.println("Spring End Position: " + originalSpringEndPosition);
+        System.out.println("Ball Position: (" + ball.getLayoutX() + ", " + ball.getLayoutY() + ")");
     }
 
     /**
@@ -297,17 +359,15 @@ public class IPCSMFXMLGameController implements Initializable {
      */
     @FXML
     private void handleBallDrag(MouseEvent event) {
-        // This converts the mouse position from scene coords to the pane's local coords
+        if (isLaunched) return;
+
         Point2D mousePosInLocal = ball.getParent().sceneToLocal(event.getSceneX(), event.getSceneY());
-        // This part projects onto the line in that same local coordinate system.
         Point2D projectedPoint = projectPointOntoLine(mousePosInLocal, lineStart, lineEnd);
 
-        // Prevents the ball from being moved forward
         if (projectedPoint.distance(lineStart) > lineStart.distance(lineEnd)) {
             return;
         }
 
-        // Makes sure the ball moves strictly along the line.
         ball.setLayoutX(projectedPoint.getX());
         ball.setLayoutY(projectedPoint.getY());
 
@@ -315,8 +375,9 @@ public class IPCSMFXMLGameController implements Initializable {
 
         amplitude.set(currentDistance);
 
-        double maxDistance = lineStart.distance(lineEnd);
+        updateRealTimeHeight();
 
+        double maxDistance = lineStart.distance(lineEnd);
         double compressionRatio = currentDistance/maxDistance;
 
         compressArcs(compressionRatio);
@@ -326,12 +387,9 @@ public class IPCSMFXMLGameController implements Initializable {
      * Compresses arcs based on a ratio.
      */
     private void compressArcs(double compressionRatio) {
-        // Decide how small arcs get at maximum compression
-        // arcs are half their original radius at ratio=1
+
         double minRadiusFactor = 0.5;
-        // Same logic for spacing
         double minSpacingFactor = 0.2;
-        // Arc #0 is leftmost arc which we'll compress distances relative to it.
         double anchorX = originalArcPositions.get(0);
 
         for (int i = 0; i < springArcs.size(); i++) {
@@ -364,47 +422,92 @@ public class IPCSMFXMLGameController implements Initializable {
         Point2D pointVector = projectPoint.subtract(lineStart);
 
         double projectionScale = pointVector.dotProduct(lineVector) / lineVector.dotProduct(lineVector);
-        projectionScale = Math.max(0, Math.min(1, projectionScale)); // Clamping to the line segment
+        projectionScale = Math.max(0, Math.min(1, projectionScale));
 
         return lineStart.add(lineVector.multiply(projectionScale));
     }
 
     @FXML
     private void handleStartBtn(ActionEvent event) {
-        double currentAmplitude = amplitude.get();
-        double velocity = SpringPhysics.calculateLaunchVelocity(springConstant, mass, currentAmplitude);
-        double angleDeg = AngleSlider.getValue();
-        double angleRad = Math.toRadians(angleDeg);
+        if (isLaunched) return;
 
-        double xVelocity = velocity * Math.cos(angleRad);
-        double yVelocity = -velocity * Math.sin(angleRad);
+        VVelocityFieldLabel.setText(String.format("%.2f", physics.getVerticalVelocity()*(-1)));
+        HVelocityFieldLabel.setText(String.format("%.2f", physics.getHorizontalVelocity()));
 
-        Timeline ballTimeline = new Timeline(new KeyFrame(Duration.millis(16), e -> {
-            // 16 ms = 60 fps
-            double dt = 0.016;
+        physics.setOutOfBoundsCallback(isOutOfBounds -> {
+            if (isOutOfBounds) {
+                Platform.runLater(() -> {
+                    showResetMessage();
+                    handleResetBtn(new ActionEvent());
+                });
+            }
+        });
 
-            double x = ball.getLayoutX();
-            double y = ball.getLayoutY();
+        launchBall = new Circle();
+        launchBall.setRadius(ball.getRadius());
+        launchBall.setFill(ball.getFill());
+        launchBall.setStroke(ball.getStroke());
+        launchBall.setStrokeType(ball.getStrokeType());
 
-            x += xVelocity * dt;
-            y += yVelocity * dt;
+        double angle = physics.getAngle();
+        double angleRad = Math.toRadians(angle);
 
-            ball.setLayoutX(x);
-            ball.setLayoutY(y);
-        }));
-        ballTimeline.setCycleCount(Timeline.INDEFINITE);
+        Point2D ballScenePos = ball.localToScene(0, 0);
+        Point2D ballPanePos = AnimationPane.sceneToLocal(ballScenePos);
 
-        // This animates the spring returning back to its original state when launch happens
-        KeyValue amplitudeToZero = new KeyValue(amplitude, 0, Interpolator.EASE_OUT);
-        KeyFrame springResetFrame = new KeyFrame(Duration.millis(300), amplitudeToZero);
-        Timeline springReturn = new Timeline(springResetFrame);
+        launchBall.setLayoutX(ballPanePos.getX());
+        launchBall.setLayoutY(ballPanePos.getY());
 
-        ballTimeline.play();
-        springReturn.play();
+        AnimationPane.getChildren().add(launchBall);
+
+        ball.setVisible(false);
+
+        double launchVelocity = physics.calculateLaunchVelocity(
+                physics.getSpringConstant(),
+                physics.getMass(),
+                physics.getAmplitude()
+        );
+
+        double horizontalVelocity = launchVelocity * Math.cos(angleRad);
+        double verticalVelocity = -launchVelocity * Math.sin(angleRad);
+
+        physics.setObject(launchBall);
+        physics.setInitialPosition(ballPanePos.getX(), ballPanePos.getY());
+        physics.setVelocity(launchVelocity);
+        physics.setHorizontalVelocity(horizontalVelocity);
+        physics.setVerticalVelocity(verticalVelocity);
+        physics.addBoundaryLine(RightBorderLine);
+
+        System.out.println("\nStarting Launch\n");
+
+        isLaunched = true;
+        physics.play();
+        startGameTimer();
     }
 
     @FXML
     private void handleResetBtn(ActionEvent event) {
+        physics.reset();
+
+        VVelocityFieldLabel.setText("0.00");
+        HVelocityFieldLabel.setText("0.00");
+
+        if (launchBall != null) {
+            AnimationPane.getChildren().remove(launchBall);
+            launchBall = null;
+        }
+
+        ball.setVisible(true);
+
+        ball.setLayoutX(originalSpringEndPosition.getX());
+        ball.setLayoutY(originalSpringEndPosition.getY());
+
+        physics.setObject(ball);
+
+        amplitude.set(0);
+        isLaunched = false;
+
+        updateRealTimeHeight();
     }
 
     @FXML
@@ -424,26 +527,12 @@ public class IPCSMFXMLGameController implements Initializable {
     }
 
     @FXML
-    public void handleSpringAdjuster(MouseEvent event) {
-        double dx = event.getX() - CenterX;
-        double dy = event.getY() - CenterY;
-        angle = Math.toDegrees(Math.atan2(-dy, dx));
-
-        if (angle < 0) {
-            angle += 360;
-        }
-
-        if (angle >= StartAngle && angle <= StartAngle + Length) {
-            double radianAngle = Math.toRadians(angle);
-            groupSpring.setLayoutX(CenterX + RadiusX * Math.cos(radianAngle));
-            groupSpring.setLayoutY(CenterY - RadiusY * Math.sin(radianAngle));
-        }
-    }
-
-    @FXML
     private void handleMenuGoToSettings() {
         try {
+            stopMusic(); // Stop the main menu song before switching
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/motionsim/SettingsScreen.fxml"));
+            loader.setResources(ResourceBundle.getBundle("motionsim.messages",LanguageController.getCurrentLocale()));
+
             Parent root = loader.load();
             Stage stage = (Stage) MenuBar.getScene().getWindow();
             stage.setScene(new Scene(root));
@@ -453,14 +542,35 @@ public class IPCSMFXMLGameController implements Initializable {
         }
     }
 
+    private void playMainMenuSong() {
+        try {
+            String musicPath = getClass().getResource("/motionsim/songs/MainMenuSong.mp3").toString();
+            Media media = new Media(musicPath);
+            mediaPlayer = new MediaPlayer(media);
+            mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE); // Loop the song
+            mediaPlayer.setVolume(0.5); // Set initial volume (adjust as needed)
+            mediaPlayer.play();
+            System.out.println("Playing Main Menu Song...");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error playing Main Menu Song: " + e.getMessage());
+        }
+    }
+    // Method to stop any currently playing song
+    private void stopMusic() {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+        }
+    }
+
     @FXML
     private void handleMenuGoToManual() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/motionsim/UserManual.fxml"));
             Parent root = loader.load();
-            Stage stage = (Stage) MenuBar.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
+            Stage popupStage = new Stage();
+            popupStage.setScene(new Scene(root));
+            popupStage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -477,5 +587,98 @@ public class IPCSMFXMLGameController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void showResetMessage() {
+
+        if (resetMessage == null) {
+            resetMessage = new Label("BALL RESET OUT OF BOUNDS");
+            resetMessage.setTextFill(Color.RED);
+            resetMessage.setFont(new Font("System Bold", 24));
+            resetMessage.setOpacity(0); // Start invisible
+        }
+
+        resetMessage.setLayoutX((AnimationPane.getWidth() - resetMessage.getWidth()) / 2);
+        resetMessage.setLayoutY((AnimationPane.getHeight() - resetMessage.getHeight()) / 2);
+
+        if (!AnimationPane.getChildren().contains(resetMessage)) {
+            AnimationPane.getChildren().add(resetMessage);
+        }
+
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(200), resetMessage);
+        fadeIn.setFromValue(0.0);
+        fadeIn.setToValue(1.0);
+
+        FadeTransition fadeOut = new FadeTransition(Duration.millis(200), resetMessage);
+        fadeOut.setFromValue(1.0);
+        fadeOut.setToValue(0.0);
+
+        PauseTransition pause = new PauseTransition(Duration.millis(600));
+
+        SequentialTransition sequence = new SequentialTransition(fadeIn, pause, fadeOut);
+        sequence.setOnFinished(e -> AnimationPane.getChildren().remove(resetMessage));
+
+        sequence.play();
+    }
+    private void handleScore(){
+        if(NormalOption.isSelected())
+        NormalRandomization();
+        else if (HardOption.isSelected())
+            HardRandomization();
+    }
+
+
+    private void NormalRandomization(){
+        SpringPhysics physics = SpringPhysics.getInstance();
+        double RandomGravity = 5 + Math.random() * 15;
+        physics.setGravity(RandomGravity);
+        GravityFieldLabel.setText(String.format("%.2f", RandomGravity));
+
+    }
+    private void HardRandomization(){
+        SpringPhysics physics = SpringPhysics.getInstance();
+        double RandomGravity = 5 + Math.random() * 15;
+    }
+    private void checkCollisionWithBasket() {
+        if (launchBall == null || !launchBall.isVisible()) return;
+
+        Bounds ballBounds = launchBall.localToScene(launchBall.getBoundsInLocal());
+        Bounds basketBounds = Basket.localToScene(Basket.getBoundsInLocal());
+
+        if (ballBounds.intersects(basketBounds)) {
+            System.out.println("🏀 Score!");
+        }
+    }
+    private void startGameTimer() {
+        timeRemaining = 60;
+        TimeRemainingFieldLabel.setText(String.valueOf(timeRemaining));
+
+        gameTimer = new Timeline(new KeyFrame(Duration.seconds(1), e->{
+            timeRemaining--;
+            TimeRemainingFieldLabel.setText(String.valueOf(timeRemaining));
+        if (timeRemaining <= 0) {
+            gameTimer.stop();
+            endGame();
+        }
+
+        }));
+        gameTimer.setCycleCount(Timeline.INDEFINITE);
+        gameTimer.play();
+
+    }
+    private void endGame(){
+        physics.pause();
+        Label gameOverLabel = new Label("Game Over!");
+        gameOverLabel.setStyle("-fx-font-size: 36px; -fx-text-fill: red;");
+        gameOverLabel.setLayoutX((AnimationPane.getWidth() - 200) / 2);
+        gameOverLabel.setLayoutY((AnimationPane.getHeight() - 50) / 2);
+        AnimationPane.getChildren().add(gameOverLabel);
+
+        if(launchball != null) {
+            launchBall.setVisible(false);
+        }
+        ball.setVisible(false);
+        StartBtn.setDisable(true);
+        ResetBtn.setDisable(true);
     }
 }

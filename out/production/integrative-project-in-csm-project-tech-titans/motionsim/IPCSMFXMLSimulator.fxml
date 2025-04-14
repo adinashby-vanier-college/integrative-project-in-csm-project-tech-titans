@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
 <?import javafx.scene.Group?>
 <?import javafx.scene.chart.BarChart?>
 <?import javafx.scene.chart.CategoryAxis?>
@@ -30,45 +32,43 @@
                   <MenuItem mnemonicParsing="false" text="Close" />
                </items>
             </Menu>
-            <Menu mnemonicParsing="false" text="Edit">
-               <items>
-                  <MenuItem mnemonicParsing="false" text="Delete" />
-               </items>
-            </Menu>
             <Menu mnemonicParsing="false" text="Help">
                <items>
-                  <MenuItem mnemonicParsing="false" text="About" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleMenuGoToManual" text="User Manual" />
                </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Settings">
                <items>
-                  <MenuItem mnemonicParsing="false" text="Action 1" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleMenuGoToSettings" text="Settings Menu" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Switch Simulator Mode">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#handleMenuGoToGame" text="Game" />
                </items>
             </Menu>
          </menus>
       </MenuBar>
-      <Pane fx:id="AnimationPane" layoutX="502.0" layoutY="-325.0" prefHeight="927.0" prefWidth="1301.0">
+      <Pane fx:id="AnimationPane" layoutX="502.0" layoutY="25.0" prefHeight="575.0" prefWidth="947.0">
          <children>
-            <AnchorPane fx:id="SpringPane" layoutY="720.0" prefHeight="214.0" prefWidth="277.0">
+            <AnchorPane fx:id="SpringPane" layoutY="361.0" prefHeight="214.0" prefWidth="277.0">
                <children>
-                  <Arc fx:id="SpringAdjusterPath" fill="DODGERBLUE" layoutX="11.0" layoutY="221.0" length="90.0" radiusX="100.0" radiusY="127.0" startAngle="6.3" stroke="BLACK" strokeType="INSIDE" strokeWidth="5.0" style="-fx-fill: TRANSPARENT;" />
-                  <Group fx:id="groupSpring" layoutX="120.0" layoutY="135.0">
+                  <Group fx:id="groupSpring" layoutX="14.0" layoutY="165.0">
                      <children>
-                        <Pane fx:id="spring" layoutX="-22.0" layoutY="22.0" prefHeight="53.0" prefWidth="162.0" style="-fx-view-order: 1;">
+                        <Pane fx:id="spring" prefHeight="50.0" prefWidth="162.0" style="-fx-view-order: 1;">
                            <children>
-                              <Line fx:id="springPath" endX="152.5" endY="32.10357666015625" startX="58.64642333984375" startY="32.10357666015625" style="-fx-stroke: TRANSPARENT;" />
+                              <Line fx:id="springPath" endX="156.0" endY="25.0" startX="58.64642333984375" startY="32.10357666015625" style="-fx-stroke: TRANSPARENT;" />
                               <Arc fill="DODGERBLUE" layoutX="28.0" layoutY="30.0" length="235.0" radiusX="25.0" radiusY="20.0" startAngle="315.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: TRANSPARENT;" />
                               <Arc fill="DODGERBLUE" layoutX="61.0" layoutY="30.0" length="270.0" radiusX="25.0" radiusY="20.0" startAngle="315.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: TRANSPARENT;" />
                               <Arc fill="DODGERBLUE" layoutX="98.0" layoutY="30.0" length="270.0" radiusX="25.0" radiusY="20.0" startAngle="315.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: TRANSPARENT;" />
                               <Arc fill="DODGERBLUE" layoutX="131.0" layoutY="30.0" length="270.0" radiusX="25.0" radiusY="20.0" startAngle="315.0" stroke="BLACK" strokeType="INSIDE" style="-fx-fill: TRANSPARENT;" />
-                              <Circle fx:id="ball" fill="#75b1e2" layoutX="150.0" layoutY="24.0" onMouseDragged="#handleBallDrag" radius="25.0" stroke="BLACK" strokeType="INSIDE" />
-                              <Circle fx:id="springAdjuster" fill="#75b1e2" layoutX="10.0" layoutY="39.0" onMouseDragged="#handleSpringAdjuster" radius="10.0" stroke="BLACK" strokeType="INSIDE" />
+                              <Circle fx:id="springAdjuster" fill="#75b1e2" layoutX="10.0" layoutY="39.0" radius="10.0" stroke="BLACK" strokeType="INSIDE" />
+                              <Circle fx:id="ball" fill="#75b1e2" layoutX="156.0" layoutY="25.0" onMouseDragged="#handleBallDrag" radius="25.0" stroke="BLACK" strokeType="INSIDE" />
                            </children>
                         </Pane>
                      </children>
                   </Group>
-               </children>
-            </AnchorPane>
+               </children></AnchorPane>
          </children></Pane>
       <Rectangle fx:id="ParamAdjustRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="25.0" layoutY="26.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="501.0" />
       <Label fx:id="ParamAdjustLabel" alignment="CENTER" contentDisplay="CENTER" layoutY="26.0" prefHeight="25.0" prefWidth="501.0" text="Parameter Adjustments" textAlignment="CENTER">
@@ -116,19 +116,19 @@
          </font>
       </Label>
       <Slider fx:id="AngleSlider" layoutX="256.0" layoutY="87.0" prefHeight="14.0" prefWidth="150.0" />
-      <Rectangle fx:id="SpringConstantRec" arcHeight="5.0" arcWidth="5.0" fill="#75b1e2" height="25.0" layoutX="155.0" layoutY="169.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="150.0" />
-      <Label fx:id="SpringConstantLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="155.0" layoutY="169.0" prefHeight="25.0" prefWidth="150.0" text="Spring Constant (N/m):" textAlignment="CENTER" textFill="WHITE">
+      <Rectangle fx:id="SpringConstantRec" arcHeight="5.0" arcWidth="5.0" fill="#75b1e2" height="25.0" layoutX="11.0" layoutY="166.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="150.0" />
+      <Label fx:id="SpringConstantLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="11.0" layoutY="166.0" prefHeight="25.0" prefWidth="150.0" text="Spring Constant (N/m):" textAlignment="CENTER" textFill="WHITE">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
-      <Rectangle fx:id="SpringConstantFieldRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="25.0" layoutX="305.0" layoutY="169.0" stroke="BLACK" strokeType="INSIDE" width="75.0" />
-      <Label fx:id="SpringConstantFieldLabel" alignment="CENTER" layoutX="305.0" layoutY="169.0" prefHeight="25.0" prefWidth="75.0" text="0.00" textAlignment="CENTER">
+      <Rectangle fx:id="SpringConstantFieldRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="25.0" layoutX="161.0" layoutY="166.0" stroke="BLACK" strokeType="INSIDE" width="75.0" />
+      <Label fx:id="SpringConstantFieldLabel" alignment="CENTER" layoutX="161.0" layoutY="166.0" prefHeight="25.0" prefWidth="75.0" text="0.00" textAlignment="CENTER">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
       </Label>
-      <Slider fx:id="SpringConstantSlider" layoutX="155.0" layoutY="194.0" prefHeight="14.0" prefWidth="150.0" />
+      <Slider fx:id="SpringConstantSlider" layoutX="11.0" layoutY="191.0" prefHeight="14.0" prefWidth="150.0" />
       <Rectangle fx:id="MassRec" arcHeight="5.0" arcWidth="5.0" fill="#75b1e2" height="25.0" layoutX="256.0" layoutY="112.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="150.0" />
       <Label fx:id="MassLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="256.0" layoutY="111.0" prefHeight="25.0" prefWidth="150.0" text="Mass(kg):" textAlignment="CENTER" textFill="WHITE">
          <font>
@@ -149,12 +149,20 @@
             <Font name="System Bold" size="18.0" />
          </font>
       </Label>
-      <BarChart fx:id="BarGraph" layoutY="280.0" prefHeight="277.0" prefWidth="500.0">
+      <BarChart fx:id="BarGraph" layoutY="280.0" legendVisible="false" prefHeight="277.0" prefWidth="500.0" title="Spring Energy Graph">
          <xAxis>
-            <CategoryAxis fx:id="BarChartXAxis" side="BOTTOM" />
+            <CategoryAxis fx:id="BarChartXAxis" side="BOTTOM">
+               <categories>
+                  <FXCollections fx:factory="observableArrayList">
+                     <String fx:value="Mechanical" />
+                     <String fx:value="Kinetic" />
+                     <String fx:value="Spring Potential" />
+                  </FXCollections>
+               </categories>
+            </CategoryAxis>
          </xAxis>
          <yAxis>
-            <NumberAxis fx:id="BarChartYAxis" side="LEFT" />
+            <NumberAxis fx:id="BarChartYAxis" autoRanging="false" label="Energy (KJ)" minorTickCount="2" side="LEFT" upperBound="300.0" />
          </yAxis>
       </BarChart>
       <Line fx:id="OrthogonalToLeftLine2" endX="288.3333435058594" endY="-24.99999237060547" layoutX="212.0" layoutY="304.0" startX="-212.99998474121094" startY="-25.00000762939453" />
@@ -234,6 +242,18 @@
       <ComboBox fx:id="SimulationTimeComboBox" layoutX="877.0" layoutY="755.0" onAction="#handleSimulationTimeComboBox" prefWidth="160.0" promptText="- Default Unit (s) -" />
       <Rectangle fx:id="SimulationTimeFieldRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="35.0" layoutX="1057.0" layoutY="719.0" stroke="BLACK" strokeType="INSIDE" width="75.0" />
       <Label fx:id="SimulationTimeFieldLabel" alignment="CENTER" layoutX="1057.0" layoutY="719.0" prefHeight="35.0" prefWidth="75.0" text="0.00" textAlignment="CENTER">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <Rectangle fx:id="HeightRec" arcHeight="5.0" arcWidth="5.0" fill="#75b1e2" height="25.0" layoutX="256.0" layoutY="166.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="150.0" />
+      <Label fx:id="HeightLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="256.0" layoutY="166.0" prefHeight="25.0" prefWidth="150.0" text="Height(m):" textAlignment="CENTER" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
+      <Rectangle fx:id="HeightFieldRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="25.0" layoutX="406.0" layoutY="166.0" stroke="BLACK" strokeType="INSIDE" width="75.0" />
+      <Label fx:id="HeightFieldLabel" alignment="CENTER" layoutX="406.0" layoutY="166.0" prefHeight="25.0" prefWidth="75.0" text="0.00" textAlignment="CENTER">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
