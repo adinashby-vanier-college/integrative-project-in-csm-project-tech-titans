@@ -114,6 +114,10 @@ public class SpringPhysics {
         timeline.setCycleCount(Timeline.INDEFINITE);
     }
 
+    public static synchronized void resetInstance() {
+        instance = null;
+    }
+
     public static SpringPhysics getInstance() {
         if (instance == null) {
             synchronized (SpringPhysics.class) {

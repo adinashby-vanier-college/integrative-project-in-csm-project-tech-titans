@@ -774,6 +774,7 @@ public class IPCSMFXMLSimulatorController implements Initializable {
     @FXML
     private void handleMenuGoToGame() {
         try {
+            SpringPhysics.resetInstance();
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/motionsim/IPCSMFXMLGame.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) MenuBar.getScene().getWindow();
