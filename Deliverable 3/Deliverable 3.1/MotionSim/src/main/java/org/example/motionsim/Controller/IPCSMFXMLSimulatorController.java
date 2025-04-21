@@ -14,6 +14,7 @@ import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -150,7 +151,7 @@ public class IPCSMFXMLSimulatorController implements Initializable {
     @FXML
     private Label HVelocityLabel;
     @FXML
-    private ComboBox<?> HVelocityComboBox;
+    private ComboBox<String> HVelocityComboBox;
     @FXML
     private Rectangle HVelocityFieldRec;
     @FXML
@@ -160,27 +161,17 @@ public class IPCSMFXMLSimulatorController implements Initializable {
     @FXML
     private Label VVelocityLabel;
     @FXML
-    private ComboBox<?> VVelocityComboBox;
+    private ComboBox<String> VVelocityComboBox;
     @FXML
     private Rectangle VVelocityFieldRec;
     @FXML
     private Label VVelocityFieldLabel;
     @FXML
-    private Rectangle AOORec;
-    @FXML
-    private Label AOOLabel;
-    @FXML
-    private ComboBox<?> AOOComboBox;
-    @FXML
-    private Rectangle AOOFieldRec;
-    @FXML
-    private Label AOOFieldLabel;
-    @FXML
     private Rectangle SimulationTimeRec;
     @FXML
     private Label SimulationTimeLabel;
     @FXML
-    private ComboBox<?> SimulationTimeComboBox;
+    private ComboBox<String> SimulationTimeComboBox;
     @FXML
     private Rectangle SimulationTimeFieldRec;
     @FXML
@@ -239,6 +230,10 @@ public class IPCSMFXMLSimulatorController implements Initializable {
         physics.setObject(ball);
         physics.addBoundaryLine(OrthogonalToLeftLine4);
         attachBallToLineEnd();
+
+        HVelocityComboBox.setItems(FXCollections.observableArrayList("Kilometer(km/s)", "Meter(m/s)", "Centimeter(cm/s)", "Millimeter(mm/s)"));
+        VVelocityComboBox.setItems(FXCollections.observableArrayList("Kilometer(km/s)", "Meter(m/s)", "Centimeter(cm/s)", "Millimeter(mm/s)"));
+        SimulationTimeComboBox.setItems(FXCollections.observableArrayList("Hour(h)", "Minute(min)", "Second(s)", "Millisecond(ms)"));
 
         physics.setTimeUpdateCallback(time -> {
             Platform.runLater(() -> {
@@ -628,18 +623,80 @@ public class IPCSMFXMLSimulatorController implements Initializable {
 
     @FXML
     private void handleHVelocityComboBox(ActionEvent event) {
+        String selectedUnit = HVelocityComboBox.getValue();
+        double HorizontalVelocity = physics.getHorizontalVelocity();
+
+        switch (selectedUnit) {
+            case "Kilometer(km/s)":
+                HorizontalVelocity /= 1000;
+                break;
+            case "Meter(m/s)":
+                // No conversion needed; it's the base unit.
+                break;
+            case "Centimeter(cm/s)":
+                HorizontalVelocity *= 100;
+                break;
+            case "Millimeter(mm/s)":
+                HorizontalVelocity *= 1000;
+                break;
+            default:
+                showAlert("Invalid Unit", "Please select a valid unit for Horizontal Velocity.");
+                return;
+        }
+
+        HVelocityFieldLabel.setText(String.format("%.3f", HorizontalVelocity));
     }
 
     @FXML
     private void handleVVelocityComboBox(ActionEvent event) {
-    }
+        String selectedUnit = VVelocityComboBox.getValue();
+        double VerticalVelocity = physics.getVerticalVelocity();
 
-    @FXML
-    private void handleAOOComboBox(ActionEvent event) {
+        switch (selectedUnit) {
+            case "Kilometer(km/s)":
+                VerticalVelocity /= 1000;
+                break;
+            case "Meter(m/s)":
+                // No conversion needed; it's the base unit.
+                break;
+            case "Centimeter(cm/s)":
+                VerticalVelocity *= 100;
+                break;
+            case "Millimeter(mm/s)":
+                VerticalVelocity *= 1000;
+                break;
+            default:
+                showAlert("Invalid Unit", "Please select a valid unit for Vertical Velocity.");
+                return;
+        }
+
+        VVelocityFieldLabel.setText(String.format("%.3f", VerticalVelocity));
     }
 
     @FXML
     private void handleSimulationTimeComboBox(ActionEvent event) {
+        String selectedUnit = SimulationTimeComboBox.getValue();
+        double simulationTime = physics.getElapsedTime();
+
+        switch (selectedUnit) {
+            case "Hour(h)":
+                simulationTime /= 3600;
+                break;
+            case "Minute(min)":
+                simulationTime /= 60;
+                break;
+            case "Second(s)":
+                // No conversion needed; it's the base unit.
+                break;
+            case "Millisecond(ms)":
+                simulationTime *= 1000;
+                break;
+            default:
+                showAlert("Invalid Unit", "Please select a valid unit for Simulation Time.");
+                return;
+        }
+
+        SimulationTimeFieldLabel.setText(String.format("%.3f", simulationTime));
     }
 
     private void showResetMessage() {
@@ -776,4 +833,8 @@ public class IPCSMFXMLSimulatorController implements Initializable {
         }
     }
 
+    @FXML
+    public void handleFileMenuClose(ActionEvent actionEvent) {
+        Platform.exit();
+    }
 }

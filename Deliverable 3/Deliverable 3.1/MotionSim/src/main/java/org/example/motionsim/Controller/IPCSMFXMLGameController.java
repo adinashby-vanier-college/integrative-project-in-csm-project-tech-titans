@@ -10,6 +10,7 @@ import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -96,7 +97,7 @@ public class IPCSMFXMLGameController implements Initializable {
     @FXML
     private Label VVelocityLabel;
     @FXML
-    private ComboBox<?> VVelocityComboBox;
+    private ComboBox<String> VVelocityComboBox;
     @FXML
     private Rectangle VVelocityFieldRec;
     @FXML
@@ -140,21 +141,11 @@ public class IPCSMFXMLGameController implements Initializable {
     @FXML
     private Label HVelocityLabel;
     @FXML
-    private ComboBox<?> HVelocityComboBox;
+    private ComboBox<String> HVelocityComboBox;
     @FXML
     private Rectangle HVelocityFieldRec;
     @FXML
     private Label HVelocityFieldLabel;
-    @FXML
-    private Rectangle AOORec;
-    @FXML
-    private Label AOOLabel;
-    @FXML
-    private ComboBox<?> AOOComboBox;
-    @FXML
-    private Rectangle AOOFieldRec;
-    @FXML
-    private Label AOOFieldLabel;
     @FXML
     private Line LeftLine;
     @FXML
@@ -220,14 +211,6 @@ public class IPCSMFXMLGameController implements Initializable {
     private boolean isLaunched = false;
     private Label resetMessage;
     private MediaPlayer mediaPlayer;
-    @FXML
-    private RadioButton EasyOption;
-    @FXML
-    private RadioButton NormalOption;
-    @FXML
-    private RadioButton HardOption;
-    @FXML
-    private ImageView Basket;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -236,6 +219,9 @@ public class IPCSMFXMLGameController implements Initializable {
         physics.setObject(ball);
         physics.addBoundaryLine(RightBorderLine);
         attachBallToLineEnd();
+
+        HVelocityComboBox.setItems(FXCollections.observableArrayList("Kilometer(km/s)", "Meter(m/s)", "Centimeter(cm/s)", "Millimeter(mm/s)"));
+        VVelocityComboBox.setItems(FXCollections.observableArrayList("Kilometer(km/s)", "Meter(m/s)", "Centimeter(cm/s)", "Millimeter(mm/s)"));
 
         physics.setVelocityUpdateCallback(velocities -> {
             Platform.runLater(() -> {
@@ -511,18 +497,60 @@ public class IPCSMFXMLGameController implements Initializable {
 
     @FXML
     private void handleHVelocityComboBox(ActionEvent event) {
-    }
+        String selectedUnit = HVelocityComboBox.getValue();
+        double HorizontalVelocity = physics.getHorizontalVelocity();
 
-    @FXML
-    public void handleAOOComboBox(ActionEvent actionEvent) {
+        switch (selectedUnit) {
+            case "Kilometer(km/s)":
+                HorizontalVelocity /= 1000;
+                break;
+            case "Meter(m/s)":
+                // No conversion needed; it's the base unit.
+                break;
+            case "Centimeter(cm/s)":
+                HorizontalVelocity *= 100;
+                break;
+            case "Millimeter(mm/s)":
+                HorizontalVelocity *= 1000;
+                break;
+            default:
+                showAlert("Invalid Unit", "Please select a valid unit for Horizontal Velocity.");
+                return;
+        }
+        HVelocityFieldLabel.setText(String.format("%.3f", HorizontalVelocity));
     }
 
     @FXML
     public void handleVVelocityComboBox(ActionEvent actionEvent) {
+        String selectedUnit = VVelocityComboBox.getValue();
+        double VerticalVelocity = physics.getVerticalVelocity();
+
+        switch (selectedUnit) {
+            case "Kilometer(km/s)":
+                VerticalVelocity /= 1000;
+                break;
+            case "Meter(m/s)":
+                // No conversion needed; it's the base unit.
+                break;
+            case "Centimeter(cm/s)":
+                VerticalVelocity *= 100;
+                break;
+            case "Millimeter(mm/s)":
+                VerticalVelocity *= 1000;
+                break;
+            default:
+                showAlert("Invalid Unit", "Please select a valid unit for Vertical Velocity.");
+                return;
+        }
+        VVelocityFieldLabel.setText(String.format("%.3f", VerticalVelocity));
     }
 
-    @Deprecated
-    public void handleAmplitudeSlider(Event event) {
+    private void showAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 
     @FXML
@@ -619,25 +647,27 @@ public class IPCSMFXMLGameController implements Initializable {
 
         sequence.play();
     }
-    private void handleScore(){
+
+    /*private void handleScore(){
         if(NormalOption.isSelected())
         NormalRandomization();
         else if (HardOption.isSelected())
             HardRandomization();
     }
 
-
-    private void NormalRandomization(){
+   private void NormalRandomization(){
         SpringPhysics physics = SpringPhysics.getInstance();
         double RandomGravity = 5 + Math.random() * 15;
         physics.setGravity(RandomGravity);
         GravityFieldLabel.setText(String.format("%.2f", RandomGravity));
 
     }
+
     private void HardRandomization(){
         SpringPhysics physics = SpringPhysics.getInstance();
         double RandomGravity = 5 + Math.random() * 15;
     }
+
     private void checkCollisionWithBasket() {
         if (launchBall == null || !launchBall.isVisible()) return;
 
@@ -647,7 +677,8 @@ public class IPCSMFXMLGameController implements Initializable {
         if (ballBounds.intersects(basketBounds)) {
             System.out.println("🏀 Score!");
         }
-    }
+    }*/
+
     private void startGameTimer() {
         timeRemaining = 60;
         TimeRemainingFieldLabel.setText(String.valueOf(timeRemaining));
@@ -665,6 +696,7 @@ public class IPCSMFXMLGameController implements Initializable {
         gameTimer.play();
 
     }
+
     private void endGame(){
         physics.pause();
         Label gameOverLabel = new Label("Game Over!");
@@ -679,5 +711,10 @@ public class IPCSMFXMLGameController implements Initializable {
         ball.setVisible(false);
         StartBtn.setDisable(true);
         ResetBtn.setDisable(true);
+    }
+
+    @FXML
+    public void handleFileMenuClose(ActionEvent actionEvent) {
+        Platform.exit();
     }
 }
