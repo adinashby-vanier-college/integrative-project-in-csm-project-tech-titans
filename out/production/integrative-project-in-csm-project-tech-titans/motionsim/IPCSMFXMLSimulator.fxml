@@ -23,13 +23,13 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1450.0" style="-fx-background-color: #F0F8FF;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.motionsim.Controller.IPCSMFXMLSimulatorController">
+<AnchorPane id="AnchorPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1450.0" style="-fx-background-color: #F0F8FF;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.motionsim.Controller.IPCSMFXMLSimulatorController">
    <children>
       <MenuBar fx:id="MenuBar" layoutY="1.0" prefHeight="25.0" prefWidth="1450.0">
          <menus>
             <Menu mnemonicParsing="false" text="File">
                <items>
-                  <MenuItem mnemonicParsing="false" text="Close" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleFileMenuClose" text="Close" />
                </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Help">
@@ -194,54 +194,41 @@
       <Button fx:id="ResetBtn" layoutX="305.0" layoutY="619.0" mnemonicParsing="false" onAction="#handleResetBtn" prefHeight="50.0" prefWidth="84.0" text="Reset" />
       <Polyline fx:id="StartShape1" fill="BLACK" layoutX="479.0" layoutY="608.0" points="-50.0, 9.333343505859375, -88.70712280273438, 36.99993896484375, -50.0, 62.666656494140625, -50.0, 9.333343505859375" strokeType="INSIDE" />
       <Polyline fx:id="StartShape11" fill="BLACK" layoutX="516.0" layoutY="608.0" points="-50.0, 9.333343505859375, -88.70712280273438, 36.99993896484375, -50.0, 62.666656494140625, -50.0, 9.333343505859375" strokeType="INSIDE" />
-      <Rectangle fx:id="HVelocityRec" arcHeight="5.0" arcWidth="5.0" fill="#949494" height="35.0" layoutX="553.0" layoutY="641.0" smooth="false" stroke="#1c8cec" strokeType="INSIDE" strokeWidth="0.0" width="200.0" />
-      <Label fx:id="HVelocityLabel" alignment="CENTER" layoutX="553.0" layoutY="641.0" prefHeight="35.0" prefWidth="200.0" text="Horizontal Velocity" textAlignment="CENTER" textFill="WHITE">
+      <Rectangle fx:id="HVelocityRec" arcHeight="5.0" arcWidth="5.0" fill="#949494" height="35.0" layoutX="533.0" layoutY="669.0" smooth="false" stroke="#1c8cec" strokeType="INSIDE" strokeWidth="0.0" width="200.0" />
+      <Label fx:id="HVelocityLabel" alignment="CENTER" layoutX="533.0" layoutY="669.0" prefHeight="35.0" prefWidth="200.0" text="Horizontal Velocity" textAlignment="CENTER" textFill="WHITE">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <ComboBox fx:id="HVelocityComboBox" layoutX="572.0" layoutY="676.0" onAction="#handleHVelocityComboBox" prefHeight="25.0" prefWidth="160.0" promptText="- Default Unit (m/s) -" />
-      <Rectangle fx:id="HVelocityFieldRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="35.0" layoutX="753.0" layoutY="641.0" stroke="BLACK" strokeType="INSIDE" width="75.0" />
-      <Label fx:id="HVelocityFieldLabel" alignment="CENTER" layoutX="753.0" layoutY="641.0" prefHeight="35.0" prefWidth="75.0" text="0.00" textAlignment="CENTER">
+      <ComboBox fx:id="HVelocityComboBox" layoutX="552.0" layoutY="704.0" onAction="#handleHVelocityComboBox" prefHeight="25.0" prefWidth="160.0" promptText="- Default Unit (m/s) -" />
+      <Rectangle fx:id="HVelocityFieldRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="35.0" layoutX="733.0" layoutY="669.0" stroke="BLACK" strokeType="INSIDE" width="75.0" />
+      <Label fx:id="HVelocityFieldLabel" alignment="CENTER" layoutX="733.0" layoutY="669.0" prefHeight="35.0" prefWidth="75.0" text="0.00" textAlignment="CENTER">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
       </Label>
-      <Rectangle fx:id="VVelocityRec" arcHeight="5.0" arcWidth="5.0" fill="#949494" height="35.0" layoutX="857.0" layoutY="641.0" smooth="false" stroke="#1c8cec" strokeType="INSIDE" strokeWidth="0.0" width="200.0" />
-      <Label fx:id="VVelocityLabel" alignment="CENTER" layoutX="857.0" layoutY="641.0" prefHeight="35.0" prefWidth="200.0" text="Vertical Velocity" textAlignment="CENTER" textFill="WHITE">
+      <Rectangle fx:id="VVelocityRec" arcHeight="5.0" arcWidth="5.0" fill="#949494" height="35.0" layoutX="838.0" layoutY="669.0" smooth="false" stroke="#1c8cec" strokeType="INSIDE" strokeWidth="0.0" width="200.0" />
+      <Label fx:id="VVelocityLabel" alignment="CENTER" layoutX="838.0" layoutY="669.0" prefHeight="35.0" prefWidth="200.0" text="Vertical Velocity" textAlignment="CENTER" textFill="WHITE">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <ComboBox fx:id="VVelocityComboBox" layoutX="877.0" layoutY="676.0" onAction="#handleVVelocityComboBox" prefWidth="160.0" promptText="- Default Unit (m/s) -" />
-      <Rectangle fx:id="VVelocityFieldRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="35.0" layoutX="1057.0" layoutY="641.0" stroke="BLACK" strokeType="INSIDE" width="75.0" />
-      <Label fx:id="VVelocityFieldLabel" alignment="CENTER" layoutX="1057.0" layoutY="641.0" prefHeight="35.0" prefWidth="75.0" text="0.00" textAlignment="CENTER">
+      <ComboBox fx:id="VVelocityComboBox" layoutX="858.0" layoutY="704.0" onAction="#handleVVelocityComboBox" prefWidth="160.0" promptText="- Default Unit (m/s) -" />
+      <Rectangle fx:id="VVelocityFieldRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="35.0" layoutX="1038.0" layoutY="669.0" stroke="BLACK" strokeType="INSIDE" width="75.0" />
+      <Label fx:id="VVelocityFieldLabel" alignment="CENTER" layoutX="1038.0" layoutY="669.0" prefHeight="35.0" prefWidth="75.0" text="0.00" textAlignment="CENTER">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
       </Label>
-      <Rectangle fx:id="AOORec" arcHeight="5.0" arcWidth="5.0" fill="#949494" height="35.0" layoutX="1170.0" layoutY="641.0" smooth="false" stroke="#1c8cec" strokeType="INSIDE" strokeWidth="0.0" width="200.0" />
-      <Label fx:id="AOOLabel" alignment="CENTER" layoutX="1170.0" layoutY="641.0" prefHeight="35.0" prefWidth="200.0" text="Amplitude of Oscillations" textAlignment="CENTER" textFill="WHITE">
+      <Rectangle fx:id="SimulationTimeRec" arcHeight="5.0" arcWidth="5.0" fill="#949494" height="35.0" layoutX="1150.0" layoutY="670.0" smooth="false" stroke="#1c8cec" strokeType="INSIDE" strokeWidth="0.0" width="200.0" />
+      <Label fx:id="SimulationTimeLabel" alignment="CENTER" layoutX="1150.0" layoutY="670.0" prefHeight="35.0" prefWidth="200.0" text="Simulation Time" textAlignment="CENTER" textFill="WHITE">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
       </Label>
-      <ComboBox fx:id="AOOComboBox" layoutX="1190.0" layoutY="676.0" onAction="#handleAOOComboBox" prefWidth="160.0" promptText="- Default Unit (m) -" />
-      <Rectangle fx:id="AOOFieldRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="35.0" layoutX="1370.0" layoutY="641.0" stroke="BLACK" strokeType="INSIDE" width="75.0" />
-      <Label fx:id="AOOFieldLabel" alignment="CENTER" layoutX="1370.0" layoutY="644.0" prefHeight="35.0" prefWidth="75.0" text="0.00" textAlignment="CENTER">
-         <font>
-            <Font name="System Bold" size="14.0" />
-         </font>
-      </Label>
-      <Rectangle fx:id="SimulationTimeRec" arcHeight="5.0" arcWidth="5.0" fill="#949494" height="35.0" layoutX="857.0" layoutY="720.0" smooth="false" stroke="#1c8cec" strokeType="INSIDE" strokeWidth="0.0" width="200.0" />
-      <Label fx:id="SimulationTimeLabel" alignment="CENTER" layoutX="857.0" layoutY="720.0" prefHeight="35.0" prefWidth="200.0" text="Simulation Time" textAlignment="CENTER" textFill="WHITE">
-         <font>
-            <Font name="System Bold" size="15.0" />
-         </font>
-      </Label>
-      <ComboBox fx:id="SimulationTimeComboBox" layoutX="877.0" layoutY="755.0" onAction="#handleSimulationTimeComboBox" prefWidth="160.0" promptText="- Default Unit (s) -" />
-      <Rectangle fx:id="SimulationTimeFieldRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="35.0" layoutX="1057.0" layoutY="719.0" stroke="BLACK" strokeType="INSIDE" width="75.0" />
-      <Label fx:id="SimulationTimeFieldLabel" alignment="CENTER" layoutX="1057.0" layoutY="719.0" prefHeight="35.0" prefWidth="75.0" text="0.00" textAlignment="CENTER">
+      <ComboBox fx:id="SimulationTimeComboBox" layoutX="1170.0" layoutY="705.0" onAction="#handleSimulationTimeComboBox" prefWidth="160.0" promptText="- Default Unit (s) -" />
+      <Rectangle fx:id="SimulationTimeFieldRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="35.0" layoutX="1350.0" layoutY="669.0" stroke="BLACK" strokeType="INSIDE" width="75.0" />
+      <Label fx:id="SimulationTimeFieldLabel" alignment="CENTER" layoutX="1350.0" layoutY="669.0" prefHeight="35.0" prefWidth="75.0" text="0.00" textAlignment="CENTER">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>

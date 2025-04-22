@@ -25,7 +25,7 @@
               <menus>
                 <Menu mnemonicParsing="false" text="File">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="Close" />
+                    <MenuItem mnemonicParsing="false" onAction="#handleFileMenuClose" text="Close" />
                   </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Help">
@@ -114,15 +114,15 @@
             <Button fx:id="ResetBtn" layoutX="249.0" layoutY="459.0" mnemonicParsing="false" onAction="#handleResetBtn" prefHeight="25.0" prefWidth="84.0" text="Reset" />
             <Polyline fx:id="StartShape1" fill="BLACK" layoutX="424.0" layoutY="437.0" points="-50.0, 9.333343505859375, -88.70712280273438, 36.99993896484375, -50.0, 62.666656494140625, -50.0, 9.333343505859375" strokeType="INSIDE" />
             <Polyline fx:id="StartShape11" fill="BLACK" layoutX="461.0" layoutY="437.0" points="-50.0, 9.333343505859375, -88.70712280273438, 36.99993896484375, -50.0, 62.666656494140625, -50.0, 9.333343505859375" strokeType="INSIDE" />
-            <Rectangle fx:id="VVelocityRec" arcHeight="5.0" arcWidth="5.0" fill="#949494" height="25.0" layoutX="87.0" layoutY="551.0" smooth="false" stroke="#1c8cec" strokeType="INSIDE" strokeWidth="0.0" width="250.0" />
-            <Label fx:id="VVelocityLabel" alignment="CENTER" layoutX="87.0" layoutY="551.0" prefHeight="25.0" prefWidth="250.0" text="Vertical Velocity" textAlignment="CENTER" textFill="WHITE">
+            <Rectangle fx:id="VVelocityRec" arcHeight="5.0" arcWidth="5.0" fill="#949494" height="25.0" layoutX="86.0" layoutY="583.0" smooth="false" stroke="#1c8cec" strokeType="INSIDE" strokeWidth="0.0" width="250.0" />
+            <Label fx:id="VVelocityLabel" alignment="CENTER" layoutX="86.0" layoutY="583.0" prefHeight="25.0" prefWidth="250.0" text="Vertical Velocity" textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
             </Label>
-            <ComboBox fx:id="VVelocityComboBox" layoutX="128.0" layoutY="576.0" onAction="#handleVVelocityComboBox" prefHeight="35.0" prefWidth="175.0" promptText="- Default Unit (m/s) -" />
-            <Rectangle fx:id="VVelocityFieldRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="25.0" layoutX="334.0" layoutY="551.0" stroke="BLACK" strokeType="INSIDE" width="100.0" />
-            <Label fx:id="VVelocityFieldLabel" alignment="CENTER" layoutX="334.0" layoutY="551.0" prefHeight="25.0" prefWidth="100.0" text="0.00" textAlignment="CENTER">
+            <ComboBox fx:id="VVelocityComboBox" layoutX="127.0" layoutY="608.0" onAction="#handleVVelocityComboBox" prefHeight="35.0" prefWidth="175.0" promptText="- Default Unit (m/s) -" />
+            <Rectangle fx:id="VVelocityFieldRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="25.0" layoutX="333.0" layoutY="583.0" stroke="BLACK" strokeType="INSIDE" width="100.0" />
+            <Label fx:id="VVelocityFieldLabel" alignment="CENTER" layoutX="333.0" layoutY="583.0" prefHeight="25.0" prefWidth="100.0" text="0.00" textAlignment="CENTER">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font>
@@ -167,28 +167,15 @@
                </font>
             </Label>
             <Line fx:id="OrthogonalToLeftLine6" endX="287.0" endY="-24.999969482421875" layoutX="211.0" layoutY="559.0" startX="-212.99998474121094" startY="-25.00000762939453" />
-            <Rectangle fx:id="HVelocityRec" arcHeight="5.0" arcWidth="5.0" fill="#949494" height="25.0" layoutX="87.0" layoutY="630.0" smooth="false" stroke="#1c8cec" strokeType="INSIDE" strokeWidth="0.0" width="250.0" />
-            <Label fx:id="HVelocityLabel" alignment="CENTER" layoutX="87.0" layoutY="630.0" prefHeight="25.0" prefWidth="250.0" text="Horizontal Velocity" textAlignment="CENTER" textFill="WHITE">
+            <Rectangle fx:id="HVelocityRec" arcHeight="5.0" arcWidth="5.0" fill="#949494" height="25.0" layoutX="86.0" layoutY="691.0" smooth="false" stroke="#1c8cec" strokeType="INSIDE" strokeWidth="0.0" width="250.0" />
+            <Label fx:id="HVelocityLabel" alignment="CENTER" layoutX="86.0" layoutY="691.0" prefHeight="25.0" prefWidth="250.0" text="Horizontal Velocity" textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
             </Label>
-            <ComboBox fx:id="HVelocityComboBox" layoutX="132.0" layoutY="655.0" onAction="#handleHVelocityComboBox" prefHeight="35.0" prefWidth="175.0" promptText="- Default Unit (m/s) -" />
-            <Rectangle fx:id="HVelocityFieldRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="25.0" layoutX="334.0" layoutY="630.0" stroke="BLACK" strokeType="INSIDE" width="100.0" />
-            <Label fx:id="HVelocityFieldLabel" alignment="CENTER" layoutX="334.0" layoutY="630.0" prefHeight="25.0" prefWidth="100.0" text="0.00" textAlignment="CENTER">
-               <font>
-                  <Font name="System Bold" size="14.0" />
-               </font>
-            </Label>
-            <Rectangle fx:id="AOORec" arcHeight="5.0" arcWidth="5.0" fill="#949494" height="25.0" layoutX="87.0" layoutY="707.0" smooth="false" stroke="#1c8cec" strokeType="INSIDE" strokeWidth="0.0" width="250.0" />
-            <Label fx:id="AOOLabel" alignment="CENTER" layoutX="87.0" layoutY="707.0" prefHeight="25.0" prefWidth="250.0" text="Amplitude of Oscillations" textAlignment="CENTER" textFill="WHITE">
-               <font>
-                  <Font name="System Bold" size="12.0" />
-               </font>
-            </Label>
-            <ComboBox fx:id="AOOComboBox" layoutX="132.0" layoutY="732.0" onAction="#handleAOOComboBox" prefHeight="35.0" prefWidth="175.0" promptText="- Default Unit (m) -" />
-            <Rectangle fx:id="AOOFieldRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="25.0" layoutX="334.0" layoutY="707.0" stroke="BLACK" strokeType="INSIDE" width="100.0" />
-            <Label fx:id="AOOFieldLabel" alignment="CENTER" layoutX="334.0" layoutY="707.0" prefHeight="25.0" prefWidth="100.0" text="0.00" textAlignment="CENTER">
+            <ComboBox fx:id="HVelocityComboBox" layoutX="131.0" layoutY="716.0" onAction="#handleHVelocityComboBox" prefHeight="35.0" prefWidth="175.0" promptText="- Default Unit (m/s) -" />
+            <Rectangle fx:id="HVelocityFieldRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="25.0" layoutX="333.0" layoutY="691.0" stroke="BLACK" strokeType="INSIDE" width="100.0" />
+            <Label fx:id="HVelocityFieldLabel" alignment="CENTER" layoutX="333.0" layoutY="691.0" prefHeight="25.0" prefWidth="100.0" text="0.00" textAlignment="CENTER">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font>
