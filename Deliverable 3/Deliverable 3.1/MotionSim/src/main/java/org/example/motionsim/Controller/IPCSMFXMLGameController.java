@@ -107,6 +107,7 @@ public class IPCSMFXMLGameController implements Initializable {
     @FXML
     private Label TimeRemainingLabel;
     private Timeline gameTimer;
+    private Timeline collisionTimer;
     private int timeRemaining = 60;
     @FXML
     private Rectangle TimeRemainingFieldRec;
@@ -649,11 +650,12 @@ public class IPCSMFXMLGameController implements Initializable {
         sequence.play();
     }
 
-    /*private void handleScore(){
+    private void handleScore(){
         if(NormalOption.isSelected())
         NormalRandomization();
         else if (HardOption.isSelected())
             HardRandomization();
+        RandomizeBasketPos();
     }
 
    private void NormalRandomization(){
@@ -668,17 +670,6 @@ public class IPCSMFXMLGameController implements Initializable {
         SpringPhysics physics = SpringPhysics.getInstance();
         double RandomGravity = 5 + Math.random() * 15;
     }
-
-    private void checkCollisionWithBasket() {
-        if (launchBall == null || !launchBall.isVisible()) return;
-
-        Bounds ballBounds = launchBall.localToScene(launchBall.getBoundsInLocal());
-        Bounds basketBounds = Basket.localToScene(Basket.getBoundsInLocal());
-
-        if (ballBounds.intersects(basketBounds)) {
-            System.out.println("🏀 Score!");
-        }
-    }*/
 
     private void startGameTimer() {
         timeRemaining = 60;
@@ -695,11 +686,21 @@ public class IPCSMFXMLGameController implements Initializable {
         }));
         gameTimer.setCycleCount(Timeline.INDEFINITE);
         gameTimer.play();
+        collisionTimer = new Timeline(new KeyFrane(Duration.millis(20), e ->{
+            checkCollisionWithBasket();
+        }));
+        collisionTimer.setCycleCount(Timeline.INDEFINITE);
+        collisionTimer.play();
 
     }
 
     private void endGame(){
         physics.pause();
+
+        if (collisionTimer != null) {
+            collisionTimer.stop();
+        }
+
         Label gameOverLabel = new Label("Game Over!");
         gameOverLabel.setStyle("-fx-font-size: 36px; -fx-text-fill: red;");
         gameOverLabel.setLayoutX((AnimationPane.getWidth() - 200) / 2);
@@ -713,9 +714,38 @@ public class IPCSMFXMLGameController implements Initializable {
         StartBtn.setDisable(true);
         ResetBtn.setDisable(true);
     }
+    private void RandomizeBasketPos(){
+        double paneW = AnimationPane.getWidth();
+        double paneH = AnimationPane.getHeight();
+
+        double BasketW = Basket.getWidth();
+        double BasketH = Basket.getHeight();
+
+        double minX = paneW / 2;
+        double maxX = paneW - BasketW;
+        double minY = 100;
+        double maxY = paneH - BasketH - 50;
+
+        double randomX = minX + Math.random() * (maxX - minX);
+        double randomY = minY + Math.random() * (maxY - minY);
+
+        Basket.setLayoutX(randomX);
+        Basket.setLayoutY(randomY);
+    }
 
     @FXML
     public void handleFileMenuClose(ActionEvent actionEvent) {
         Platform.exit();
+    }
+    private void checkCollisionWithBasket(){
+        if(launchBall == null || !launchBall.isVisible()) return;
+        Bounds ballBounds = launchBall.localToScene(launchBall.getBoundInLocal());
+        Bound basketBounds = Basket.localToScene(Basket.getBoundsInLocal());
+        if(ballBounds.intersects(basketBounds)){
+            System.out.println("Score!");
+            int points = Integer.parseInt(PointsRec.getText());
+            PointsFieldLabel.setText(String.ValueOf(points + 1));
+            RandomizeBasketPos();
+        }
     }
 }
