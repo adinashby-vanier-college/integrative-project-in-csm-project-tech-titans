@@ -1,7 +1,6 @@
 package org.example.motionsim.Controller;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonIOException;
 import com.google.gson.reflect.TypeToken;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -45,18 +44,20 @@ public class LoginController implements Initializable {
     }
 
     private void loadUserFromJson() {
+        userList = new ArrayList<>();
+
         if (!userFile.exists()) {
-            userList = new ArrayList<>();
             return;
         }
         try (Reader reader = new FileReader(userFile)) {
             Type userListType = new TypeToken<List<User>>() {}.getType();
-            userList = new Gson().fromJson(reader, userListType);
-            if (userList == null) {
-                userList = new ArrayList<>();
+            List<User> parsed =  new Gson().fromJson(reader, userListType);
+
+            if (parsed != null) {
+                userList = parsed;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException | com.google.gson.JsonSyntaxException e) {
+            System.err.println("Warning: couldn't read/parse users.json -> starting with no users");
         }
     }
 
@@ -130,5 +131,13 @@ public class LoginController implements Initializable {
 
     private String getPasswordText() {
         return passwordField.isVisible() ? passwordField.getText() : visiblePasswordField.getText();
+    }
+
+    public PasswordField getPasswordField() {
+        return passwordField;
+    }
+
+    public TextField getVisiblePasswordField() {
+        return visiblePasswordField;
     }
 }

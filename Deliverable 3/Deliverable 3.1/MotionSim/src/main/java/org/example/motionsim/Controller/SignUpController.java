@@ -150,4 +150,12 @@ public class SignUpController implements Initializable {
         problemMsg.setText(message);
         problemMsg.setOpacity(1.0);
     }
+
+    public PasswordField getPasswordField() {
+        return passwordField;
+    }
+
+    public TextField getVisiblePasswordField() {
+        return visiblePasswordField;
+    }
 }
