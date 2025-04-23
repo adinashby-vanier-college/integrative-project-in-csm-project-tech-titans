@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="JAVA_MODULE" version="4">
-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_22" inherit-compiler-output="true">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
-    <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/Deliverable 3/Deliverable 3.1/MotionSim/src/main/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Deliverable 3/Deliverable 3.1/MotionSim/src/main/resources" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/Deliverable 3/Deliverable 3.1/MotionSim/src" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/Deliverable 3/Deliverable 3.2/MotionSim/src" isTestSource="false" />
-    </content>
-    <orderEntry type="jdk" jdkName="22" jdkType="JavaSDK" />
+    <content url="file://$MODULE_DIR$" />
+    <orderEntry type="jdk" jdkName="openjdk-24" jdkType="JavaSDK" />
+    <orderEntry type="library" exported="" name="javafx-swt" level="project" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="lib" level="project" />
     <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.10.1" level="project" />
+    <orderEntry type="library" name="Maven: org.openjfx:javafx-graphics:win:22.0.1" level="project" />
+    <orderEntry type="library" name="Maven: org.openjfx:javafx-controls:win:22.0.1" level="project" />
+    <orderEntry type="library" name="Maven: org.openjfx:javafx-fxml:win:22.0.1" level="project" />
+    <orderEntry type="library" name="Maven: org.openjfx:javafx-base:win:22.0.1" level="project" />
+    <orderEntry type="library" name="Maven: org.openjfx:javafx-media:win:21.0.1" level="project" />
+    <orderEntry type="library" name="Maven: org.openjfx:javafx-media:win:21.0.1" level="project" />
   </component>
 </module>

@@ -24,7 +24,7 @@
             <Font name="System Bold" size="24.0" />
          </font>
       </Label>
-      <TextField fx:id="emailField" layoutX="386.0" layoutY="179.0" prefHeight="35.0" prefWidth="150.0" promptText="Enter Email" />
+      <TextField fx:id="emailField" id="emailField" layoutX="386.0" layoutY="179.0" prefHeight="35.0" prefWidth="150.0" promptText="Enter Email" />
       <Rectangle fx:id="PasswordRec" arcHeight="5.0" arcWidth="5.0" fill="#75b1e2" height="35.0" layoutX="239.0" layoutY="245.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="150.0" />
       <Label fx:id="PasswordLabel" alignment="CENTER" layoutX="239.0" layoutY="246.0" prefHeight="35.0" prefWidth="150.0" text="Password:" textAlignment="CENTER" textFill="WHITE">
          <font>

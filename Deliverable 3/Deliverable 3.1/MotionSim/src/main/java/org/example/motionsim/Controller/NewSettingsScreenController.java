@@ -682,18 +682,18 @@ if (MusicComboBox != null) {
         }
     }
 
-    private void EasyMode(java.awt.event.ActionEvent event){
+    private void EasyMode(ActionEvent event){
         SpringPhysics physics = SpringPhysics.getInstance();
         physics.setGravity(9.81);
         physics.setSpringConstant(10);
         System.out.println("Easy mode selected: gravity = 9.81, k = 10");
     }
-    private void NormalMode(java.awt.event.ActionEvent event){
+    private void NormalMode(ActionEvent event){
         SpringPhysics physics = SpringPhysics.getInstance();
         physics.setSpringConstant(10);
         System.out.println("Normal mode selected: k = 10");
     }
-    private void HardMode(java.awt.event.ActionEvent event){
+    private void HardMode(ActionEvent event){
         SpringPhysics physics = SpringPhysics.getInstance();
     }
 }

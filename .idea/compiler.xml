@@ -6,10 +6,8 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="MotionSim" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="MotionSim" target="22" />
-    </bytecodeTargetLevel>
   </component>
 </project>
