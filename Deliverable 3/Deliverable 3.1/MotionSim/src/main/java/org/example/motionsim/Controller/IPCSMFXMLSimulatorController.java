@@ -820,14 +820,15 @@ public class IPCSMFXMLSimulatorController implements Initializable {
     }
 
     @FXML
-    private void handleMenuGoToSettings(ActionEvent actionEvent) {
+    private void handleMenuGoToSettings() {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/motionsim/NewSettingsScreen.fxml"));
-            fxmlLoader.setResources(ResourceBundle.getBundle("motionsim.messages", LanguageController.getCurrentLocale()));
+            stopMusic(); // Stop the main menu song before switching
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/motionsim/NewSettingsScreen.fxml"));
+            loader.setResources(ResourceBundle.getBundle("motionsim.messages",LanguageController.getCurrentLocale()));
 
-            Parent nextRoot = fxmlLoader.load();
-            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(nextRoot));
+            Parent root = loader.load();
+            Stage stage = (Stage) MenuBar.getScene().getWindow();
+            stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

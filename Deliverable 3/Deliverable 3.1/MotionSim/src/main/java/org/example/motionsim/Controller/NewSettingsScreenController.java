@@ -341,6 +341,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.scene.Node;
+import org.example.motionsim.Model.GameSettings;
 import org.example.motionsim.Model.SpringPhysics;
 
 public class NewSettingsScreenController implements Initializable {
@@ -387,6 +388,7 @@ public class NewSettingsScreenController implements Initializable {
         NormalOption.setToggleGroup(difficultyGroup);
         HardOption.setToggleGroup(difficultyGroup);
         NormalOption.setSelected(true);
+        handleDifficultySelection(null);
 
 // Wallpaper setup
         WallpaperComboBox.getItems().addAll("Default", "Dark Mode", "Light Mode");
@@ -682,18 +684,14 @@ if (MusicComboBox != null) {
         }
     }
 
-    private void EasyMode(ActionEvent event){
-        SpringPhysics physics = SpringPhysics.getInstance();
-        physics.setGravity(9.81);
-        physics.setSpringConstant(10);
-        System.out.println("Easy mode selected: gravity = 9.81, k = 10");
-    }
-    private void NormalMode(ActionEvent event){
-        SpringPhysics physics = SpringPhysics.getInstance();
-        physics.setSpringConstant(10);
-        System.out.println("Normal mode selected: k = 10");
-    }
-    private void HardMode(ActionEvent event){
-        SpringPhysics physics = SpringPhysics.getInstance();
+    @FXML
+    private void handleDifficultySelection(ActionEvent event) {
+        if (EasyOption.isSelected()) {
+            GameSettings.setDifficulty(GameSettings.Difficulty.EASY);
+        } else if (NormalOption.isSelected()) {
+            GameSettings.setDifficulty(GameSettings.Difficulty.NORMAL);
+        } else if (HardOption.isSelected()) {
+            GameSettings.setDifficulty(GameSettings.Difficulty.HARD);
+        }
     }
 }

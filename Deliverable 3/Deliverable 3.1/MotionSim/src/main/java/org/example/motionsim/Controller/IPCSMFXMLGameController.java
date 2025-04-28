@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.ResourceBundle;
 
 import javafx.animation.*;
@@ -23,6 +24,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -35,6 +37,7 @@ import javafx.scene.text.Font;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.example.motionsim.Model.GameSettings;
 import org.example.motionsim.Model.SpringPhysics;
 
 /**
@@ -106,9 +109,6 @@ public class IPCSMFXMLGameController implements Initializable {
     private Rectangle TimeRemainingRec;
     @FXML
     private Label TimeRemainingLabel;
-    private Timeline gameTimer;
-    private Timeline collisionTimer;
-    private int timeRemaining = 60;
     @FXML
     private Rectangle TimeRemainingFieldRec;
     @FXML
@@ -197,6 +197,8 @@ public class IPCSMFXMLGameController implements Initializable {
     private Rectangle HeightRec;
     @FXML
     private Line RightBorderLine;
+    @FXML
+    private ImageView Target;
 
     private SpringPhysics physics;
     private Point2D originalSpringEndPosition;
@@ -212,6 +214,13 @@ public class IPCSMFXMLGameController implements Initializable {
     private boolean isLaunched = false;
     private Label resetMessage;
     private MediaPlayer mediaPlayer;
+    private Timeline gameClock;
+    private Timeline targetTimer;
+    private Timeline collisionTimer;
+    private int totalSecondsRemaining;
+    private int perTargetSecondsRemaining;
+    private boolean gameStarted = false;
+    private boolean clockRunning = false;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -235,7 +244,7 @@ public class IPCSMFXMLGameController implements Initializable {
             if (isOutOfBounds) {
                 Platform.runLater(() -> {
                     showResetMessage();
-                    handleResetBtn(new ActionEvent());
+                    resetBallOnly();
                 });
             }
         });
@@ -283,6 +292,9 @@ public class IPCSMFXMLGameController implements Initializable {
         physics.setGravity(Double.valueOf(GravityFieldLabel.getText()));
         physics.setSpringConstant(Double.valueOf(SpringConstantFieldLabel.getText()));
         playMainMenuSong();
+
+        Image targetImage = new Image(getClass().getResource("/motionsim/target.png").toExternalForm());
+        Target.setImage(targetImage);
     }
 
     private void updateRealTimeHeight() {
@@ -420,15 +432,6 @@ public class IPCSMFXMLGameController implements Initializable {
         VVelocityFieldLabel.setText(String.format("%.2f", physics.getVerticalVelocity()*(-1)));
         HVelocityFieldLabel.setText(String.format("%.2f", physics.getHorizontalVelocity()));
 
-        physics.setOutOfBoundsCallback(isOutOfBounds -> {
-            if (isOutOfBounds) {
-                Platform.runLater(() -> {
-                    showResetMessage();
-                    handleResetBtn(new ActionEvent());
-                });
-            }
-        });
-
         launchBall = new Circle();
         launchBall.setRadius(ball.getRadius());
         launchBall.setFill(ball.getFill());
@@ -468,12 +471,26 @@ public class IPCSMFXMLGameController implements Initializable {
 
         isLaunched = true;
         physics.play();
-        startGameTimer();
+
+        if (!gameStarted) {
+            gameStarted = true;
+            randomizeTargetPosition();
+            startGameClock();
+            startPerTargetTimer();
+        }
+
+        if (collisionTimer == null) {
+            collisionTimer = new Timeline(new KeyFrame(Duration.millis(16), e -> {
+                checkCollisions();
+            }));
+            collisionTimer.setCycleCount(Animation.INDEFINITE);
+            collisionTimer.play();
+        }
     }
 
     @FXML
     private void handleResetBtn(ActionEvent event) {
-        physics.reset();
+        resetBallOnly();
 
         VVelocityFieldLabel.setText("0.00");
         HVelocityFieldLabel.setText("0.00");
@@ -485,15 +502,21 @@ public class IPCSMFXMLGameController implements Initializable {
 
         ball.setVisible(true);
 
-        ball.setLayoutX(originalSpringEndPosition.getX());
-        ball.setLayoutY(originalSpringEndPosition.getY());
-
         physics.setObject(ball);
 
         amplitude.set(0);
         isLaunched = false;
 
         updateRealTimeHeight();
+
+        if (targetTimer != null)  targetTimer.stop();
+        if (collisionTimer != null) collisionTimer.stop();
+        if (gameClock != null) gameClock.stop();
+
+        gameStarted = false;
+        clockRunning = false;
+        TimeRemainingFieldLabel.setText("180");
+        PointsFieldLabel.setText("0");
     }
 
     @FXML
@@ -558,7 +581,7 @@ public class IPCSMFXMLGameController implements Initializable {
     private void handleMenuGoToSettings() {
         try {
             stopMusic(); // Stop the main menu song before switching
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/motionsim/SettingsScreen.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/motionsim/NewSettingsScreen.fxml"));
             loader.setResources(ResourceBundle.getBundle("motionsim.messages",LanguageController.getCurrentLocale()));
 
             Parent root = loader.load();
@@ -650,56 +673,84 @@ public class IPCSMFXMLGameController implements Initializable {
         sequence.play();
     }
 
-    private void handleScore(){
-        if(NormalOption.isSelected())
-        NormalRandomization();
-        else if (HardOption.isSelected())
-            HardRandomization();
-        RandomizeBasketPos();
+    private void randomizeTargetPosition() {
+        double paneW = AnimationPane.getWidth();
+        double paneH = AnimationPane.getHeight();
+        double targetW = Target.getBoundsInParent().getWidth();
+        double targetH = Target.getBoundsInParent().getHeight();
+
+        double minX = paneW / 2;
+        double maxX = paneW - targetW;
+        double minY = 100;
+        double maxY = paneH - targetH - 50;
+
+        Target.setLayoutX(minX + Math.random() * (maxX - minX));
+        Target.setLayoutY(minY + Math.random() * (maxY - minY));
     }
 
-   private void NormalRandomization(){
-        SpringPhysics physics = SpringPhysics.getInstance();
-        double RandomGravity = 5 + Math.random() * 15;
-        physics.setGravity(RandomGravity);
-        GravityFieldLabel.setText(String.format("%.2f", RandomGravity));
+    private void checkCollisions() {
+        if (launchBall == null || !launchBall.isVisible()) return;
+        Bounds ballB = launchBall.localToScene(launchBall.getBoundsInLocal());
+        Bounds targetB = Target.localToScene(Target.getBoundsInLocal());
 
+        if (ballB.intersects(targetB)) {
+            int points = Integer.parseInt(PointsFieldLabel.getText());
+            PointsFieldLabel.setText(String.valueOf(points + 1));
+            resetPerTargetTimer();
+            randomizeTargetPosition();
+        }
     }
 
-    private void HardRandomization(){
-        SpringPhysics physics = SpringPhysics.getInstance();
-        double RandomGravity = 5 + Math.random() * 15;
+    private void startGameClock() {
+        if (clockRunning) {
+            return;
+        }
+        clockRunning = true;
+
+        totalSecondsRemaining = 180;
+        TimeRemainingFieldLabel.setText("180");
+
+        gameClock = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
+            totalSecondsRemaining--;
+            TimeRemainingFieldLabel.setText(String.valueOf(totalSecondsRemaining));
+            if (totalSecondsRemaining <= 0) {
+                endGame();
+            }
+        }));
+        gameClock.setCycleCount(Timeline.INDEFINITE);
+        gameClock.play();
     }
 
-    private void startGameTimer() {
-        timeRemaining = 60;
-        TimeRemainingFieldLabel.setText(String.valueOf(timeRemaining));
-
-        gameTimer = new Timeline(new KeyFrame(Duration.seconds(1), e->{
-            timeRemaining--;
-            TimeRemainingFieldLabel.setText(String.valueOf(timeRemaining));
-        if (timeRemaining <= 0) {
-            gameTimer.stop();
-            endGame();
+    private void startPerTargetTimer() {
+        GameSettings.Difficulty diff = GameSettings.getDifficulty();
+        switch (diff) {
+            case EASY -> perTargetSecondsRemaining = Integer.MAX_VALUE;
+            case NORMAL -> perTargetSecondsRemaining = 30;
+            case HARD -> perTargetSecondsRemaining = 15;
         }
 
-        }));
-        gameTimer.setCycleCount(Timeline.INDEFINITE);
-        gameTimer.play();
-        collisionTimer = new Timeline(new KeyFrane(Duration.millis(20), e ->{
-            checkCollisionWithBasket();
-        }));
-        collisionTimer.setCycleCount(Timeline.INDEFINITE);
-        collisionTimer.play();
+        if (diff == GameSettings.Difficulty.EASY) {
+            return;
+        }
 
+        targetTimer = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
+            perTargetSecondsRemaining--;
+            if (perTargetSecondsRemaining <= 0) {
+                randomizeTargetPosition();
+                resetPerTargetTimer();
+            }
+        }));
+        targetTimer.setCycleCount(Animation.INDEFINITE);
+        targetTimer.play();
+    }
+
+    private void resetPerTargetTimer() {
+        if (targetTimer != null) targetTimer.stop();
+        startPerTargetTimer();
     }
 
     private void endGame(){
         physics.pause();
-
-        if (collisionTimer != null) {
-            collisionTimer.stop();
-        }
 
         Label gameOverLabel = new Label("Game Over!");
         gameOverLabel.setStyle("-fx-font-size: 36px; -fx-text-fill: red;");
@@ -713,39 +764,43 @@ public class IPCSMFXMLGameController implements Initializable {
         ball.setVisible(false);
         StartBtn.setDisable(true);
         ResetBtn.setDisable(true);
+
+        if (targetTimer != null) {
+            targetTimer.stop();
+        }
+
+        if (gameClock != null) {
+            gameClock.stop();
+        }
+
+        if (collisionTimer != null) {
+            collisionTimer.stop();
+        }
     }
-    private void RandomizeBasketPos(){
-        double paneW = AnimationPane.getWidth();
-        double paneH = AnimationPane.getHeight();
 
-        double BasketW = Basket.getWidth();
-        double BasketH = Basket.getHeight();
+    private void resetBallOnly() {
+        physics.reset();
 
-        double minX = paneW / 2;
-        double maxX = paneW - BasketW;
-        double minY = 100;
-        double maxY = paneH - BasketH - 50;
+        if (launchBall != null) {
+            AnimationPane.getChildren().remove(launchBall);
+            launchBall = null;
+        }
 
-        double randomX = minX + Math.random() * (maxX - minX);
-        double randomY = minY + Math.random() * (maxY - minY);
+        ball.setVisible(true);
+        ball.setLayoutX(originalSpringEndPosition.getX());
+        ball.setLayoutY(originalSpringEndPosition.getY());
 
-        Basket.setLayoutX(randomX);
-        Basket.setLayoutY(randomY);
+        physics.setObject(ball);
+        amplitude.set(0);
+        isLaunched = false;
+        updateRealTimeHeight();
+
+        VVelocityFieldLabel.setText("0.00");
+        HVelocityFieldLabel.setText("0.00");
     }
 
     @FXML
     public void handleFileMenuClose(ActionEvent actionEvent) {
         Platform.exit();
-    }
-    private void checkCollisionWithBasket(){
-        if(launchBall == null || !launchBall.isVisible()) return;
-        Bounds ballBounds = launchBall.localToScene(launchBall.getBoundInLocal());
-        Bound basketBounds = Basket.localToScene(Basket.getBoundsInLocal());
-        if(ballBounds.intersects(basketBounds)){
-            System.out.println("Score!");
-            int points = Integer.parseInt(PointsRec.getText());
-            PointsFieldLabel.setText(String.ValueOf(points + 1));
-            RandomizeBasketPos();
-        }
     }
 }
