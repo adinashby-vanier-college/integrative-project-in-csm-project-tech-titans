@@ -8,6 +8,7 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.Slider?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.shape.Arc?>
@@ -17,7 +18,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1450.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.motionsim.Controller.IPCSMFXMLGameController">
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1450.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.motionsim.Controller.IPCSMFXMLGameController">
    <children>
       <AnchorPane id="AnchorPane" layoutY="1.0" prefHeight="800.0" prefWidth="1450.0" style="-fx-background-color: #F0F8FF;">
          <children>
@@ -47,7 +48,7 @@
             </MenuBar>
             <Pane fx:id="AnimationPane" layoutX="501.0" layoutY="27.0" prefHeight="775.0" prefWidth="951.0">
                <children>
-                  <ImageView fx:id="Basket" layoutX="1350.0" layoutY="500.0" fitWidth="60.0" fitHeight="80.0" image= "basket.png"/>
+                  <ImageView fx:id="Target" fitHeight="80.0" fitWidth="60.0" layoutX="1350.0" layoutY="500.0" />
                   <AnchorPane fx:id="SpringPane" layoutY="568.0" prefHeight="200.0" prefWidth="277.0">
                      <children>
                         <Group fx:id="groupSpring" layoutX="-13.0" layoutY="105.0" rotate="-2.0">
@@ -135,7 +136,7 @@
                </font>
             </Label>
             <Rectangle fx:id="TimeRemainingFieldRec" arcHeight="5.0" arcWidth="5.0" fill="#d4d4d4" height="20.0" layoutX="316.0" layoutY="84.0" stroke="BLACK" strokeType="INSIDE" width="100.0" />
-            <Label fx:id="TimeRemainingFieldLabel" alignment="CENTER" layoutX="316.0" layoutY="84.0" prefHeight="20.0" prefWidth="100.0" text="0.00" textAlignment="CENTER">
+            <Label fx:id="TimeRemainingFieldLabel" alignment="CENTER" layoutX="316.0" layoutY="84.0" prefHeight="20.0" prefWidth="100.0" text="180" textAlignment="CENTER">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font>
