@@ -43,8 +43,6 @@ public class LoginController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         loadUserFromJson();
         passwordToggle();
-        //ThemeUtil.applyBackground(mainPane);
-        ThemeUtil.applyThemeToPane(SpringPane);
     }
 
     private void loadUserFromJson() {

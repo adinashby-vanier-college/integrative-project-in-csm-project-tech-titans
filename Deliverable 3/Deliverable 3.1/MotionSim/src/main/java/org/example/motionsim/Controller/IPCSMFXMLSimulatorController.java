@@ -231,8 +231,7 @@ public class IPCSMFXMLSimulatorController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-       // ThemeUtil.applyBackground(mainPane);
-        ThemeUtil.applyThemeToPane(SpringPane);
+        ThemeUtil.applyThemeToPane(AnimationPane);
         physics = SpringPhysics.getInstance();
         physics.setObject(ball);
         physics.addBoundaryLine(OrthogonalToLeftLine4);

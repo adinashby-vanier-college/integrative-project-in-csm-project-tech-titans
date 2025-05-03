@@ -48,12 +48,8 @@ public class SignUpController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        applyWallpaper(SpringPane, NewSettingsScreenController.AppTheme.getWallpaperPath());
-        //ThemeUtil.applyBackground(mainPane);
-        ThemeUtil.applyThemeToPane(SpringPane);
         loadUsersFromJson();
         passwordToggle();
-     //   NewSettingsScreenController.ThemeUtil.applyWallpaper(SpringPane, AppTheme.getWallpaperPath(), getClass());
     }
 
     private void loadUsersFromJson() {
@@ -167,17 +163,5 @@ public class SignUpController implements Initializable {
 
     public TextField getVisiblePasswordField() {
         return visiblePasswordField;
-    }
-    private void applyWallpaper(Pane pane, String resourcePath) {
-        URL imageUrl = getClass().getResource(resourcePath);
-        if (imageUrl == null) {
-            System.err.println("Wallpaper not found: " + resourcePath);
-            return;
-        }
-        String imageStyle = "-fx-background-image: url('" + imageUrl.toExternalForm() + "');"
-                + "-fx-background-size: cover;"
-                + "-fx-background-repeat: no-repeat;"
-                + "-fx-background-position: center;";
-        pane.setStyle(imageStyle);
     }
 }

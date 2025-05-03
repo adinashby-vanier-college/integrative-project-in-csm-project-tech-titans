@@ -13,7 +13,7 @@ import java.util.ResourceBundle;
 public class Main extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/motionsim/NewSettingsScreen.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/motionsim/LoginScreen.fxml"));
         fxmlLoader.setResources(ResourceBundle.getBundle("motionsim.messages", Locale.getDefault()));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setResizable(false);

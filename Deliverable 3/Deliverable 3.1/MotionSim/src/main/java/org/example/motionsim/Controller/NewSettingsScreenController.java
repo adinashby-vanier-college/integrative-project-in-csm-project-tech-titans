@@ -378,6 +378,8 @@ public class NewSettingsScreenController implements Initializable {
     private Button StopMusicBtn;
     @FXML
     private Pane SpringPane;
+    @FXML
+    private Pane MainPane;
 @FXML
 private ComboBox<String> themeComboBox;
     @Override
@@ -641,9 +643,6 @@ private void handleWallpaperComboBox(ActionEvent event) {
 @FXML
 private void handleWallpaperComboBox() {
     String selected = WallpaperComboBox.getValue();
-    //ThemeUtil.setWallpaperMode(selected); // Updates the path inside ThemeUtil
-    //backgroundImageView.setImage(new Image(getClass().getResource(ThemeUtil.getWallpaperPath()).toExternalForm()));
-    //if (selected != null) {
         switch (selected) {
             case "Light Mode":
                 ThemeUtil.setTheme(ThemeUtil.AppTheme.LIGHT);
@@ -654,9 +653,8 @@ private void handleWallpaperComboBox() {
             default:
                 ThemeUtil.setTheme(ThemeUtil.AppTheme.DEFAULT);
                 break;
-        //}
-    }
-    ThemeUtil.applyThemeToPane(SpringPane); // Reapply to current screen
+        }
+    ThemeUtil.applyThemeToPane(MainPane); // Reapply to current screen
 }
 /*
     private void applyWallpaper(Pane pane, String resourcePath) {

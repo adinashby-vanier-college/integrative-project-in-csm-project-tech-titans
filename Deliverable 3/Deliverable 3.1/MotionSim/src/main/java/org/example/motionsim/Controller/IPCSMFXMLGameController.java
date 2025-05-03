@@ -229,11 +229,7 @@ public class IPCSMFXMLGameController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-       // applyWallpaperToImageView(NewSettingsScreenController.AppTheme.getWallpaperPath());
-        //applyWallpaperToImageView(NewSettingsScreenController.AppTheme.getWallpaperPath());
-        //ThemeUtil.applyWallpaperToImageView(backgroundImageView, NewSettingsScreenController.AppTheme.getWallpaperPath(), getClass());
-        //ThemeUtil.applyBackground(yourMainPane);
-        ThemeUtil.applyThemeToPane(SpringPane);
+        ThemeUtil.applyThemeToPane(AnimationPane);
         physics = SpringPhysics.getInstance();
         physics.setObject(ball);
         physics.addBoundaryLine(RightBorderLine);

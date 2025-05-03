@@ -32,7 +32,7 @@ public class StartingMenuController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         //ThemeUtil.applyBackground(mainPane);
         //NewSettingsScreenController.ThemeUtil.applyWallpaper(SpringPane, NewSettingsScreenController.AppTheme.getWallpaperPath(), getClass());
-        ThemeUtil.applyThemeToPane(SpringPane);
+//        ThemeUtil.applyThemeToPane(SpringPane);
     }
 
     @FXML
