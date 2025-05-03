@@ -39,6 +39,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.example.motionsim.Model.GameSettings;
 import org.example.motionsim.Model.SpringPhysics;
+import org.example.motionsim.Model.ThemeUtil;
 
 /**
  * FXML Controller class
@@ -196,7 +197,11 @@ public class IPCSMFXMLGameController implements Initializable {
     @FXML
     private Rectangle HeightRec;
     @FXML
+    private ImageView backgroundImageView;
+    @FXML
     private Line RightBorderLine;
+    @FXML
+    private Pane yourMainPane;
     @FXML
     private ImageView Target;
 
@@ -224,7 +229,11 @@ public class IPCSMFXMLGameController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+       // applyWallpaperToImageView(NewSettingsScreenController.AppTheme.getWallpaperPath());
+        //applyWallpaperToImageView(NewSettingsScreenController.AppTheme.getWallpaperPath());
+        //ThemeUtil.applyWallpaperToImageView(backgroundImageView, NewSettingsScreenController.AppTheme.getWallpaperPath(), getClass());
+        //ThemeUtil.applyBackground(yourMainPane);
+        ThemeUtil.applyThemeToPane(SpringPane);
         physics = SpringPhysics.getInstance();
         physics.setObject(ball);
         physics.addBoundaryLine(RightBorderLine);
@@ -798,7 +807,20 @@ public class IPCSMFXMLGameController implements Initializable {
         VVelocityFieldLabel.setText("0.00");
         HVelocityFieldLabel.setText("0.00");
     }
+    /*
+    public class ThemeUtil {
+        public static void applyWallpaperToImageView(ImageView view, String resourcePath, Class<?> refClass) {
+            try {
+                Image image = new Image(refClass.getResource(resourcePath).toExternalForm());
+                view.setImage(image);
+            } catch (Exception e) {
+                System.err.println("Could not load wallpaper: " + resourcePath);
+                e.printStackTrace();
+            }
+        }
+    }
 
+     */
     @FXML
     public void handleFileMenuClose(ActionEvent actionEvent) {
         Platform.exit();

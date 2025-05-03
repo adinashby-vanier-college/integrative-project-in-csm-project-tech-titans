@@ -1,5 +1,8 @@
 package org.example.motionsim.Controller;
 
+import java.util.Locale;
+import java.util.ResourceBundle;
+
 /*import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -34,11 +37,20 @@ public class LanguageController extends Application{
     }
     }
 */
+/*
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class LanguageController {
     private static Locale currentLocale = Locale.ENGLISH;
+
+    public static Locale getCurrentLocale() {
+        return currentLocale;
+    }
+
+    public static void setCurrentLocale(Locale locale) {
+        currentLocale = locale;
+    }
     private static ResourceBundle bundle = ResourceBundle.getBundle("message",currentLocale);
     public static void setLanguage(String language) {
         if (language.equalsIgnoreCase("Français")) {
@@ -50,5 +62,28 @@ public class LanguageController {
         bundle = ResourceBundle.getBundle("messages",currentLocale);
     } public static String getString(String key ) {
         return bundle.getString(key);
+    }
+}
+
+ */
+public class LanguageController {
+    private static Locale currentLocale = Locale.ENGLISH;
+    private static ResourceBundle bundle = ResourceBundle.getBundle("motionsim.messages", currentLocale);
+
+    public static void setLanguage(String language) {
+        currentLocale = language.equalsIgnoreCase("Français") ? Locale.FRENCH : Locale.ENGLISH;
+        bundle = ResourceBundle.getBundle("motionsim.messages", currentLocale);
+    }
+
+    public static ResourceBundle getBundle() {
+        return bundle;
+    }
+
+    public static String getString(String key) {
+        return bundle.getString(key);
+    }
+
+    public static Locale getCurrentLocale() {
+        return currentLocale;
     }
 }

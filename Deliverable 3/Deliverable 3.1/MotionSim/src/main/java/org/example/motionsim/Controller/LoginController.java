@@ -13,8 +13,10 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import org.example.motionsim.Model.ThemeUtil;
 import org.example.motionsim.Model.User;
 
 import java.io.*;
@@ -32,7 +34,7 @@ public class LoginController implements Initializable {
     @FXML private Button signUpBtn;
     @FXML private AnchorPane LoginScreen;
     @FXML private Text loginNotSuccessfulMsg;
-
+    @FXML private Pane SpringPane;
     private TextField visiblePasswordField = new TextField();
     private List<User> userList;
     private final File userFile = new File("Data/users.json");
@@ -41,6 +43,8 @@ public class LoginController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         loadUserFromJson();
         passwordToggle();
+        //ThemeUtil.applyBackground(mainPane);
+        ThemeUtil.applyThemeToPane(SpringPane);
     }
 
     private void loadUserFromJson() {

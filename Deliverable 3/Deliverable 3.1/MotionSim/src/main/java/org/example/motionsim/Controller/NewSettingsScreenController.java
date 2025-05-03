@@ -322,9 +322,13 @@ package org.example.motionsim.Controller;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 import javafx.event.ActionEvent;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -343,6 +347,7 @@ import javafx.stage.Stage;
 import javafx.scene.Node;
 import org.example.motionsim.Model.GameSettings;
 import org.example.motionsim.Model.SpringPhysics;
+import org.example.motionsim.Model.ThemeUtil;
 
 public class NewSettingsScreenController implements Initializable {
 
@@ -350,6 +355,8 @@ public class NewSettingsScreenController implements Initializable {
     private Rectangle TopRec, LanguageRec, GameplayRec, WallpaperRec, AudioRec, MusicVolumeRec, SFXVolumeRec, BottomRec;
     @FXML
     private Line TopLine, BottomLine;
+    @FXML
+    private ImageView backgroundImageView;
     @FXML
     private Label SettingsScreenLabel, LanguageLabel, GameplayLabel, WallpaperLabel, AudioLabel, MusicVolumeLabel, SFXVolumeLabel;
     @FXML
@@ -369,18 +376,29 @@ public class NewSettingsScreenController implements Initializable {
     private Button PlayMusicBtn;
     @FXML
     private Button StopMusicBtn;
-
+    @FXML
+    private Pane SpringPane;
+@FXML
+private ComboBox<String> themeComboBox;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         setupVolumeControl();
-        //loadMusic("playSettingsMenuSong");
+        applyWallpaperToImageView(AppTheme.getWallpaperPath());
+        //loadMusic("playSettingsMenuSong"); //applyWallpaper(SpringPane, AppTheme.getWallpaperPath());
         loadMusic("SettingsMenuSong.wav");
         setupTooltips();
-       // updateLanguage();
+        //ThemeUtil.applyThemeToPane(SpringPane);
+        backgroundImageView.setImage(new Image(Objects.requireNonNull(getClass().getResource("/wallpapers/DEFAULT.png")).toExternalForm()));
+        // Optional: preload selection
+       // WallpaperComboBox.getItems().addAll("Default", "Light Mode", "Dark Mode");
+       // WallpaperComboBox.setValue("Default");
+       // backgroundImageView.setImage(new Image(getClass().getResource(ThemeUtil.getWallpaperPath()).toExternalForm()));
+            // updateLanguage();
 // Language ComboBox setup
         LanguageComboBox.getItems().addAll("English", "Français");
         LanguageComboBox.setValue("English");
         playSettingsMenuSong();
+     //   ThemeUtil.setTheme(ThemeUtil.Theme.LIGHT);  // or DARK, DEFAULT
         //updateLanguage();
 // Difficulty setup
         difficultyGroup = new ToggleGroup();
@@ -389,19 +407,23 @@ public class NewSettingsScreenController implements Initializable {
         HardOption.setToggleGroup(difficultyGroup);
         NormalOption.setSelected(true);
         handleDifficultySelection(null);
-
+        if (WallpaperComboBox.getItems().isEmpty()) {
+            WallpaperComboBox.getItems().addAll("Default", "Dark Mode", "Light Mode");
+            WallpaperComboBox.setValue("Default");
+        }
 // Wallpaper setup
-        WallpaperComboBox.getItems().addAll("Default", "Dark Mode", "Light Mode");
-        WallpaperComboBox.setValue("Default");
-if (MusicComboBox != null) {
-    MusicComboBox.getItems().addAll("Main Menu Song", "Settings Menu Song", "Song 1", "Song 2");
-    MusicComboBox.setValue("Main Menu Song");
-    loadMusic("MainMenuSong.mp3");
-} else {
-    System.err.println("Music is null");
-}
+      //  WallpaperComboBox.getItems().addAll("Default", "Dark Mode", "Light Mode");
+        //WallpaperComboBox.setValue("Default");
+
+        if (MusicComboBox != null) {
+            MusicComboBox.getItems().addAll("Main Menu Song", "Settings Menu Song", "Song 1", "Song 2");
+            MusicComboBox.setValue("Main Menu Song");
+            loadMusic("MainMenuSong.mp3");
+        } else {
+            System.err.println("Music is null");
+        }
 // Music Selection setup
-       // loadMusic("MainMenuSong.mp3");
+        // loadMusic("MainMenuSong.mp3");
 
 // Volume Slider setup
         MusicVolumeSlider.setMin(0);
@@ -443,6 +465,7 @@ if (MusicComboBox != null) {
             System.out.println("Music stopped.");
         }
     }
+
     @FXML
     private void handleSaveBtn(ActionEvent event) {
         System.out.println("Settings saved!");
@@ -484,10 +507,11 @@ if (MusicComboBox != null) {
             e.printStackTrace();
         }
     }
+
     @FXML
     private void playSettingsMenuSong() {
         try {
-            String musicPath = getClass().getResource( "/motionsim/songs/SettingsMenuSong.wav").toString();
+            String musicPath = getClass().getResource("/motionsim/songs/SettingsMenuSong.wav").toString();
             Media media = new Media(musicPath);
             mediaPlayer = new MediaPlayer(media);
             mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE); // Loop the song
@@ -497,6 +521,7 @@ if (MusicComboBox != null) {
             e.printStackTrace();
         }
     }
+
     @FXML
     private void stopSettingsMenuSong() {
         if (mediaPlayer != null) {
@@ -504,32 +529,36 @@ if (MusicComboBox != null) {
             System.out.println("Settings Menu song stopped");
         }
     }
+/*
     @FXML
     private void handleVolumeChange() {
         if (mediaPlayer != null) {
             mediaPlayer.setVolume(MusicVolumeSlider.getValue() / 100);
         }
     }
-/*
-    @FXML
-    private void handleMusicSelection(ActionEvent event) {
-        String selectedMusic = MusicComboBox.getValue();
-        switch (selectedMusic) {
-            case "Main Menu Song":
-                loadMusic("MainMenuSong.mp3");
-                break;
-            case "Settings Menu Song":
-                loadMusic("SettingsMenuSong.wav");
-                break;
-            case "Song 1":
-                loadMusic("song.wav");
-                break;
-            case "Song 2":
-                loadMusic("song2.wav");
-                break;
+
+ */
+
+    /*
+        @FXML
+        private void handleMusicSelection(ActionEvent event) {
+            String selectedMusic = MusicComboBox.getValue();
+            switch (selectedMusic) {
+                case "Main Menu Song":
+                    loadMusic("MainMenuSong.mp3");
+                    break;
+                case "Settings Menu Song":
+                    loadMusic("SettingsMenuSong.wav");
+                    break;
+                case "Song 1":
+                    loadMusic("song.wav");
+                    break;
+                case "Song 2":
+                    loadMusic("song2.wav");
+                    break;
+            }
         }
-    }
-*/
+    */
     @FXML
     private void handleLanguageComboBox(ActionEvent event) {
         String language = LanguageComboBox.getValue();
@@ -545,6 +574,7 @@ if (MusicComboBox != null) {
         LanguageController.setLanguage(selectedlanguage);
         updateLanguage();
     }
+
     private void playMainMenuSong() {
         try {
             String musicPath = getClass().getResource("/resources/motionsim/songs/MainMenuSong.mp3").toString();
@@ -559,14 +589,106 @@ if (MusicComboBox != null) {
             System.out.println("Error playing Main Menu Song: " + e.getMessage());
         }
     }
-
+/*
     @FXML
-    private void handleWallpaperComboBox(ActionEvent event) {
-        String wallpaper = WallpaperComboBox.getValue();
-        System.out.println("Wallpaper set to: " + wallpaper);
+    private void handleWallpaperComboBox(ActionEvent actionEvent) {
+        String select = WallpaperComboBox.getValue();
+        String path;
+        switch (select) {
+            case "Light Mode":
+            case "Mode clair":
+                path = "/wallpapers/r_173.jpg";
+                break;
+            case "Dark Mode":
+            case "Mode sombre":
+                path = "/wallpapers/Dark.png";
+                break;
+            default:
+                path = "/wallpapers/defaultimage.jpg";
+                break;
+        }
+        AppTheme.setWallpaperPath(path);
+        applyWallpaper(SpringPane, path);
     }
 
+ */
+    /*
+@FXML
+private void handleWallpaperComboBox(ActionEvent event) {
+    String selected = WallpaperComboBox.getValue();
+    String path;
 
+    switch (selected) {
+        case "Light Mode", "Mode clair" -> path = "/wallpapers/LIGHT.jpg";
+        case "Dark Mode", "Mode sombre" -> path = "/wallpapers/dark.jpg";
+        default -> path = "/wallpapers/DEFAULT.png";
+    }
+    AppTheme.setWallpaperPath(path); // Set globally
+    /*
+    applyWallpaper(SpringPane, path); // Apply locally (Settings screen)
+    try {
+        Image image = new Image(getClass().getResource(path).toExternalForm());
+        backgroundImageView.setImage(image); // this line applies it
+    } catch (Exception e) {
+        System.err.println("Failed to load wallpaper: " + path);
+        e.printStackTrace();
+    }
+}
+
+     */
+//    applyWallpaperToImageView("/wallpapers/DEFAULT.png");
+//}
+@FXML
+private void handleWallpaperComboBox() {
+    String selected = WallpaperComboBox.getValue();
+    //ThemeUtil.setWallpaperMode(selected); // Updates the path inside ThemeUtil
+    //backgroundImageView.setImage(new Image(getClass().getResource(ThemeUtil.getWallpaperPath()).toExternalForm()));
+    //if (selected != null) {
+        switch (selected) {
+            case "Light Mode":
+                ThemeUtil.setTheme(ThemeUtil.AppTheme.LIGHT);
+                break;
+            case "Dark Mode":
+                ThemeUtil.setTheme(ThemeUtil.AppTheme.DARK);
+                break;
+            default:
+                ThemeUtil.setTheme(ThemeUtil.AppTheme.DEFAULT);
+                break;
+        //}
+    }
+    ThemeUtil.applyThemeToPane(SpringPane); // Reapply to current screen
+}
+/*
+    private void applyWallpaper(Pane pane, String resourcePath) {
+    URL imageUrl = getClass().getResource(resourcePath);
+    if (imageUrl == null) {
+        System.err.println("Wallpaper not found: " + resourcePath);
+        return;
+    }
+    String imageStyle = "-fx-background-image: url('" + imageUrl.toExternalForm() + "');" +
+            "-fx-background-size: cover;" +
+            "-fx-background-repeat: no-repeat;" +
+            "-fx-background-position: center;";
+    pane.setStyle(imageStyle);
+}
+
+ */
+    //private void applyWallpaper(Pane pane, String resourcePath) {
+        //pane.setStyle("-fx-background-image: url('" + getClass().getResource(resourcePath) + "');" + "-fx-background-size: cover;" );
+  //  private void handleWallpaperComboBox(ActionEvent event) {
+    //    String wallpaper = WallpaperComboBox.getValue();
+      //  System.out.println("Wallpaper set to: " + wallpaper);
+    //}
+    private void applyWallpaperToImageView(String resourcePath) {
+        try {
+            //Image image = new Image(getClass().getResource(resourcePath).toExternalForm());
+            Image image = new Image(Objects.requireNonNull(getClass().getResource("/wallpapers/DEFAULT.png")).toExternalForm());
+            backgroundImageView.setImage(image);
+        } catch (Exception e) {
+            System.err.println("Could not load wallpaper: " + resourcePath);
+            e.printStackTrace();
+        }
+    }
     @FXML
     private void handleMusicVolumeChange() {
         double volume = MusicVolumeSlider.getValue() / 100.0;
@@ -612,6 +734,32 @@ if (MusicComboBox != null) {
         }
     }
 */
+    public class AppTheme {
+        private static String wallpaperPath = "/wallpapers/DEFAULT.png";
+        public static String getWallpaperPath() {
+            return wallpaperPath;
+    }
+    public static void setWallpaperPath(String path) {
+            wallpaperPath = path;
+    }
+}
+/*
+    public class ThemeUtil {
+        public static void applyWallpaper(Pane pane, String resourcePath, Class<?> clazz) {
+            URL imageUrl = clazz.getResource(resourcePath);
+            if (imageUrl == null) {
+                System.err.println("Wallpaper not found: " + resourcePath);
+                return;
+            }
+
+            String imageStyle = "-fx-background-image: url('" + imageUrl.toExternalForm() + "');" +
+                    "-fx-background-size: cover;" +
+                    "-fx-background-repeat: no-repeat;" +
+                    "-fx-background-position: center;";
+            pane.setStyle(imageStyle);
+        }
+    }
+ */
     @FXML
     private void handleExitBtn(ActionEvent event) {
         try {
@@ -667,13 +815,32 @@ if (MusicComboBox != null) {
         ExitBtn.setText(LanguageController.getString("settings.exit"));
         HelpBtn.setText(LanguageController.getString("settings.help"));
         DefaultBtn.setText(LanguageController.getString("settings.default"));
-    ThemeComboBox.getItems().setAll(
+        //ThemeComboBox.getItems().clear();
+        ThemeComboBox.getItems().clear();
+        ThemeComboBox.getItems().addAll(
+                LanguageController.getString("settings.light"),
+                LanguageController.getString("settings.dark"),
+                LanguageController.getString("settings.default")
+        );
+
+        WallpaperComboBox.getItems().clear();
+        WallpaperComboBox.getItems().addAll(
+                LanguageController.getString("settings.light"),
+                LanguageController.getString("settings.dark"),
+                LanguageController.getString("settings.default")
+        );
+    }
+        /*
+        ThemeComboBox.getItems().setAll(
             LanguageController.getString("settings.light"),LanguageController.getString("settings.dark"),LanguageController.getString("settings.default")
     );
     WallpaperComboBox.getItems().setAll(
             LanguageController.getString("settings.light"),LanguageController.getString("settings.dark"),LanguageController.getString("settings.default")
                 );
     }
+
+         */
+    /*
     @FXML
     private void handleThemeComboBox() {
         String selectedTheme = ThemeComboBox.getValue();
@@ -682,6 +849,23 @@ if (MusicComboBox != null) {
         }else {
             System.out.println("Theme set to light");
         }
+    }
+
+     */
+    @FXML
+    private void handleThemeChange() {
+        String selected = themeComboBox.getValue();
+        switch (selected) {
+            case "Dark Mode":
+                ThemeUtil.setTheme(ThemeUtil.AppTheme.DARK);
+                break;
+            case "Light Mode":
+                ThemeUtil.setTheme(ThemeUtil.AppTheme.LIGHT);
+                break;
+            default:
+                ThemeUtil.setTheme(ThemeUtil.AppTheme.DEFAULT);
+        }
+        ThemeUtil.applyThemeToPane(SpringPane);
     }
 
     @FXML

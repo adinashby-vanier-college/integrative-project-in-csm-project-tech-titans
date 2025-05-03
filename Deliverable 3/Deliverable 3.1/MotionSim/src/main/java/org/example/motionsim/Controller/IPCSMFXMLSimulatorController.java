@@ -9,7 +9,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-
+import org.example.motionsim.Model.ThemeUtil;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
@@ -29,6 +29,8 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
@@ -199,6 +201,10 @@ public class IPCSMFXMLSimulatorController implements Initializable {
     @FXML
     private Rectangle HeightRec;
     @FXML
+    private ImageView backgroundImageView;
+    @FXML
+    private Pane mainPane;
+    @FXML
     private Line springPath;
 
     private SpringPhysics physics;
@@ -225,7 +231,8 @@ public class IPCSMFXMLSimulatorController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+       // ThemeUtil.applyBackground(mainPane);
+        ThemeUtil.applyThemeToPane(SpringPane);
         physics = SpringPhysics.getInstance();
         physics.setObject(ball);
         physics.addBoundaryLine(OrthogonalToLeftLine4);
@@ -330,9 +337,21 @@ public class IPCSMFXMLSimulatorController implements Initializable {
         }));
         energyTimeline.setCycleCount(Timeline.INDEFINITE);
         energyTimeline.play();
-
         playMainMenuSong();
     }
+    /*
+    private void applyWallpaperToImageView() {
+        try {
+            Image image = new Image(getClass().getResource(NewSettingsScreenController.AppTheme.getWallpaperPath()).toExternalForm());
+            backgroundImageView.setImage(image);
+            backgroundImageView.toBack(); // ensures it's behind all UI
+        } catch (Exception e) {
+            System.err.println("Could not load wallpaper: " + NewSettingsScreenController.AppTheme.getWallpaperPath());
+            e.printStackTrace();
+        }
+    }
+
+     */
 
     private void updateRealTimeHeight() {
         double angleDegrees = Double.parseDouble(AngleFieldLabel.getText());

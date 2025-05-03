@@ -234,5 +234,6 @@
             </Label>
          </children>
       </AnchorPane>
+      <ImageView fx:id="backgroundImageView" fitWidth="1450.0" fitHeight="800.0" layoutX="0.0" layoutY="0.0" preserveRatio="false" mouseTransparent="true" pickOnBounds="true" />
    </children>
 </AnchorPane>

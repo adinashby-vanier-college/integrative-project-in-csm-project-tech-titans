@@ -10,8 +10,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import org.example.motionsim.Model.ThemeUtil;
 import org.example.motionsim.Model.User;
 
 import java.io.*;
@@ -23,6 +25,10 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 public class SignUpController implements Initializable {
+    @FXML
+    Pane SpringPane;
+    @FXML
+    private Pane mainPane;
     @FXML
     private AnchorPane signUpScreen;
     @FXML
@@ -42,8 +48,12 @@ public class SignUpController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        applyWallpaper(SpringPane, NewSettingsScreenController.AppTheme.getWallpaperPath());
+        //ThemeUtil.applyBackground(mainPane);
+        ThemeUtil.applyThemeToPane(SpringPane);
         loadUsersFromJson();
         passwordToggle();
+     //   NewSettingsScreenController.ThemeUtil.applyWallpaper(SpringPane, AppTheme.getWallpaperPath(), getClass());
     }
 
     private void loadUsersFromJson() {
@@ -157,5 +167,17 @@ public class SignUpController implements Initializable {
 
     public TextField getVisiblePasswordField() {
         return visiblePasswordField;
+    }
+    private void applyWallpaper(Pane pane, String resourcePath) {
+        URL imageUrl = getClass().getResource(resourcePath);
+        if (imageUrl == null) {
+            System.err.println("Wallpaper not found: " + resourcePath);
+            return;
+        }
+        String imageStyle = "-fx-background-image: url('" + imageUrl.toExternalForm() + "');"
+                + "-fx-background-size: cover;"
+                + "-fx-background-repeat: no-repeat;"
+                + "-fx-background-position: center;";
+        pane.setStyle(imageStyle);
     }
 }

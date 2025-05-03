@@ -4,7 +4,7 @@ module org.example.motionsim {
     requires javafx.media;
     requires com.google.gson;
     requires javafx.graphics;
-
+    opens org.example.motionsim to javafx.fxml;
     opens org.example.motionsim.Controller to javafx.fxml;
     exports org.example.motionsim;
     exports org.example.motionsim.Controller;

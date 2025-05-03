@@ -9,7 +9,9 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import org.example.motionsim.Model.ThemeUtil;
 
 
 import java.io.IOException;
@@ -24,10 +26,13 @@ public class StartingMenuController implements Initializable {
     private Button settingsButton;
     @FXML
     private Button exitButton;
-
+    @FXML
+    private Pane SpringPane;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
+        //ThemeUtil.applyBackground(mainPane);
+        //NewSettingsScreenController.ThemeUtil.applyWallpaper(SpringPane, NewSettingsScreenController.AppTheme.getWallpaperPath(), getClass());
+        ThemeUtil.applyThemeToPane(SpringPane);
     }
 
     @FXML
