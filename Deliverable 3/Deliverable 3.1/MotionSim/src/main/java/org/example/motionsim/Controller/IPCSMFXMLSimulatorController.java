@@ -9,6 +9,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+
+import org.example.motionsim.Model.MusicManager;
+import org.example.motionsim.Model.SettingsApplier;
 import org.example.motionsim.Model.ThemeUtil;
 import javafx.animation.*;
 import javafx.application.Platform;
@@ -227,7 +230,6 @@ public class IPCSMFXMLSimulatorController implements Initializable {
     private long springReturnStartTime;
     private final double springReturnDuration = 300;
     private boolean isPausedByUser = false;
-    private MediaPlayer mediaPlayer;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -336,21 +338,8 @@ public class IPCSMFXMLSimulatorController implements Initializable {
         }));
         energyTimeline.setCycleCount(Timeline.INDEFINITE);
         energyTimeline.play();
-        playMainMenuSong();
+        MusicManager.get().play("MainMenuSong.mp3");
     }
-    /*
-    private void applyWallpaperToImageView() {
-        try {
-            Image image = new Image(getClass().getResource(NewSettingsScreenController.AppTheme.getWallpaperPath()).toExternalForm());
-            backgroundImageView.setImage(image);
-            backgroundImageView.toBack(); // ensures it's behind all UI
-        } catch (Exception e) {
-            System.err.println("Could not load wallpaper: " + NewSettingsScreenController.AppTheme.getWallpaperPath());
-            e.printStackTrace();
-        }
-    }
-
-     */
 
     private void updateRealTimeHeight() {
         double angleDegrees = Double.parseDouble(AngleFieldLabel.getText());
@@ -797,32 +786,19 @@ public class IPCSMFXMLSimulatorController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/motionsim/IPCSMFXMLGame.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) MenuBar.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            SettingsApplier.applyToScene(scene);
+            stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void playMainMenuSong() {
-        try {
-            String musicPath = getClass().getResource("/motionsim/songs/MainMenuSong.mp3").toString();
-            Media media = new Media(musicPath);
-            mediaPlayer = new MediaPlayer(media);
-            mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE); // Loop the song
-            mediaPlayer.setVolume(0.5); // Set initial volume (adjust as needed)
-            mediaPlayer.play();
-            System.out.println("Playing Main Menu Song...");
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Error playing Main Menu Song: " + e.getMessage());
-        }
-    }
+
     // Method to stop any currently playing song
     private void stopMusic() {
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-        }
+        MusicManager.get().stop();
     }
 
     @FXML
@@ -847,7 +823,9 @@ public class IPCSMFXMLSimulatorController implements Initializable {
 
             Parent root = loader.load();
             Stage stage = (Stage) MenuBar.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            SettingsApplier.applyToScene(scene);
+            stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

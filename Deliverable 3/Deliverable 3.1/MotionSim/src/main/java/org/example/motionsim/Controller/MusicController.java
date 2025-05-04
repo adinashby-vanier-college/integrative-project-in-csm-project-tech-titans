@@ -1,58 +1,4 @@
 package org.example.motionsim.Controller;
-/*
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import java.io.File;
-public class MusicController {
-    private static MusicController instance;
-    private MediaPlayer mediaPlayer;
-    private double volume = 0.5;
-    private boolean isMuted = false;
-     private MusicController() {}
-    public static synchronized  MusicController getInstance() {
-         if (instance == null) {
-             instance = new MusicController();
-         }
-    return instance;
-     }
-     public void playMusic (String filePath) {
-         stopMusic();
-         try{
-             Media media = new Media(new File(filePath).toURI().toString());
-             mediaPlayer =  new MediaPlayer(media);
-             mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-             mediaPlayer.setVolume(volume);
-             mediaPlayer.play();
-         }catch (Exception e) {
-             e.printStackTrace();
-         }
-
-     }
-     public void stopMusic() {
-         if (mediaPlayer != null) {
-             mediaPlayer.stop();
-         }
-     }
-     public void setVolume(double newVolume) {
-         volume = newVolume;
-         if (mediaPlayer != null) {
-             mediaPlayer.setVolume(volume);
-         }
-     }
-     public void mute(boolean mute ) {
-         isMuted =mute;
-         if (mediaPlayer != null) {
-             mediaPlayer.setMute(isMuted);
-         }
-     }
-     public double getVolume() {
-         return volume;
-     }
-    public boolean isMuted() {
-        return isMuted;
-    }
-}
-*/
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
@@ -80,11 +26,6 @@ public class MusicController extends Application {
         } catch (Exception e) {
             System.out.println("Error playing music: " + e.getMessage());
         }
-        //Media media = new Media(new File(filePath));
-        //mediaPlayer = new MediaPlayer(media);
-        //mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-        //mediaPlayer.play();
-        //}
     }
     private void handleMusicSelection(String menuId) {
         switch (menuId) {

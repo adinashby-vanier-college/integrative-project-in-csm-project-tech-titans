@@ -2,10 +2,7 @@ package org.example.motionsim.Controller;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import javafx.event.ActionEvent;
 import javafx.scene.image.Image;
@@ -27,8 +24,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.scene.Node;
-import org.example.motionsim.Model.GameSettings;
-import org.example.motionsim.Model.ThemeUtil;
+import org.example.motionsim.Model.*;
 
 public class NewSettingsScreenController implements Initializable {
     @FXML
@@ -40,7 +36,7 @@ public class NewSettingsScreenController implements Initializable {
     @FXML
     private Label SettingsScreenLabel, LanguageLabel, GameplayLabel, WallpaperLabel, AudioLabel, MusicVolumeLabel;
     @FXML
-    private ComboBox<String> LanguageComboBox, WallpaperComboBox, ThemeComboBox, MusicComboBox;
+    private ComboBox<String> LanguageComboBox, WallpaperComboBox, ThemeComboBox;
     @FXML
     private RadioButton EasyOption, NormalOption, HardOption;
     @FXML
@@ -51,7 +47,6 @@ public class NewSettingsScreenController implements Initializable {
     private Button DefaultBtn, SaveBtn, ExitBtn, HelpBtn;
 
     private ToggleGroup difficultyGroup;
-    private MediaPlayer mediaPlayer;
     @FXML
     private Button PlayMusicBtn;
     @FXML
@@ -61,34 +56,21 @@ public class NewSettingsScreenController implements Initializable {
     @FXML
     private ComboBox<String> themeComboBox;
     private final Map<String, ThemeUtil.AppTheme> wallpaperMap = new HashMap<>();
+    private UserSettings userSettings;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        setupVolumeControl();
-        applyWallpaperToImageView(AppTheme.getWallpaperPath());
-        loadMusic("SettingsMenuSong.wav");
-        setupTooltips();
-        backgroundImageView.setImage(new Image(Objects.requireNonNull(getClass().getResource("/wallpapers/DEFAULT.png")).toExternalForm()));
-        LanguageComboBox.getItems().addAll("English", "Français");
-        LanguageComboBox.setValue("English");
-        playSettingsMenuSong();
+        userSettings = Session.get().getSettings();
 
+        setupVolumeControl();
+        setupTooltips();
+
+        LanguageComboBox.getItems().addAll("English", "Français");
         // Difficulty setup
         difficultyGroup = new ToggleGroup();
         EasyOption.setToggleGroup(difficultyGroup);
         NormalOption.setToggleGroup(difficultyGroup);
         HardOption.setToggleGroup(difficultyGroup);
-        NormalOption.setSelected(true);
-        handleDifficultySelection(null);
-
-
-        if (MusicComboBox != null) {
-            MusicComboBox.getItems().addAll("Main Menu Song", "Settings Menu Song", "Song 1", "Song 2");
-            MusicComboBox.setValue("Main Menu Song");
-            loadMusic("MainMenuSong.mp3");
-        } else {
-            System.err.println("Music is null");
-        }
 
         // Volume Slider setup
         MusicVolumeSlider.setMin(0);
@@ -97,10 +79,50 @@ public class NewSettingsScreenController implements Initializable {
         MusicVolumeSlider.setShowTickLabels(true);
         MusicVolumeSlider.setShowTickMarks(true);
 
-        // Sound Effects Toggle
-        MusicVolumeMuteBox.setSelected(false);
+        LanguageComboBox.setValue(userSettings.getLanguage());
+        LanguageController.setLanguage(userSettings.getLanguage());
+        updateLanguage();
 
+        ThemeUtil.setTheme(userSettings.getTheme());
+        ThemeUtil.applyThemeToPane(MainPane);
         populateWallpaperCombo();
+
+        switch (userSettings.getDifficulty()) {
+            case EASY -> EasyOption.setSelected(true);
+            case NORMAL -> NormalOption.setSelected(true);
+            case HARD -> HardOption.setSelected(true);
+        }
+
+        MusicVolumeSlider.setValue(userSettings.getMusicVolume() * 100);
+        MusicVolumeMuteBox.setSelected(userSettings.isMusicMuted());
+        MusicManager.get().setVolume(userSettings.getMusicVolume());
+        MusicManager.get().setMute(userSettings.isMusicMuted());
+
+        MusicManager.get().play("SettingsMenuSong.wav");
+    }
+
+    @FXML
+    private void handleSaveBtn(ActionEvent e) {
+        userSettings.setLanguage(LanguageComboBox.getValue());
+        userSettings.setTheme(wallpaperMap.get(WallpaperComboBox.getValue()));
+        userSettings.setDifficulty(EasyOption.isSelected()  ? UserSettings.Difficulty.EASY
+                : NormalOption.isSelected()? UserSettings.Difficulty.NORMAL
+                : UserSettings.Difficulty.HARD);
+        userSettings.setMusicVolume(MusicVolumeSlider.getValue() / 100.0);
+        userSettings.setMusicMuted(MusicVolumeMuteBox.isSelected());
+
+        List<User> all = UserStore.load();
+        // this replaces the matching user object (by email) with Session.get()
+        for (int i = 0; i < all.size(); i++) {
+            if (all.get(i).getEmail().equals(Session.get().getEmail())) {
+                all.set(i, Session.get());
+                break;
+            }
+        }
+        UserStore.save(all);
+
+        SettingsApplier.applyToScene(SaveBtn.getScene());
+        System.out.println("Settings saved!");
     }
 
     private void populateWallpaperCombo() {
@@ -129,11 +151,6 @@ public class NewSettingsScreenController implements Initializable {
         createTooltip(AudioLabel, "Adjust the level of sound effects and/or music volume.");
     }
 
-    @FXML
-    private void handleSaveBtn(ActionEvent event) {
-        System.out.println("Settings saved!");
-    }
-
     private void createTooltip(Label label, String message) {
         VBox tooltipBox = new VBox();
         tooltipBox.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-padding: 5px;");
@@ -149,48 +166,6 @@ public class NewSettingsScreenController implements Initializable {
             popup.setX(e.getScreenX() + 10);
             popup.setY(e.getScreenY() + 10);
         });
-    }
-
-    private void loadMusic(String fileName) {
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-        }
-        try {
-            // Use class loader to load the resource file
-            URL resource = getClass().getResource("/motionsim/songs/" + fileName);
-            if (resource == null) {
-                throw new RuntimeException("File not found: " + fileName);
-            }
-            Media media = new Media(resource.toString());
-            mediaPlayer = new MediaPlayer(media);
-            mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-            mediaPlayer.setVolume(MusicVolumeSlider.getValue() / 100.0);
-            mediaPlayer.play();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
-    private void playSettingsMenuSong() {
-        try {
-            String musicPath = getClass().getResource("/motionsim/songs/SettingsMenuSong.wav").toString();
-            Media media = new Media(musicPath);
-            mediaPlayer = new MediaPlayer(media);
-            mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE); // Loop the song
-            mediaPlayer.setVolume(MusicVolumeSlider.getValue() / 100.0); //
-            mediaPlayer.play();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
-    private void stopSettingsMenuSong() {
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-            System.out.println("Settings Menu song stopped");
-        }
     }
 
     @FXML
@@ -224,11 +199,7 @@ public class NewSettingsScreenController implements Initializable {
 
     @FXML
     private void handleMuteToggle(ActionEvent event) {
-        if (MusicVolumeMuteBox.isSelected()) {
-            mediaPlayer.setMute(true);
-        } else {
-            mediaPlayer.setMute(false);
-        }
+        MusicManager.get().setMute(MusicVolumeMuteBox.isSelected());
     }
 
     @FXML
@@ -253,14 +224,16 @@ public class NewSettingsScreenController implements Initializable {
     @FXML
     private void handleExitBtn(ActionEvent event) {
         try {
-            stopSettingsMenuSong();
-            Parent mainRoot = FXMLLoader.load(getClass().getResource("/motionsim/IPCSMFXMLGame.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/motionsim/IPCSMFXMLGame.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(mainRoot));
+            Scene scene = new Scene(root);
+            SettingsApplier.applyToScene(scene);
+            stage.setScene(scene);
             stage.show();
-            System.out.println("Swicthed to Main menu song");
-        }catch (IOException e) {
-            e.printStackTrace();
+
+            MusicManager.get().play("MainMenuSong.mp3");
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 
@@ -270,20 +243,12 @@ public class NewSettingsScreenController implements Initializable {
         NormalOption.setSelected(true);
         WallpaperComboBox.setValue("Default");
         MusicVolumeSlider.setValue(50);
-        MusicComboBox.setValue("Main Menu Song");
         System.out.println("Settings reset to default.");
     }
 
-    @FXML
     private void setupVolumeControl() {
-        MusicVolumeSlider.setMin(0);
-        MusicVolumeSlider.setMax(100);
-        MusicVolumeSlider.setValue(50);
-        MusicVolumeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (mediaPlayer != null) {
-                mediaPlayer.setVolume(newValue.doubleValue() / 100);
-            }
-        });
+        MusicVolumeSlider.valueProperty().addListener((obs,o,n)->
+                MusicManager.get().setVolume(n.doubleValue()/100.0));
     }
 
     //from 186 to end

@@ -15,6 +15,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.example.motionsim.Model.ThemeUtil;
 import org.example.motionsim.Model.User;
+import org.example.motionsim.Model.UserStore;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -43,73 +44,41 @@ public class SignUpController implements Initializable {
     private Text problemMsg;
 
     private TextField visiblePasswordField = new TextField();
-    private List<User> userList = new ArrayList<>();
-    private final File userFile = new File("Data/users.json");
+    private List<User> userList;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        loadUsersFromJson();
+        userList = UserStore.load();
         passwordToggle();
     }
 
-    private void loadUsersFromJson() {
-        if (!userFile.exists()) return;
-        try (Reader reader = new FileReader(userFile)) {
-            Type listType = new TypeToken<List<User>>() {}.getType();
-            userList = new Gson().fromJson(reader, listType);
-            // filters out malformed users
-            userList = userList.stream().filter(user -> user.getEmail() != null && user.getPassword() != null).collect(Collectors.toList());
-            if (userList == null) userList = new ArrayList<>();
-        } catch (IOException e) {
-            showProblem("Failed to load users.");
-            e.printStackTrace();
-        }
-    }
-
     @FXML
-    private void handleCreateAccount(ActionEvent actionEvent) {
+    private void handleCreateAccount(ActionEvent e) {
         String email = emailField.getText().trim();
         String password = getPasswordText().trim();
 
         if (email.isEmpty() || password.isEmpty()) {
-            showProblem("Please fill in both information boxes.");
+            showProblem("Please fill in both fields.");
+            return;
+        }
+        if (userList.stream().anyMatch(u -> u.getEmail().equals(email))) {
+            showProblem("This email already exists.");
             return;
         }
 
-        boolean exists = userList.stream().anyMatch(user -> user.getEmail() != null && user.getEmail().equals(email));
-        if (exists) {
-            showProblem("This email is already registered to an existing account.");
-            return;
-        }
+        User newUser = new User(email, password);
 
-        userList.add(new User(email, password));
-        saveUsersToJson();
+        userList.add(newUser);
+        UserStore.save(userList);
 
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/motionsim/LoginScreen.fxml"));
+            Parent root = FXMLLoader.load(
+                    getClass().getResource("/motionsim/LoginScreen.fxml"));
             Stage stage = (Stage) createAccBtn.getScene().getWindow();
             stage.setScene(new Scene(root));
-        } catch (IOException e) {
+        } catch (IOException ex) {
             showProblem("Could not load Login screen.");
-            e.printStackTrace();
-        }
-    }
-
-    private void saveUsersToJson() {
-        try {
-            File dataDir = new File("Data");
-            if (!dataDir.exists()) {
-                dataDir.mkdirs();
-            }
-
-            try (Writer writer = new FileWriter(userFile)) {
-                new Gson().toJson(userList, writer);
-                System.out.println("Saving to: " + userFile.getAbsolutePath());
-
-            }
-        } catch (IOException e) {
-            showProblem("Could not save new user.");
-            e.printStackTrace();
+            ex.printStackTrace();
         }
     }
 

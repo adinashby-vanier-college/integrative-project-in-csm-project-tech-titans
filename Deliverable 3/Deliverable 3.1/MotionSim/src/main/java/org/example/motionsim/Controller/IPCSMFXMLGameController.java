@@ -37,9 +37,7 @@ import javafx.scene.text.Font;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import org.example.motionsim.Model.GameSettings;
-import org.example.motionsim.Model.SpringPhysics;
-import org.example.motionsim.Model.ThemeUtil;
+import org.example.motionsim.Model.*;
 
 /**
  * FXML Controller class
@@ -218,7 +216,6 @@ public class IPCSMFXMLGameController implements Initializable {
     private Circle launchBall;
     private boolean isLaunched = false;
     private Label resetMessage;
-    private MediaPlayer mediaPlayer;
     private Timeline gameClock;
     private Timeline targetTimer;
     private Timeline collisionTimer;
@@ -296,10 +293,11 @@ public class IPCSMFXMLGameController implements Initializable {
         });
         physics.setGravity(Double.valueOf(GravityFieldLabel.getText()));
         physics.setSpringConstant(Double.valueOf(SpringConstantFieldLabel.getText()));
-        playMainMenuSong();
 
         Image targetImage = new Image(getClass().getResource("/motionsim/target.png").toExternalForm());
         Target.setImage(targetImage);
+
+        MusicManager.get().play("MainMenuSong.mp3");
     }
 
     private void updateRealTimeHeight() {
@@ -591,32 +589,18 @@ public class IPCSMFXMLGameController implements Initializable {
 
             Parent root = loader.load();
             Stage stage = (Stage) MenuBar.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            SettingsApplier.applyToScene(scene);
+            stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void playMainMenuSong() {
-        try {
-            String musicPath = getClass().getResource("/motionsim/songs/MainMenuSong.mp3").toString();
-            Media media = new Media(musicPath);
-            mediaPlayer = new MediaPlayer(media);
-            mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE); // Loop the song
-            mediaPlayer.setVolume(0.5); // Set initial volume (adjust as needed)
-            mediaPlayer.play();
-            System.out.println("Playing Main Menu Song...");
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Error playing Main Menu Song: " + e.getMessage());
-        }
-    }
     // Method to stop any currently playing song
     private void stopMusic() {
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-        }
+        MusicManager.get().stop();
     }
 
     @FXML
@@ -640,7 +624,9 @@ public class IPCSMFXMLGameController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/motionsim/IPCSMFXMLSimulator.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) MenuBar.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            SettingsApplier.applyToScene(scene);
+            stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -804,20 +790,7 @@ public class IPCSMFXMLGameController implements Initializable {
         VVelocityFieldLabel.setText("0.00");
         HVelocityFieldLabel.setText("0.00");
     }
-    /*
-    public class ThemeUtil {
-        public static void applyWallpaperToImageView(ImageView view, String resourcePath, Class<?> refClass) {
-            try {
-                Image image = new Image(refClass.getResource(resourcePath).toExternalForm());
-                view.setImage(image);
-            } catch (Exception e) {
-                System.err.println("Could not load wallpaper: " + resourcePath);
-                e.printStackTrace();
-            }
-        }
-    }
 
-     */
     @FXML
     public void handleFileMenuClose(ActionEvent actionEvent) {
         Platform.exit();

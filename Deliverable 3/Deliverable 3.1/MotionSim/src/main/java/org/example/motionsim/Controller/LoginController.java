@@ -16,8 +16,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import org.example.motionsim.Model.ThemeUtil;
-import org.example.motionsim.Model.User;
+import org.example.motionsim.Model.*;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -41,7 +40,7 @@ public class LoginController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        loadUserFromJson();
+        userList = UserStore.load();
         passwordToggle();
     }
 
@@ -64,24 +63,23 @@ public class LoginController implements Initializable {
     }
 
     @FXML
-    private void handleLoginBtn(ActionEvent actionEvent) {
-        String inputEmail = emailField.getText().trim();
-        String inputPassword = getPasswordText().trim();
+    private void handleLoginBtn(ActionEvent e) throws IOException {
 
-        boolean match = userList != null && userList.stream().anyMatch(user -> user.getEmail().equals(inputEmail) && user.getPassword().equals(inputPassword));
+        String email = emailField.getText().trim();
+        String pw = getPasswordText().trim();
 
-        if (match) {
-            loginNotSuccessfulMsg.setOpacity(0.0);
+        User found = userList.stream().filter(u -> u.getEmail().equals(email) && u.getPassword().equals(pw)).findFirst().orElse(null);
 
-            try {
-                Parent root = FXMLLoader.load(getClass().getResource("/motionsim/StartingMenu.fxml"));
-                Stage stage = (Stage) loginBtn.getScene().getWindow();
-                stage.setScene(new Scene(root));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        if (found != null) {
+            Session.set(found);                 // remember who is logged in
+            loginNotSuccessfulMsg.setOpacity(0);
+            Stage stage = (Stage) loginBtn.getScene().getWindow();
+            Parent root = FXMLLoader.load(getClass().getResource("/motionsim/StartingMenu.fxml"));
+            Scene scene = new Scene(root);
+            SettingsApplier.applyToScene(scene);
+            stage.setScene(scene);
         } else {
-            loginNotSuccessfulMsg.setOpacity(1.0);
+            loginNotSuccessfulMsg.setOpacity(1);
         }
     }
 
