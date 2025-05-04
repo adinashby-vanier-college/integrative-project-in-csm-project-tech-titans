@@ -92,6 +92,7 @@ public class NewSettingsScreenController implements Initializable {
             case NORMAL -> NormalOption.setSelected(true);
             case HARD -> HardOption.setSelected(true);
         }
+        GameSettings.setDifficulty(userSettings.getDifficulty());
 
         MusicVolumeSlider.setValue(userSettings.getMusicVolume() * 100);
         MusicVolumeMuteBox.setSelected(userSettings.isMusicMuted());
@@ -108,6 +109,7 @@ public class NewSettingsScreenController implements Initializable {
         userSettings.setDifficulty(EasyOption.isSelected()  ? UserSettings.Difficulty.EASY
                 : NormalOption.isSelected()? UserSettings.Difficulty.NORMAL
                 : UserSettings.Difficulty.HARD);
+        GameSettings.setDifficulty(userSettings.getDifficulty());
         userSettings.setMusicVolume(MusicVolumeSlider.getValue() / 100.0);
         userSettings.setMusicMuted(MusicVolumeMuteBox.isSelected());
 
@@ -269,16 +271,5 @@ public class NewSettingsScreenController implements Initializable {
         DefaultBtn.setText(LanguageController.getString("settings.default"));
 
         populateWallpaperCombo();
-    }
-
-    @FXML
-    private void handleDifficultySelection(ActionEvent event) {
-        if (EasyOption.isSelected()) {
-            GameSettings.setDifficulty(GameSettings.Difficulty.EASY);
-        } else if (NormalOption.isSelected()) {
-            GameSettings.setDifficulty(GameSettings.Difficulty.NORMAL);
-        } else if (HardOption.isSelected()) {
-            GameSettings.setDifficulty(GameSettings.Difficulty.HARD);
-        }
     }
 }

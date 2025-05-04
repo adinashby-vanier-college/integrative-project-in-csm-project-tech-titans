@@ -44,24 +44,6 @@ public class LoginController implements Initializable {
         passwordToggle();
     }
 
-    private void loadUserFromJson() {
-        userList = new ArrayList<>();
-
-        if (!userFile.exists()) {
-            return;
-        }
-        try (Reader reader = new FileReader(userFile)) {
-            Type userListType = new TypeToken<List<User>>() {}.getType();
-            List<User> parsed =  new Gson().fromJson(reader, userListType);
-
-            if (parsed != null) {
-                userList = parsed;
-            }
-        } catch (IOException | com.google.gson.JsonSyntaxException e) {
-            System.err.println("Warning: couldn't read/parse users.json -> starting with no users");
-        }
-    }
-
     @FXML
     private void handleLoginBtn(ActionEvent e) throws IOException {
 
@@ -72,6 +54,7 @@ public class LoginController implements Initializable {
 
         if (found != null) {
             Session.set(found);                 // remember who is logged in
+            GameSettings.setDifficulty(Session.get().getSettings().getDifficulty());
             loginNotSuccessfulMsg.setOpacity(0);
             Stage stage = (Stage) loginBtn.getScene().getWindow();
             Parent root = FXMLLoader.load(getClass().getResource("/motionsim/StartingMenu.fxml"));

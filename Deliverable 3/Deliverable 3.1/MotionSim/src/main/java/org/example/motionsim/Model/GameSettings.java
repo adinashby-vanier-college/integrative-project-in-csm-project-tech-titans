@@ -1,19 +1,15 @@
 package org.example.motionsim.Model;
 
 public final class GameSettings {
-    public enum Difficulty {
-        EASY, NORMAL, HARD
-    }
-
-    private static Difficulty difficulty = Difficulty.NORMAL;
+    private static UserSettings.Difficulty difficulty = UserSettings.Difficulty.NORMAL;
 
     private GameSettings() {}
 
-    public static Difficulty getDifficulty() {
+    public static UserSettings.Difficulty getDifficulty() {
         return difficulty;
     }
 
-    public static void setDifficulty(Difficulty d) {
+    public static void setDifficulty(UserSettings.Difficulty d) {
         difficulty = d;
     }
 }

@@ -226,6 +226,7 @@ public class IPCSMFXMLGameController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        GameSettings.setDifficulty(Session.get().getSettings().getDifficulty());
         ThemeUtil.applyThemeToPane(AnimationPane);
         physics = SpringPhysics.getInstance();
         physics.setObject(ball);
@@ -714,14 +715,14 @@ public class IPCSMFXMLGameController implements Initializable {
     }
 
     private void startPerTargetTimer() {
-        GameSettings.Difficulty diff = GameSettings.getDifficulty();
+        UserSettings.Difficulty diff = GameSettings.getDifficulty();
         switch (diff) {
             case EASY -> perTargetSecondsRemaining = Integer.MAX_VALUE;
             case NORMAL -> perTargetSecondsRemaining = 30;
             case HARD -> perTargetSecondsRemaining = 15;
         }
 
-        if (diff == GameSettings.Difficulty.EASY) {
+        if (diff == UserSettings.Difficulty.EASY) {
             return;
         }
 
