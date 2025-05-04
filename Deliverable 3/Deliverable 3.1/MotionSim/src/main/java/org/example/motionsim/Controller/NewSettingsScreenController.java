@@ -45,7 +45,7 @@ public class NewSettingsScreenController implements Initializable {
     private CheckBox MusicVolumeMuteBox;
     @FXML
     private Button DefaultBtn, SaveBtn, ExitBtn, HelpBtn;
-
+    private Map<Label, TooltipData> tooltipDataMap = new HashMap<>();
     private ToggleGroup difficultyGroup;
     @FXML
     private Button PlayMusicBtn;
@@ -147,27 +147,52 @@ public class NewSettingsScreenController implements Initializable {
     }
 
     private void setupTooltips() {
-        createTooltip(LanguageLabel, "Select the preferred language of display.");
-        createTooltip(GameplayLabel, "Adjust the level of difficulty in the simulator's 'Game Mode.'");
-        createTooltip(WallpaperLabel, "Alter the background and thematic color.");
-        createTooltip(AudioLabel, "Adjust the level of sound effects and/or music volume.");
+        // Map the labels to their respective language keys and create tooltips
+        tooltipDataMap.put(LanguageLabel, createTooltip(LanguageLabel, "settings.lltooltip"));
+        tooltipDataMap.put(GameplayLabel, createTooltip(GameplayLabel, "settings.gltooltip"));
+        tooltipDataMap.put(WallpaperLabel, createTooltip(WallpaperLabel, "settings.wltooltip"));
+        tooltipDataMap.put(AudioLabel, createTooltip(AudioLabel, "settings.altooltip"));
     }
 
-    private void createTooltip(Label label, String message) {
+    private TooltipData createTooltip(Label label, String languageKey) {
         VBox tooltipBox = new VBox();
         tooltipBox.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-padding: 5px;");
         Popup popup = new Popup();
-        Text tooltipText = new Text(message);
+        Text tooltipText = new Text(LanguageController.getString(languageKey));
         tooltipText.setFill(Color.BLACK);
         tooltipBox.getChildren().add(tooltipText);
         popup.getContent().add(tooltipBox);
 
         label.setOnMouseEntered(e -> popup.show(label, e.getScreenX() + 10, e.getScreenY() + 10));
         label.setOnMouseExited(e -> popup.hide());
+        label.setOnMouseDragged(e -> popup.hide());
         label.setOnMouseMoved(e -> {
             popup.setX(e.getScreenX() + 10);
             popup.setY(e.getScreenY() + 10);
         });
+
+        return new TooltipData(languageKey, popup, tooltipText);
+    }
+
+    private void updateTooltips() {
+        tooltipDataMap.forEach((label, tooltipData) -> {
+            String updatedMessage = LanguageController.getString(tooltipData.languageKey);
+
+            // Update the tooltip text dynamically
+            tooltipData.tooltipText.setText(updatedMessage);
+        });
+    }
+
+    private static class TooltipData {
+        String languageKey;
+        Popup popup;
+        Text tooltipText;
+
+        TooltipData(String languageKey, Popup popup, Text tooltipText) {
+            this.languageKey = languageKey;
+            this.popup = popup;
+            this.tooltipText = tooltipText;
+        }
     }
 
     @FXML
@@ -207,10 +232,11 @@ public class NewSettingsScreenController implements Initializable {
     @FXML
     private void handleHelpBtn(ActionEvent event) {
         try {
-            Parent helpRoot = FXMLLoader.load(getClass().getResource("/motionsim/UserManual.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(helpRoot));
-            stage.show();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/motionsim/UserManual.fxml"));
+            Parent root = loader.load();
+            Stage popupStage = new Stage();
+            popupStage.setScene(new Scene(root));
+            popupStage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -269,7 +295,7 @@ public class NewSettingsScreenController implements Initializable {
         ExitBtn.setText(LanguageController.getString("settings.exit"));
         HelpBtn.setText(LanguageController.getString("settings.help"));
         DefaultBtn.setText(LanguageController.getString("settings.default"));
-
         populateWallpaperCombo();
+        updateTooltips();
     }
 }
