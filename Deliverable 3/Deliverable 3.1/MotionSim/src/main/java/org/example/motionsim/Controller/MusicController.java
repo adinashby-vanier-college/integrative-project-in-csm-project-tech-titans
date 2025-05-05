@@ -27,6 +27,7 @@ public class MusicController extends Application {
             System.out.println("Error playing music: " + e.getMessage());
         }
     }
+
     private void handleMusicSelection(String menuId) {
         switch (menuId) {
             case "mainMenu":
@@ -46,34 +47,7 @@ public class MusicController extends Application {
                 break;
         }
     }
-    public void loadMusic(String fileName) {
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-        }
-        try {
-            URL resource = getClass().getResource("/songs/" + fileName);
-            if (resource == null) {
-                throw new RuntimeException("File not found: " + fileName);
-            }
-            Media media = new Media(resource.toString());
-            mediaPlayer = new MediaPlayer(media);
-            mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
-            mediaPlayer.play();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    public void stopMusic() {
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-        }
-    }
 
-    public void setVolume(double volume) {
-        if (mediaPlayer != null) {
-            mediaPlayer.setVolume(volume);
-        }
-    }
     @Override
     public void start(Stage primaryStage) {
         BorderPane root = new BorderPane();

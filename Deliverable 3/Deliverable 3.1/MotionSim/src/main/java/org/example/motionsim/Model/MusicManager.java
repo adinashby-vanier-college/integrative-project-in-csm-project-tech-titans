@@ -35,17 +35,9 @@ public class MusicManager {
         applyVolMute();
     }
 
-    public double getVolume() {
-        return volume;
-    }
-
     public void setMute(boolean m) {
         muted = m;
         applyVolMute();
-    }
-
-    public boolean isMuted() {
-        return muted;
     }
 
     private void applyVolMute() {

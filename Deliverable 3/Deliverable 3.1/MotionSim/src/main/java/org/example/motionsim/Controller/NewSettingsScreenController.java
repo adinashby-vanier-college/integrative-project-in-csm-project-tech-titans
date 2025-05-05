@@ -214,16 +214,6 @@ public class NewSettingsScreenController implements Initializable {
         }
     }
 
-    private void applyWallpaperToImageView(String resourcePath) {
-        try {
-            Image image = new Image(Objects.requireNonNull(getClass().getResource("/wallpapers/DEFAULT.png")).toExternalForm());
-            backgroundImageView.setImage(image);
-        } catch (Exception e) {
-            System.err.println("Could not load wallpaper: " + resourcePath);
-            e.printStackTrace();
-        }
-    }
-
     @FXML
     private void handleMuteToggle(ActionEvent event) {
         MusicManager.get().setMute(MusicVolumeMuteBox.isSelected());

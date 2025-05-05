@@ -197,14 +197,6 @@ public class SpringPhysics {
         return 0.5 * springConstant * amplitude * amplitude;
     }
 
-    public static double calculateKineticEnergy(double mass, double velocity) {
-        return 0.5 * mass * velocity * velocity;
-    }
-
-    public static double calculateMechanicalEnergy(double springConstant, double amplitude, double mass, double velocity) {
-        return calculateSpringPotentialEnergy(springConstant, amplitude) + calculateKineticEnergy(mass, velocity);
-    }
-
     public static double calculateLaunchVelocity(double springConstant, double mass, double amplitude) {
         return amplitude * Math.sqrt(springConstant / mass);
     }
