@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.ResourceBundle;
 
 import javafx.animation.*;
@@ -13,7 +12,6 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -29,8 +27,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 import javafx.scene.text.Font;
@@ -585,7 +581,7 @@ public class IPCSMFXMLGameController implements Initializable {
     private void handleMenuGoToSettings() {
         try {
             stopMusic(); // Stop the main menu song before switching
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/motionsim/NewSettingsScreen.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/motionsim/SettingsScreen.fxml"));
             loader.setResources(ResourceBundle.getBundle("motionsim.messages",LanguageController.getCurrentLocale()));
 
             Parent root = loader.load();

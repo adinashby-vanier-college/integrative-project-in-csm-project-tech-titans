@@ -11,7 +11,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import org.example.motionsim.Model.ThemeUtil;
 
 
 import java.io.IOException;
@@ -45,7 +44,7 @@ public class StartingMenuController implements Initializable {
 
     @FXML
     private void handleGoToSettings(ActionEvent actionEvent) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/motionsim/NewSettingsScreen.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/motionsim/SettingsScreen.fxml"));
         fxmlLoader.setResources(ResourceBundle.getBundle("motionsim.messages",LanguageController.getCurrentLocale()));
 
         Parent nextRoot = fxmlLoader.load();

@@ -5,7 +5,6 @@ import java.net.URL;
 import java.util.*;
 
 import javafx.event.ActionEvent;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.fxml.FXML;
@@ -15,8 +14,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
@@ -26,7 +23,7 @@ import javafx.stage.Stage;
 import javafx.scene.Node;
 import org.example.motionsim.Model.*;
 
-public class NewSettingsScreenController implements Initializable {
+public class SettingsScreenController implements Initializable {
     @FXML
     private Rectangle TopRec, LanguageRec, GameplayRec, WallpaperRec, AudioRec, MusicVolumeRec, BottomRec;
     @FXML
